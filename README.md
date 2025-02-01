@@ -4,11 +4,15 @@ Sub projects will uploading after checking code.
 
 # Sub Projects
 |name|info|jar name|repo|requirement
-|----|----|----|----|
+|----|----|----|----|----|
 |BlockPGUI|GUI base jar|bpgui.jar|not uploaded|Swing
 |BlockPCLI|CLI base jar|bpcli.jar|not uploaded|
 |BlockPCFs|Common Formats|bpcfs.jar|not uploaded|
-|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|not uploaded|bpcfs.jar
+|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|not uploaded|bpgui+bpcfs
+|BlockPWebCFs|Web Common Formats|bpwebcfs.jar|not uploaded|bpcfs
+|BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|not uploaded|bpgui+bpcfs
+|BlockPJDBC|JDBC|bpjdbc.jar|not uploaded|[jdbc drivers default load ojdbc8.jar+postgresql.jar+sqlite-jdbc.jar in "libs/"]
+|BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|not uploaded|bpgui+bpjdbc
 
 # Requirement
 JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
