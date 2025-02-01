@@ -1,10 +1,11 @@
 # Introduce
-BlockP is a Collection of Tools for self-using. Here is the repo of core project.
+BlockP is a Collection of Tools for self-using. Here is the repo of core project. Target of the project is to save code for personal use in anytime(Especially with no other tool).
 Sub projects will uploading after checking code.
 
 # Requirement
-JRE>=8
-Some sub project need higher version or jdk
+JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
+
+Some sub project need higher version or need jdk
 
 # How to use
 Build core project and other sub projects, put main jar on base path, then put other jars to "exts/", put dependency jars to "libs/"  
