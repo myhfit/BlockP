@@ -1,0 +1,8 @@
+bp.task.BPTaskCopyFiles$BPTaskFactoryCopyFiles
+bp.task.BPTaskPackFiles$BPTaskFactoryPackFiles
+bp.task.BPTaskTimer$BPTaskFactoryTimer
+bp.task.BPTaskSerial$BPTaskFactorySerial
+bp.task.BPTaskSerialPipe$BPTaskFactorySerialPipe
+bp.task.BPTaskExec$BPTaskFactoryExec
+bp.task.BPTaskReadTextFile$BPTaskFactoryReadTextFile
+bp.task.BPTaskRemind$BPTaskFactoryRemind
