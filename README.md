@@ -2,6 +2,14 @@
 BlockP is a Collection of Tools for self-using. Here is the repo of core project. Target of the project is to save code for personal use in anytime(Especially with no other tool).
 Sub projects will uploading after checking code.
 
+# Sub Projects
+|name|info|jar name|repo|requirement
+|----|----|----|----|
+|BlockPGUI|GUI base jar|bpgui.jar|not uploaded|Swing
+|BlockPCLI|CLI base jar|bpcli.jar|not uploaded|
+|BlockPCFs|Common Formats|bpcfs.jar|not uploaded|
+|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|not uploaded|bpcfs.jar
+
 # Requirement
 JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
 
