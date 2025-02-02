@@ -1,6 +1,6 @@
 # Introduce
-BlockP is a Collection of Tools for self-using. Here is the repo of core project. Target of the project is to save code for personal use in anytime(Especially with no other tool).
-Sub projects will uploading after checking code.
+BlockP is a collection of tools for self-using. Here is the repo of core project.   
+Target of the project is to save code for personal use in anytime, Especially when you don't have other tools.
 
 # Sub Projects
 |NAME|INFO|JAR NAME|REPO|REQUIREMENT
