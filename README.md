@@ -3,15 +3,15 @@ BlockP is a Collection of Tools for self-using. Here is the repo of core project
 Sub projects will uploading after checking code.
 
 # Sub Projects
-|name|info|jar name|repo|requirement
+|NAME|INFO|JAR NAME|REPO|REQUIREMENT
 |----|----|----|----|----|
-|BlockPGUI|GUI base jar|bpgui.jar|not uploaded|Swing
-|BlockPCLI|CLI base jar|bpcli.jar|not uploaded|
+|BlockPGUI|GUI|bpgui.jar|https://github.com/myhfit/BlockPGUI|Swing
+|BlockPCLI|CLI|bpcli.jar|not uploaded|
 |BlockPCFs|Common Formats|bpcfs.jar|not uploaded|
 |BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|not uploaded|bpgui+bpcfs
 |BlockPWebCFs|Web Common Formats|bpwebcfs.jar|not uploaded|bpcfs
 |BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|not uploaded|bpgui+bpcfs
-|BlockPJDBC|JDBC|bpjdbc.jar|not uploaded|[jdbc drivers default load ojdbc8.jar+postgresql.jar+sqlite-jdbc.jar in "libs/"]
+|BlockPJDBC|JDBC|bpjdbc.jar|not uploaded|
 |BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|not uploaded|bpgui+bpjdbc
 
 # Requirement
