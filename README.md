@@ -7,8 +7,8 @@ Target of the project is to save code for personal use in anytime, Especially wh
 |----|----|----|----|----|
 |BlockPGUI|GUI|bpgui.jar|https://github.com/myhfit/BlockPGUI|Swing
 |BlockPCLI|CLI|bpcli.jar|not uploaded|
-|BlockPCFs|Common Formats|bpcfs.jar|not uploaded|
-|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|not uploaded|bpgui+bpcfs
+|BlockPCFs|Common Formats|bpcfs.jar|https://github.com/myhfit/BlockPCFs|
+|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|https://github.com/myhfit/BlockPGUICFs|bpgui+bpcfs
 |BlockPWebCFs|Web Common Formats|bpwebcfs.jar|not uploaded|bpcfs
 |BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|not uploaded|bpgui+bpcfs
 |BlockPJDBC|JDBC|bpjdbc.jar|not uploaded|
