@@ -9,8 +9,10 @@ Target of the project is to save code for personal use in anytime, Especially wh
 |BlockPCLI|CLI|bpcli.jar|not uploaded|
 |BlockPCFs|Common Formats|bpcfs.jar|https://github.com/myhfit/BlockPCFs|
 |BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|https://github.com/myhfit/BlockPGUICFs|bpgui+bpcfs
-|BlockPWebCFs|Web Common Formats|bpwebcfs.jar|not uploaded|bpcfs
-|BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|not uploaded|bpgui+bpcfs
+|BlockPWebCFs|Web Common Formats|bpwebcfs.jar|https://github.com/myhfit/BlockPWebCFs|bpcfs
+|BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|https://github.com/myhfit/BlockPGUIWebCFs|bpgui+bpwebcfs
+|BlockPNotes|Notes|bpnotes.jar|https://github.com/myhfit/BlockPNotes|bpwebcfs+commonmark+commonmark-ext-gfm-tables
+|BlockPGUINotes|GUI for Notes|bpguinotes.jar|https://github.com/myhfit/BlockGUIPNotes|bpgui+bpnotes
 |BlockPJDBC|JDBC|bpjdbc.jar|https://github.com/myhfit/BlockPJDBC|
 |BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|https://github.com/myhfit/BlockPGUIJDBC|bpgui+bpjdbc
 
