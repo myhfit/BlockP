@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TreeMap;
 
+import bp.util.ClassUtil;
+
 public class BPTransformerManager
 {
 	public final static Map<String, BPTransformer<?>> getTransformer(Object data, String functiontype)
@@ -25,7 +27,7 @@ public class BPTransformerManager
 	public final static List<BPTransformerFactory> getTransformerFacs(Object data)
 	{
 		List<BPTransformerFactory> rc = new ArrayList<BPTransformerFactory>();
-		ServiceLoader<BPTransformerFactory> facs = ServiceLoader.load(BPTransformerFactory.class);
+		ServiceLoader<BPTransformerFactory> facs = ClassUtil.getServices(BPTransformerFactory.class);
 		if (data != null)
 		{
 			for (BPTransformerFactory fac : facs)
