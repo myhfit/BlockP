@@ -11,8 +11,8 @@ Target of the project is to save code for personal use in anytime, Especially wh
 |BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|https://github.com/myhfit/BlockPGUICFs|bpgui+bpcfs
 |BlockPWebCFs|Web Common Formats|bpwebcfs.jar|not uploaded|bpcfs
 |BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|not uploaded|bpgui+bpcfs
-|BlockPJDBC|JDBC|bpjdbc.jar|not uploaded|
-|BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|not uploaded|bpgui+bpjdbc
+|BlockPJDBC|JDBC|bpjdbc.jar|https://github.com/myhfit/BlockPJDBC|
+|BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|https://github.com/myhfit/BlockPGUIJDBC|bpgui+bpjdbc
 
 # Requirement
 JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
