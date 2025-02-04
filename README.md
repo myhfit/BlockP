@@ -5,16 +5,16 @@ Target of the project is to save code for personal use in anytime, Especially wh
 # Sub Projects
 |NAME|INFO|JAR NAME|REPO|REQUIREMENT
 |----|----|----|----|----|
-|BlockPGUI|GUI|bpgui.jar|https://github.com/myhfit/BlockPGUI|Swing
+|BlockPGUI|GUI|bpgui.jar|[Link](https://github.com/myhfit/BlockPGUI)|Swing
 |BlockPCLI|CLI|bpcli.jar|not uploaded|
-|BlockPCFs|Common Formats|bpcfs.jar|https://github.com/myhfit/BlockPCFs|
-|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|https://github.com/myhfit/BlockPGUICFs|bpgui+bpcfs
-|BlockPWebCFs|Web Common Formats|bpwebcfs.jar|https://github.com/myhfit/BlockPWebCFs|bpcfs
-|BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|https://github.com/myhfit/BlockPGUIWebCFs|bpgui+bpwebcfs
-|BlockPNotes|Notes|bpnotes.jar|https://github.com/myhfit/BlockPNotes|bpwebcfs+commonmark+commonmark-ext-gfm-tables
-|BlockPGUINotes|GUI for Notes|bpguinotes.jar|https://github.com/myhfit/BlockGUIPNotes|bpgui+bpnotes
-|BlockPJDBC|JDBC|bpjdbc.jar|https://github.com/myhfit/BlockPJDBC|
-|BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|https://github.com/myhfit/BlockPGUIJDBC|bpgui+bpjdbc
+|BlockPCFs|Common Formats|bpcfs.jar|[Link](https://github.com/myhfit/BlockPCFs)|
+|BlockPGUICFs|GUI for Common Formats|bpguicfs.jar|[Link](https://github.com/myhfit/BlockPGUICFs)|bpgui+bpcfs
+|BlockPWebCFs|Web Common Formats|bpwebcfs.jar|[Link](https://github.com/myhfit/BlockPWebCFs)|bpcfs
+|BlockPGUIWebCFs|GUI for Web Common Formats|bpguiwebcfs.jar|[Link](https://github.com/myhfit/BlockPGUIWebCFs)|bpgui+bpwebcfs
+|BlockPNotes|Notes|bpnotes.jar|[Link](https://github.com/myhfit/BlockPNotes)|bpwebcfs+commonmark+commonmark-ext-gfm-tables
+|BlockPGUINotes|GUI for Notes|bpguinotes.jar|[Link](https://github.com/myhfit/BlockGUIPNotes)|bpgui+bpnotes
+|BlockPJDBC|JDBC|bpjdbc.jar|[Link](https://github.com/myhfit/BlockPJDBC)|
+|BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|[Link](https://github.com/myhfit/BlockPGUIJDBC)|bpgui+bpjdbc
 
 # Requirement
 JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
