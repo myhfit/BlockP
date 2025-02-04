@@ -13,7 +13,7 @@ public class BPTransformerManager
 	public final static Map<String, BPTransformer<?>> getTransformer(Object data, String functiontype)
 	{
 		Map<String, BPTransformer<?>> rc = new TreeMap<String, BPTransformer<?>>();
-		ServiceLoader<BPTransformerFactory> facs = ServiceLoader.load(BPTransformerFactory.class);
+		ServiceLoader<BPTransformerFactory> facs = ClassUtil.getServices(BPTransformerFactory.class);
 		for (BPTransformerFactory fac : facs)
 		{
 			if (fac.checkData(data) && fac.getFunctionTypes().contains(functiontype))
@@ -50,7 +50,7 @@ public class BPTransformerManager
 
 	public final static BPTransformer<?> getTransformer(String facname, String functiontype)
 	{
-		ServiceLoader<BPTransformerFactory> facs = ServiceLoader.load(BPTransformerFactory.class);
+		ServiceLoader<BPTransformerFactory> facs = ClassUtil.getServices(BPTransformerFactory.class);
 		for (BPTransformerFactory fac : facs)
 		{
 			if (fac.getName().equals(facname))
