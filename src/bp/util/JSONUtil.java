@@ -3,7 +3,8 @@ package bp.util;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -17,7 +18,7 @@ public class JSONUtil
 	protected final static NumberFormat s_nfi = new DecimalFormat("#");
 	protected final static NumberFormat s_nff = new DecimalFormat("0.######");
 	protected final static NumberFormat s_nfd = new DecimalFormat("#");
-	protected final static SimpleDateFormat s_ndf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	protected final static DateTimeFormatter s_ndf= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public final static String testDecodeClassname(String text)
 	{
@@ -607,7 +608,7 @@ public class JSONUtil
 			else if (obj instanceof Date)
 			{
 				sb.append('"');
-				q(s_ndf.format((Date) obj), sb);
+				q(s_ndf.format(((Date)obj).toInstant().atZone(ZoneId.systemDefault())), sb);
 				sb.append('"');
 			}
 			else

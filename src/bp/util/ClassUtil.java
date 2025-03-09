@@ -12,9 +12,11 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
@@ -313,6 +315,7 @@ public class ClassUtil
 	public final static List<String> getClassNames(String packname, boolean recursive)
 	{
 		List<String> classnames = new ArrayList<String>(20);
+		Set<String> cnset = new HashSet<String>();
 		String pack = packname;
 		String packageDirName = packname.replace('.', '/');
 		List<URL> dirs = new ArrayList<URL>(20);
@@ -362,7 +365,7 @@ public class ClassUtil
 				if ("file".equals(protocol))
 				{
 					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-					findClassNameInPackage(pack, filePath, recursive, classnames);
+					findClassNameInPackage(pack, filePath, recursive, classnames, cnset);
 				}
 				else if ("jar".equals(protocol))
 				{
@@ -388,8 +391,11 @@ public class ClassUtil
 									{
 										String fullname = name.replace('/', '.');
 										fullname = fullname.substring(0, fullname.length() - 6);
-										if (!classnames.contains(fullname))
+										if (!cnset.contains(fullname))
+										{
+											cnset.add(fullname);
 											classnames.add(fullname);
+										}
 									}
 								}
 							}
@@ -410,7 +416,7 @@ public class ClassUtil
 		return classnames;
 	}
 
-	public final static void findClassNameInPackage(String packname, String packnamepath, boolean recursive, List<String> classnames)
+	public final static void findClassNameInPackage(String packname, String packnamepath, boolean recursive, List<String> classnames, Set<String> cnset)
 	{
 		File dir = new File(packnamepath);
 		if (!dir.exists() || !dir.isDirectory())
@@ -422,14 +428,17 @@ public class ClassUtil
 		{
 			if (recursive && file.isDirectory())
 			{
-				findClassNameInPackage((packname.length() == 0 ? "" : packname + ".") + file.getName(), file.getAbsolutePath(), recursive, classnames);
+				findClassNameInPackage((packname.length() == 0 ? "" : packname + ".") + file.getName(), file.getAbsolutePath(), recursive, classnames, cnset);
 			}
 			else if (file.getName().endsWith(".class"))
 			{
 				String className = file.getName().substring(0, file.getName().length() - 6);
 				String fullname = packname + '.' + className;
-				if (!classnames.contains(fullname))
+				if (!cnset.contains(fullname))
+				{
+					cnset.add(fullname);
 					classnames.add(fullname);
+				}
 			}
 		}
 	}

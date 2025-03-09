@@ -26,4 +26,6 @@ public interface BPProjectsContext extends BPWorkspaceContext
 	BPResourceProject getProject(String key);
 
 	void initProjects();
+	
+	void clearProjects();
 }

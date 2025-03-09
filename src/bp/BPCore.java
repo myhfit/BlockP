@@ -237,6 +237,9 @@ public class BPCore
 	{
 		rwLock(S_CORELOCK, true, () ->
 		{
+			if (S_PRJSCONTEXT != null)
+				S_PRJSCONTEXT.clearProjects();
+
 			BPWorkspaceContextLocal wscontext = new BPWorkspaceContextLocalBase(path);
 			BPProjectsContextLocalBase prjscontext = new BPProjectsContextLocalBase(wscontext);
 			wscontext.loadTasks();

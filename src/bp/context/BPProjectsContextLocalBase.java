@@ -85,6 +85,15 @@ public class BPProjectsContextLocalBase implements BPProjectsContext, BPWorkspac
 			prj.initProjectDatas();
 		}
 	}
+	
+	public void clearProjects()
+	{
+		List<BPResourceProject> prjs = new ArrayList<BPResourceProject>(m_prjs);
+		for (BPResourceProject prj : prjs)
+		{
+			prj.clearProjectDatas();
+		}
+	}
 
 	public BPResource getRes(String filename)
 	{

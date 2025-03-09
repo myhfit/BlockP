@@ -138,7 +138,6 @@ public class BPResourceDirLocal extends BPResourceFileSystemLocal implements BPR
 	public Map<String, Object> getMappedData()
 	{
 		Map<String, Object> map = super.getMappedData();
-		map.put("lastmodified", getLastModified());
 		return map;
 	}
 

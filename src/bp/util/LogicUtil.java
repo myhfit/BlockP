@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class LogicUtil
@@ -64,6 +65,22 @@ public class LogicUtil
 				break;
 		}
 		return (T) r;
+	}
+
+	public final static <T> T NVL(T v, T defaultvalue)
+	{
+		return v != null ? v : defaultvalue;
+	}
+
+	public final static <T> T VLS(T v, Predicate<T> checkfunc, T targetvalue)
+	{
+		return checkfunc.test(v) ? targetvalue : v;
+	}
+
+	public final static <T> void VLF(T v, Predicate<T> checkfunc, Consumer<T> targetfunc)
+	{
+		if (checkfunc.test(v))
+			targetfunc.accept(v);
 	}
 
 	public final static String tryGetNotEmptyStr(Object obj)

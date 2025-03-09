@@ -4,3 +4,4 @@ bp.transform.BPTransformerFactorySplitText
 bp.transform.BPTransformerFactoryDivide
 bp.transform.BPTransformerFactoryCollect2List
 bp.transform.BPTransformerFactoryCollect2Text
+bp.transform.BPTransformerFactoryScript

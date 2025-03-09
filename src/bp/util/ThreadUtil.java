@@ -3,7 +3,6 @@ package bp.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -86,23 +85,6 @@ public class ThreadUtil
 		{
 			m_datas = datas;
 		}
-	}
-
-	public final static String[] fixCommandArgs(String target, String args)
-	{
-		StringTokenizer st = null;
-		if (args != null)
-		{
-			st = new StringTokenizer(args);
-		}
-		String[] cmdarr = new String[1 + (st != null ? st.countTokens() : 0)];
-		cmdarr[0] = target;
-		if (st != null)
-		{
-			for (int i = 0; st.hasMoreTokens(); i++)
-				cmdarr[i + 1] = st.nextToken();
-		}
-		return cmdarr;
 	}
 
 	public final static void doProcessLoop(Process p, ProcessThread t, Supplier<Boolean> checkstopfunc, BiConsumer<Boolean, Integer> completefunc)

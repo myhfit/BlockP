@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -15,6 +16,39 @@ import java.util.function.Consumer;
 public class ProcessUtil
 {
 	protected final static int DEFAULT_CACHE_SIZE = 4096;
+
+	public final static String[] fixCommandArgs(String target, String args)
+	{
+		StringTokenizer st = null;
+		if (args != null)
+		{
+			st = new StringTokenizer(args);
+		}
+		String[] cmdarr = new String[1 + (st != null ? st.countTokens() : 0)];
+		cmdarr[0] = target;
+		if (st != null)
+		{
+			for (int i = 0; st.hasMoreTokens(); i++)
+				cmdarr[i + 1] = st.nextToken();
+		}
+		return cmdarr;
+	}
+
+	public final static String[] fixCommandArgs(String args)
+	{
+		StringTokenizer st = null;
+		if (args != null)
+		{
+			st = new StringTokenizer(args);
+		}
+		String[] cmdarr = new String[(st != null ? st.countTokens() : 0)];
+		if (st != null)
+		{
+			for (int i = 0; st.hasMoreTokens(); i++)
+				cmdarr[i] = st.nextToken();
+		}
+		return cmdarr;
+	}
 
 	public static class ReadThread extends Thread
 	{

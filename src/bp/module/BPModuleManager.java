@@ -127,7 +127,7 @@ public class BPModuleManager
 			else
 			{
 				rc.addAll(roots);
-				Std.info("Load Module Success:" + filename);
+				Std.debug("Load Module Success:" + filename);
 			}
 		}
 
@@ -163,7 +163,7 @@ public class BPModuleManager
 		}
 	}
 
-	public final static void unloadModule(String mname)
+	public final static boolean unloadModule(String mname)
 	{
 		BPModule m = LockUtil.rwLock(S_MLOCK, true, () ->
 		{
@@ -173,6 +173,9 @@ public class BPModuleManager
 		{
 			m.unload();
 			tryCloseExtClassLoader((BPExtClassLoader) m.getClass().getClassLoader());
+			Std.debug("Unload Module Success:" + mname);
+			return true;
 		}
+		return false;
 	}
 }

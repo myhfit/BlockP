@@ -104,6 +104,100 @@ public class TextUtil
 		return bs;
 	}
 
+	public final static boolean checkEmpty(String str)
+	{
+		return str == null || str.trim().length() == 0;
+	}
+
+	public final static boolean checkNotEmpty(String str)
+	{
+		return str != null && str.trim().length() > 0;
+	}
+
+	public final static String eds(String str)
+	{
+		return eds(str, null);
+	}
+
+	public final static String eds(String str, String defaultvalue)
+	{
+		if (str == null)
+			return defaultvalue;
+		if (str.trim().length() == 0)
+			return defaultvalue;
+		return str;
+	}
+
+	public final static String[] splitEscapePlainText(String str)
+	{
+		if (str == null)
+			return null;
+		List<String> rc = new ArrayList<String>();
+		char[] chs = str.toCharArray();
+		StringBuilder sb = new StringBuilder();
+		boolean flag = false;
+		char lastc = 0;
+		for (int i = 0; i < chs.length; i++)
+		{
+			char c = chs[i];
+			switch (c)
+			{
+				case '\"':
+				case '\'':
+				{
+					if (flag)
+					{
+						if (c == lastc)
+						{
+							lastc = 0;
+							flag = !flag;
+						}
+						else
+						{
+						}
+					}
+					else
+					{
+						flag = !flag;
+						lastc = c;
+					}
+					sb.append(c);
+					break;
+				}
+				case ',':
+				{
+					if (!flag)
+					{
+						rc.add(sb.toString());
+						sb.setLength(0);
+					}
+					else
+					{
+						sb.append(c);
+					}
+					break;
+				}
+				default:
+				{
+					sb.append(c);
+					break;
+				}
+			}
+		}
+		if (sb.length() > 0)
+			rc.add(sb.toString());
+		return rc.toArray(new String[rc.size()]);
+	}
+
+	public final static char[] toCStyleChar(String str)
+	{
+		if (str == null)
+			return null;
+		char[] rc = new char[str.length() + 1];
+		System.arraycopy(str.toCharArray(), 0, rc, 0, str.length());
+		return rc;
+	}
+
 	public final static List<String> splitTextToList(String text, String sp)
 	{
 		List<String> rc = new ArrayList<String>();

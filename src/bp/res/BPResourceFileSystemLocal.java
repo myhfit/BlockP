@@ -1,10 +1,17 @@
 package bp.res;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.DosFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
 import bp.project.BPResourceProject;
+import bp.util.SystemUtil;
+import bp.util.SystemUtil.SystemOS;
 
 public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 {
@@ -118,6 +125,45 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 	{
 		Map<String, Object> rc = new HashMap<String, Object>();
 		rc.put("name", m_file.getName());
+		rc.put("lastmodified", getLastModified());
+
+		if (SystemUtil.getOS() == SystemOS.Windows)
+		{
+			StringBuilder sb = new StringBuilder();
+			try
+			{
+				DosFileAttributes attrs = Files.readAttributes(Paths.get(m_file.getAbsolutePath()), DosFileAttributes.class);
+				sb.append(attrs.isArchive() ? "A" : " ");
+				sb.append(attrs.isReadOnly() ? "R" : " ");
+				sb.append(attrs.isSystem() ? "S" : " ");
+				sb.append(attrs.isHidden() ? "H" : " ");
+				sb.append(attrs.isSymbolicLink() ? "LINK" : " ");
+				rc.put("creationtime", attrs.creationTime().toMillis());
+				rc.put("accesstime", attrs.lastAccessTime().toMillis());
+				rc.put("filekey", attrs.fileKey());
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			rc.put("attrib", sb.toString());
+		}
+		else
+		{
+			StringBuilder sb = new StringBuilder();
+			try
+			{
+				BasicFileAttributes attrs = Files.readAttributes(Paths.get(m_file.getAbsolutePath()), BasicFileAttributes.class);
+				rc.put("creationtime", attrs.creationTime().toMillis());
+				rc.put("accesstime", attrs.lastAccessTime().toMillis());
+				rc.put("filekey", attrs.fileKey());
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			rc.put("attrib", sb.toString());
+		}
 		return rc;
 	}
 

@@ -35,6 +35,11 @@ public interface BPExtensionLoader
 	default void preload()
 	{
 	}
+	
+	default boolean checkSystem()
+	{
+		return true;
+	}
 
 	default void install(BPFileContext context)
 	{

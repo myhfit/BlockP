@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import bp.transform.BPTransformer;
 import bp.util.LogicUtil;
 import bp.util.ObjUtil;
+import bp.util.Std;
 
 public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Object> implements BPSLData
 {
@@ -120,5 +121,56 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 		}
 		m_links.clear();
 		LogicUtil.IFVU(data.get("links"), links -> setLinks((Map<String, ?>) links));
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void run(Object source)
+	{
+		List<BPDataConsumer<?>> pipes = new ArrayList<BPDataConsumer<?>>(m_children);
+		int l = pipes.size();
+		if (l > 0)
+		{
+			BPDataConsumer<?> p0 = pipes.get(0);
+			if (l > 0)
+			{
+				BPDataConsumer<?> cp = p0;
+				boolean passable = true;
+				boolean hasend = false;
+				for (int i = 1; i < l; i++)
+				{
+					BPDataConsumer<?> p = pipes.get(i);
+					if (cp.isTransformer())
+					{
+						((BPTransformer<?>) cp).setOutput(p);
+					}
+					else if (i < l - 1)
+					{
+						passable = false;
+						break;
+					}
+					cp = p;
+				}
+				if (pipes.get(l - 1).isEndpoint())
+					hasend = true;
+				if (!passable)
+				{
+					Std.info("Pipe impassable");
+					return;
+				}
+				if (!hasend)
+				{
+					Std.info("No endpoint");
+					return;
+				}
+			}
+			try
+			{
+				p0.runSegment(() -> ((BPDataConsumer) p0).accept(source));
+			}
+			catch (Exception e2)
+			{
+				throw new RuntimeException(e2);
+			}
+		}
 	}
 }

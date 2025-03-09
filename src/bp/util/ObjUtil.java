@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import bp.data.BPMData;
 import bp.data.BPSLData;
+import bp.data.BPYData;
 
 public class ObjUtil
 {
@@ -505,6 +506,22 @@ public class ObjUtil
 		List<T> rc = new ArrayList<T>();
 		for (Object p : ps)
 			rc.add((T) p);
+		return rc;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public final static Object wrapUIData(Object data)
+	{
+		Object rc = null;
+		if (data != null)
+		{
+			if (data instanceof Map)
+				rc = new BPMData.BPMDataWMap((Map) data);
+			else if (data instanceof List)
+				rc = new BPYData.BPYDataArrayList((List) data);
+			else
+				rc = data;
+		}
 		return rc;
 	}
 

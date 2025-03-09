@@ -108,7 +108,6 @@ public class BPResourceFileLocal extends BPResourceFileSystemLocal implements BP
 	{
 		Map<String, Object> map = super.getMappedData();
 		map.put("len", getSize());
-		map.put("lastmodified", getLastModified());
 		return map;
 	}
 

@@ -15,6 +15,8 @@ public class BPExtensionManager
 		List<BPExtensionLoader> infos = new ArrayList<BPExtensionLoader>();
 		for (BPExtensionLoader info : infoloader)
 		{
+			if (!info.checkSystem())
+				continue;
 			infos.add(info);
 		}
 		rc = infos.toArray(new BPExtensionLoader[infos.size()]);

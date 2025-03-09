@@ -13,7 +13,7 @@ import bp.util.TextUtil;
 
 public class BPTransformerToByteArray extends BPTransformerBase<Object>
 {
-	protected String m_en;
+	protected volatile String m_en;
 
 	protected Object transform(Object t)
 	{
@@ -107,7 +107,7 @@ public class BPTransformerToByteArray extends BPTransformerBase<Object>
 	{
 		if (cfg != null)
 		{
-			m_en = cfg.get("encoding");
+			m_en = TextUtil.eds(cfg.get("encoding"));
 		}
 	}
 }

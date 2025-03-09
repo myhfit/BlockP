@@ -79,6 +79,11 @@ public interface BPResourceProject extends BPResourceParent
 	{
 		
 	}
+	
+	default void clearProjectDatas()
+	{
+		
+	}
 
 	public static class ActionResult
 	{

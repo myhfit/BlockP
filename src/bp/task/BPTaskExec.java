@@ -7,6 +7,7 @@ import bp.BPCore;
 import bp.res.BPResourceDirLocal;
 import bp.task.BPTaskFactory.BPTaskFactoryBase;
 import bp.util.ObjUtil;
+import bp.util.ProcessUtil;
 import bp.util.Std;
 import bp.util.SystemUtil;
 import bp.util.ThreadUtil;
@@ -50,7 +51,7 @@ public class BPTaskExec extends BPTaskLocal<Boolean>
 					m_nostopflag = true;
 				setStarted();
 				triggerStatusChanged();
-				String[] cmdarr = ThreadUtil.fixCommandArgs(m_target, m_cmdparams);
+				String[] cmdarr = ProcessUtil.fixCommandArgs(m_target, m_cmdparams);
 				Process p = new ProcessBuilder(cmdarr).directory(((BPResourceDirLocal) BPCore.getFileContext().getDir((m_workdir == null ? "." : m_workdir))).getFileObject()).redirectErrorStream(true).start();
 				ProcessThread t = new ProcessThread(p);
 				t.start();
@@ -91,7 +92,7 @@ public class BPTaskExec extends BPTaskLocal<Boolean>
 		if (m_syskill)
 		{
 			Process p = m_process;
-			if (p != null)
+			if (p != null && p.isAlive())
 				if (!SystemUtil.kill(p, true, true))
 					p.destroyForcibly();
 		}

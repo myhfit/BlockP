@@ -63,7 +63,7 @@ public class BPTaskReadTextFile extends BPTaskLocal<String>
 	{
 		super.setMappedData(data);
 		m_filename = (String) data.get("filename");
-		m_encoding = (String) data.get("encoding");
+		m_encoding = TextUtil.eds((String) data.get("encoding"));
 	}
 
 	public static class BPTaskFactoryReadTextFile extends BPTaskFactoryBase<BPTaskReadTextFile>
