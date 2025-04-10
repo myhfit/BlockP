@@ -2,6 +2,7 @@ package bp.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BPSettingBase extends BPConfigCommon implements BPSetting
 {
@@ -29,5 +30,16 @@ public class BPSettingBase extends BPConfigCommon implements BPSetting
 			m_map.remove(key);
 		else
 			m_map.put(key, value);
+	}
+
+	public void setAll(Map<String, Object> kvs)
+	{
+		if (kvs != null)
+		{
+			for (String key : kvs.keySet())
+			{
+				set(key, kvs.get(key));
+			}
+		}
 	}
 }

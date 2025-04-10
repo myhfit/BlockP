@@ -11,6 +11,6 @@ public class BPConnectorFactoryLoopback implements BPConnectorFactory
 
 	public BPConnector create(Map<String, Object> ps)
 	{
-		return null;
+		return new BPConnectorLoopback();
 	}
 }

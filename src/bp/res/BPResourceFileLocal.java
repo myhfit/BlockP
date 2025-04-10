@@ -35,7 +35,12 @@ public class BPResourceFileLocal extends BPResourceFileSystemLocal implements BP
 
 	public <T> T useRandomAccess(Function<RandomAccessFile, T> io)
 	{
-		try (RandomAccessFile raf = new RandomAccessFile(m_file, "rw"))
+		return useRandomAccess(io, "rw");
+	}
+
+	public <T> T useRandomAccess(Function<RandomAccessFile, T> io, String mode)
+	{
+		try (RandomAccessFile raf = new RandomAccessFile(m_file, mode))
 		{
 			return io.apply(raf);
 		}

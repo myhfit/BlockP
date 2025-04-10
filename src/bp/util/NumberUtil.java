@@ -30,19 +30,24 @@ public class NumberUtil
 
 	public final static String formatByteCount(Number v)
 	{
+		return formatByteCount(v, 10000);
+	}
+
+	public final static String formatByteCount(Number v, int limit)
+	{
 		double num = v.doubleValue();
 		int c = 0;
-		if (num > 10000)
+		if (num >= limit)
 		{
 			num /= 1024d;
 			c++;
 		}
-		if (num > 10000)
+		if (num >= limit)
 		{
 			num /= 1024d;
 			c++;
 		}
-		if (num > 10000)
+		if (num >= limit)
 		{
 			num /= 1024d;
 			c++;

@@ -25,7 +25,13 @@ public class BPCommandHandlerList implements BPCommandHandler
 
 	public boolean canHandle(String cmdname)
 	{
-		return true;
+		List<BPCommandHandler> chs = new ArrayList<BPCommandHandler>(m_chs);
+		for (BPCommandHandler ch : chs)
+		{
+			if (ch.canHandle(cmdname))
+				return true;
+		}
+		return false;
 	}
 
 	public String getName()
@@ -50,5 +56,20 @@ public class BPCommandHandlerList implements BPCommandHandler
 		if (selch != null)
 			return chs.remove(selch);
 		return false;
+	}
+
+	public List<String> getCommandNames()
+	{
+		List<String> rc = new ArrayList<String>();
+
+		List<BPCommandHandler> chs = new ArrayList<BPCommandHandler>(m_chs);
+		for (BPCommandHandler ch : chs)
+		{
+			List<String> subr = ch.getCommandNames();
+			if (subr != null)
+				rc.addAll(subr);
+		}
+
+		return rc;
 	}
 }

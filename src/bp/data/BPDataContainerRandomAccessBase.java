@@ -21,7 +21,7 @@ public class BPDataContainerRandomAccessBase extends BPDataContainerBase impleme
 			return ((BPResourceFileLocal) m_res).useRandomAccess((io) ->
 			{
 				return IOUtil.read(io, pos, bs, offset, len);
-			});
+			}, "r");
 		}
 		else if (res instanceof BPResourceHolder && ((BPResourceHolder) res).isHold(byte[].class))
 		{
@@ -56,7 +56,7 @@ public class BPDataContainerRandomAccessBase extends BPDataContainerBase impleme
 					Std.err(e);
 				}
 				return -1L;
-			});
+			}, "r");
 		}
 		else if (res instanceof BPResourceHolder && ((BPResourceHolder) res).isHold(byte[].class))
 		{

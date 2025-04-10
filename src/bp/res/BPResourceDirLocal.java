@@ -37,6 +37,9 @@ public class BPResourceDirLocal extends BPResourceFileSystemLocal implements BPR
 
 	public String toString()
 	{
+		String dname = m_dname;
+		if (dname != null)
+			return dname;
 		String name = m_file.getName();
 		if (name != null && name.length() == 0)
 			name = m_file.toString();

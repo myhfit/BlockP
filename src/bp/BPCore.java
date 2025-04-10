@@ -19,6 +19,7 @@ import bp.context.BPFileContext;
 import bp.context.BPProjectsContextLocalBase;
 import bp.context.BPWorkspaceContextLocal;
 import bp.context.BPWorkspaceContextLocalBase;
+import bp.core.BPCommandHandler;
 import bp.core.BPCommandHandlerCore;
 import bp.core.BPCommandHandlerList;
 import bp.data.BPCommand;
@@ -226,6 +227,11 @@ public class BPCore
 	public static BPCommandResult callCommand(BPCommand cmd)
 	{
 		return S_CH.call(cmd);
+	}
+
+	public static BPCommandHandler getCommandHandler()
+	{
+		return S_CH;
 	}
 
 	private static void saveConfigs()

@@ -333,9 +333,9 @@ public class TextUtil
 		if (whole)
 		{
 			if (ignorecase)
-				return src.equals(target);
-			else
 				return src.equalsIgnoreCase(target);
+			else
+				return src.equals(target);
 		}
 		else
 		{

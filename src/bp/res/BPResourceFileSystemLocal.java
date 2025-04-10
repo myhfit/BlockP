@@ -17,6 +17,7 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 {
 	protected volatile File m_file = null;
 	protected volatile String m_tempid = null;
+	protected volatile String m_dname = null;
 
 	public String getPathName()
 	{
@@ -100,6 +101,11 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 	public int hashCode()
 	{
 		return m_file.hashCode();
+	}
+
+	public void setDisplayName(String dname)
+	{
+		m_dname = dname;
 	}
 
 	public boolean equals(Object other)

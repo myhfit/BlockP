@@ -500,6 +500,16 @@ public class ObjUtil
 		return rc;
 	}
 
+	public final static Map<String, Object> makeMapOrdered(Object... ps)
+	{
+		Map<String, Object> rc = new LinkedHashMap<String, Object>();
+		for (int i = 0; i < ps.length; i += 2)
+		{
+			rc.put((String) ps[i], ps[i + 1]);
+		}
+		return rc;
+	}
+
 	@SuppressWarnings("unchecked")
 	public final static <T> List<T> makeList(Object... ps)
 	{
