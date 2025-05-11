@@ -115,7 +115,11 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 		if (this == other)
 			return true;
 		if (other instanceof BPResourceFileSystemLocal)
-			return m_file.getAbsolutePath().equals(((BPResourceFileSystem) other).getFileFullName());
+		{
+			if (m_file == null)
+				return false;
+			return m_file.equals(((BPResourceFileSystemLocal) other).m_file);
+		}
 		if (other instanceof BPResourceProject)
 		{
 			BPResourceDir odir = ((BPResourceProject) other).getDir();

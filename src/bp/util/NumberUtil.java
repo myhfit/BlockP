@@ -16,6 +16,11 @@ public class NumberUtil
 		return new DecimalFormat("0.0");
 	}
 
+	private final static NumberFormat S_NF_BYTES2()
+	{
+		return new DecimalFormat("0");
+	}
+
 	private final static String[] S_BYTEUNITS = new String[] { "B", "KiB", "MiB", "GiB" };
 
 	public final static String formatCurrency(long v)
@@ -52,6 +57,9 @@ public class NumberUtil
 			num /= 1024d;
 			c++;
 		}
-		return S_NF_BYTES().format(num) + S_BYTEUNITS[c];
+		if (c == 0)
+			return S_NF_BYTES2().format(num) + S_BYTEUNITS[c];
+		else
+			return S_NF_BYTES().format(num) + S_BYTEUNITS[c];
 	}
 }

@@ -38,6 +38,6 @@ public interface BPResourceFileSystem extends BPResource
 	void setTempID(String tempid);
 
 	String getTempID();
-	
+
 	long getLastModified();
 }

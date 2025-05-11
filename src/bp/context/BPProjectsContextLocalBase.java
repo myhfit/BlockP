@@ -85,7 +85,7 @@ public class BPProjectsContextLocalBase implements BPProjectsContext, BPWorkspac
 			prj.initProjectDatas();
 		}
 	}
-	
+
 	public void clearProjects()
 	{
 		List<BPResourceProject> prjs = new ArrayList<BPResourceProject>(m_prjs);
@@ -249,12 +249,15 @@ public class BPProjectsContextLocalBase implements BPProjectsContext, BPWorkspac
 
 	public BPResourceProject getProject(String key)
 	{
-		List<BPResourceProject> prjs = new ArrayList<BPResourceProject>(m_prjs);
-		for (BPResourceProject prj : prjs)
+		if (key != null)
 		{
-			if (key.equals(prj.getProjectKey()))
+			List<BPResourceProject> prjs = new ArrayList<BPResourceProject>(m_prjs);
+			for (BPResourceProject prj : prjs)
 			{
-				return prj;
+				if (key.equals(prj.getProjectKey()))
+				{
+					return prj;
+				}
 			}
 		}
 		return null;

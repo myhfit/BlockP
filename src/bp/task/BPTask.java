@@ -16,6 +16,8 @@ public interface BPTask<V> extends BPSLData
 
 	String getID();
 
+	void setID(String id);
+
 	boolean isRunning();
 
 	void stop();

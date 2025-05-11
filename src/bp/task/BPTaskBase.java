@@ -147,6 +147,11 @@ public abstract class BPTaskBase<V> implements BPTask<V>
 		return m_id;
 	}
 
+	public void setID(String id)
+	{
+		m_id = id;
+	}
+
 	protected void setProgress(float v)
 	{
 		m_progress = v;

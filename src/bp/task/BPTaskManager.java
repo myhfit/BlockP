@@ -23,6 +23,7 @@ public class BPTaskManager
 	public void addTask(BPTask<?> task)
 	{
 		task.setManagerFlag(m_mf);
+		task.setID(BPCore.genID(BPCore.getFileContext()));
 		m_tasks.add(task);
 		BPCore.EVENTS_CORE.trigger(BPCore.getCoreUIChannelID(), BPEventCoreUI.taskAdded(task));
 	}

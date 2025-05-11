@@ -8,6 +8,18 @@ public class BPSettingBase extends BPConfigCommon implements BPSetting
 {
 	protected List<BPSettingItem> m_items;
 
+	public BPSettingBase()
+	{
+
+	}
+
+	public BPSettingBase(BPConfig preset)
+	{
+		if (preset == null)
+			return;
+		setAll(preset.getMappedData());
+	}
+
 	public BPSettingItem[] getItems()
 	{
 		List<BPSettingItem> items = m_items;

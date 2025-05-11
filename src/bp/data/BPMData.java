@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bp.util.ClassUtil;
+
 public interface BPMData
 {
 	default Map<String, Object> getMappedData()
@@ -52,6 +54,19 @@ public interface BPMData
 		public void setMappedData(Map<String, Object> data)
 		{
 			m_wrapped = data;
+		}
+	}
+
+	public static interface BPMDataReflect extends BPMData
+	{
+		default Map<String, Object> getMappedData()
+		{
+			return ClassUtil.getKVFromObject(this);
+		}
+
+		default void setMappedData(Map<String, Object> data)
+		{
+
 		}
 	}
 }

@@ -28,6 +28,8 @@ public class BPCommandHandlerTask extends BPCommandHandlerBase implements BPComm
 		String cmdname = cmd.name.toUpperCase();
 		switch (cmdname)
 		{
+			case CN_TASK_START:
+				return BPCommandResult.RUN_B(() -> startTask(cmd.ps));
 			// case CN_TASK_LIST:
 			// return BPCommandResult.OK("BlockP - Core" + getExtensionInfos() +
 			// getPlatformInfos());
@@ -43,6 +45,14 @@ public class BPCommandHandlerTask extends BPCommandHandlerBase implements BPComm
 				return BPCommandResult.RUN(() -> listTasks(cmd.ps));
 		}
 		return null;
+	}
+
+	protected boolean startTask(Object ps)
+	{
+//		String cmds=(String)ps;
+		List<BPTask<?>> tasks=BPCore.getWorkspaceContext().getTaskManager().listTasks();
+		tasks.get(0).getID();
+		return true;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

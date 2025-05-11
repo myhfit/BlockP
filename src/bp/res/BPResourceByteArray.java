@@ -18,13 +18,16 @@ public class BPResourceByteArray extends BPResourceHolder implements BPResourceI
 
 	public <T> T useInputStream(Function<InputStream, T> in)
 	{
-		try (ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) m_data))
+		if (m_data != null)
 		{
-			return in.apply(bis);
-		}
-		catch (IOException e)
-		{
-			err(e);
+			try (ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) m_data))
+			{
+				return in.apply(bis);
+			}
+			catch (IOException e)
+			{
+				err(e);
+			}
 		}
 		return null;
 	}

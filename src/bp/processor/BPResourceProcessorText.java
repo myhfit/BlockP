@@ -63,7 +63,6 @@ abstract class BPResourceProcessorTextBase implements BPResourceProcessor<BPReso
 
 public abstract class BPResourceProcessorText extends BPResourceProcessorTextBase
 {
-
 	public boolean canOutput(String format)
 	{
 		return format.equals(BPFormatText.FORMAT_TEXT);
@@ -88,7 +87,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 
 	public BPSetting getSetting(BPConfig preset)
 	{
-		BPSettingBase rc = new BPSettingBase();
+		BPSettingBase rc = new BPSettingBase(preset);
 		rc.addItem(BPSettingItem.create("OUTPUT", "Output Resource", BPSettingItem.ITEM_TYPE_TEXT, null));
 		return rc;
 	}
@@ -190,7 +189,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 
 		public BPSetting getSetting(BPConfig preset)
 		{
-			BPSettingBase rc = new BPSettingBase();
+			BPSettingBase rc = new BPSettingBase(preset);
 			List<BPDataContainerFactory> facs = ClassUtil.filterServices(BPDataContainerFactory.class, (c) ->
 			{
 				return c.canHandle(BPFormatXYData.FORMAT_XYDATA);

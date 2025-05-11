@@ -3,8 +3,10 @@ package bp.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,8 +15,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Function;
@@ -117,6 +121,25 @@ public class ClassUtil
 			Std.err(e);
 		}
 		return null;
+	}
+
+	public final static Map<String, Object> getKVFromObject(Object obj)
+	{
+		Map<String, Object> rc = new LinkedHashMap<String, Object>();
+		Class<?> c = obj.getClass();
+		Field[] fs = c.getFields();
+		try
+		{
+			for (Field f : fs)
+			{
+				if (Modifier.isPublic(f.getModifiers()))
+					rc.put(f.getName(), f.get(obj));
+			}
+		}
+		catch (IllegalArgumentException | IllegalAccessException e)
+		{
+		}
+		return rc;
 	}
 
 	public final static <T> ServiceLoader<T> getServices(Class<T> ifcclass)

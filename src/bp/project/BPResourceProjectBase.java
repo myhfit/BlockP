@@ -295,7 +295,7 @@ public abstract class BPResourceProjectBase implements BPResourceProjectDir
 		rc.put("path", getPath());
 		return rc;
 	}
-	
+
 	public String getExt()
 	{
 		return "[PROJECT]";
