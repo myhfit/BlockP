@@ -257,4 +257,31 @@ public class LogicUtil
 			return this;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public final static <T extends Throwable> T catchRun(ERunnable2<T> seg, Class<T> errclass) throws Throwable
+	{
+		try
+		{
+			seg.run();
+		}
+		catch (Exception e)
+		{
+			if (errclass != null)
+			{
+				if (errclass.isInstance(e))
+					return (T) e;
+				else
+					throw e;
+			}
+			else
+				return (T) e;
+		}
+		return null;
+	}
+
+	public static interface ERunnable2<T extends Throwable>
+	{
+		public void run() throws T;
+	}
 }
