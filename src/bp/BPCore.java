@@ -54,6 +54,7 @@ public class BPCore
 	protected final static BPConfigManager s_confman = new BPConfigManager();
 	protected static volatile boolean s_autosaveconfig = false;
 	protected final static List<BPScheduler> S_SS = new CopyOnWriteArrayList<BPScheduler>();
+	protected final static List<Runnable> S_ELIST = new CopyOnWriteArrayList<Runnable>();
 
 	protected static IDGenerator S_IDGEN;
 
@@ -112,7 +113,7 @@ public class BPCore
 
 	protected final static void loadExtensions()
 	{
-		BPExtensionLoader[] loaders = BPExtensionManager.getExtensionLoaders();
+		BPExtensionLoader[] loaders = BPExtensionManager.getExtensionLoaders(true);
 		if (loaders != null && loaders.length > 0)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -224,6 +225,11 @@ public class BPCore
 		return sdmap;
 	}
 
+	public static void addCommandHandler(BPCommandHandler handler)
+	{
+		S_CH.addHandler(handler);
+	}
+
 	public static BPCommandResult callCommand(BPCommand cmd)
 	{
 		return S_CH.call(cmd);
@@ -272,6 +278,12 @@ public class BPCore
 	public final static boolean isLocalContext()
 	{
 		return rwLock(S_CORELOCK, false, () -> S_PRJSCONTEXT.isLocal());
+	}
+
+	public final static void safeExit()
+	{
+		for (Runnable r : S_ELIST)
+			r.run();
 	}
 
 	public final static void stop()

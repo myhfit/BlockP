@@ -17,6 +17,7 @@ public class Std
 	private static volatile Consumer<String> s_err_u;
 	private static volatile Function<String, Boolean> s_confirm_u;
 	private static volatile Function<String, String> s_prompt_u;
+	private static volatile Function<String[], String> s_select_u;
 
 	public final static void setStdMode(int stdmode)
 	{
@@ -62,12 +63,13 @@ public class Std
 			System.err.println(str);
 	}
 
-	public final static void setupUI(Consumer<String> infou, Consumer<String> erru, Function<String, Boolean> confirmu, Function<String, String> promptu)
+	public final static void setupUI(Consumer<String> infou, Consumer<String> erru, Function<String, Boolean> confirmu, Function<String, String> promptu, Function<String[], String> selectu)
 	{
 		s_info_u = infou;
 		s_err_u = erru;
 		s_confirm_u = confirmu;
 		s_prompt_u = promptu;
+		s_select_u = selectu;
 	}
 
 	public final static void info_user(String str)
@@ -101,6 +103,14 @@ public class Std
 		Function<String, String> promptu = s_prompt_u;
 		if (promptu != null)
 			return promptu.apply(str);
+		throw new NoSuchMethodError();
+	}
+
+	public final static String select(String[] strs)
+	{
+		Function<String[], String> selectu = s_select_u;
+		if (selectu != null)
+			return selectu.apply(strs);
 		throw new NoSuchMethodError();
 	}
 }

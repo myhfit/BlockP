@@ -2,12 +2,17 @@ package bp.data;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public interface BPXData
+public interface BPXData extends BPData
 {
 	Object getColValue(int col);
 
 	default void setColValue(int col, Object v)
 	{
+	}
+
+	default BPDataStructure getDataStruture()
+	{
+		return BPDataStructure.X;
 	}
 
 	Object[] getValues();

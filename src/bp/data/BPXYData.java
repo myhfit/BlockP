@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import bp.data.BPXData.BPXDataArray;
 
-public interface BPXYData extends Cloneable
+public interface BPXYData extends BPData, Cloneable
 {
 	public final static String EXT_XYDATA = "[XYDATA]";
 
@@ -23,6 +23,11 @@ public interface BPXYData extends Cloneable
 	default String[] getColumnLabels()
 	{
 		return getColumnNames();
+	}
+
+	default BPDataStructure getDataStruture()
+	{
+		return BPDataStructure.XY;
 	}
 
 	void setDatas(List<BPXData> datas);

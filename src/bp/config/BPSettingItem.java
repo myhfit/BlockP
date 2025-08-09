@@ -13,6 +13,7 @@ public class BPSettingItem
 	public final static String ITEM_TYPE_FLOAT = "FLOAT";
 	public final static String ITEM_TYPE_SELECT = "SELECT";
 	public final static String ITEM_TYPE_RESOURCE = "RESOURCE";
+	public final static String ITEM_TYPE_RESOURCE_SAVE = "RESOURCE_SAVE";
 
 	public BPSettingItem setRequired(boolean flag)
 	{

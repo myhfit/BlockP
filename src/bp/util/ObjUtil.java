@@ -1,8 +1,12 @@
 package bp.util;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +33,81 @@ public class ObjUtil
 		return rc;
 	}
 
+	public final static Map<String, Object> getMappedDataReflect(Object obj)
+	{
+		Map<String, Object> rc = new LinkedHashMap<String, Object>();
+		List<Field> fs = ClassUtil.getFields(obj.getClass());
+		for (Field f : fs)
+		{
+			try
+			{
+				rc.put(f.getName(), cloneDataReflect(f.get(obj)));
+			}
+			catch (IllegalArgumentException | IllegalAccessException e)
+			{
+				Std.err(e);
+			}
+		}
+		return rc;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected final static Object cloneDataReflect(Object obj)
+	{
+		Object rc = obj;
+		if (obj != null)
+		{
+			if (obj instanceof List)
+			{
+				List<Object> r = new ArrayList<Object>();
+				List<?> src = (List<?>) obj;
+				for (Object s : src)
+				{
+					r.add(cloneDataReflect(s));
+				}
+				rc = r;
+			}
+			else if (obj instanceof Map)
+			{
+				Map<String, ?> src = (Map<String, ?>) obj;
+				Map<String, Object> r = new LinkedHashMap<String, Object>();
+				for (String k : src.keySet())
+				{
+					r.put(k, cloneDataReflect(src.get(k)));
+				}
+				rc = r;
+			}
+			else
+			{
+				Class<?> c = obj.getClass();
+				if (c.isArray())
+				{
+					int l = Array.getLength(obj);
+					List<Object> r = new ArrayList<Object>();
+					for (int i = 0; i < l; i++)
+						r.add(cloneDataReflect(Array.get(obj, i)));
+					rc = r;
+				}
+				else if (!(c.getName().startsWith("java.")))
+				{
+					rc = getMappedDataReflect(obj);
+				}
+			}
+		}
+		return rc;
+	}
+
 	public final static String toString(Object v)
 	{
 		return toString(v, null);
 	}
 
 	public final static String toString(Object v, String defaulttext)
+	{
+		return toString(v, defaulttext, 0);
+	}
+
+	public final static String toString(Object v, String defaulttext, int limit)
 	{
 		if (v == null)
 			return defaulttext;
@@ -51,7 +124,83 @@ public class ObjUtil
 		{
 			return v.toString();
 		}
+		else if (v instanceof Collection)
+		{
+			return descCollection((Collection<?>) v, limit);
+		}
+		else if (v instanceof Map)
+		{
+			return descMap((Map<?, ?>) v, limit);
+		}
 		return v.toString();
+	}
+
+	public final static String descCollection(Collection<?> l, int limit)
+	{
+		if (l == null)
+			return "";
+		if (limit <= 0)
+			return l.toString();
+		Iterator<?> it = l.iterator();
+		if (!it.hasNext())
+			return "[]";
+		StringBuilder sb = new StringBuilder();
+		sb.append('[');
+		int c = 0;
+		while (true)
+		{
+			Object e = it.next();
+			sb.append(e == l ? "(this Collection)" : limit <= 0 ? e : ObjUtil.toString(e, null, limit > 1 ? limit - 1 : limit));
+			c++;
+			if (!it.hasNext() || c >= limit)
+			{
+				if (c >= limit)
+					sb.append(", ...");
+				sb.append(']');
+				break;
+			}
+			sb.append(',').append(' ');
+		}
+		return sb.toString();
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public final static String descMap(Map<?, ?> m, int limit)
+	{
+		if (m == null)
+			return "";
+		if (limit <= 0)
+			return m.toString();
+		if (m.size() == 0)
+			return "{}";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append('{');
+		int c = 0;
+		Iterator<Entry<String, ?>> it = (Iterator) m.entrySet().iterator();
+		for (; it.hasNext();)
+		{
+			Entry<String, ?> e = it.next();
+			Object k = e.getKey();
+			Object v = e.getValue();
+			if (k == m)
+				k = "(this Map)";
+			if (v == m)
+				v = "(this Map)";
+			sb.append(limit <= 0 ? k : ObjUtil.toString(k, null, limit > 1 ? limit - 1 : limit));
+			sb.append('=');
+			sb.append(limit <= 0 ? v : ObjUtil.toString(v, null, limit > 1 ? limit - 1 : limit));
+			c++;
+			if (!it.hasNext() || c >= limit)
+			{
+				if (c >= limit)
+					sb.append(", ...");
+				sb.append('}');
+				break;
+			}
+			sb.append(',').append(' ');
+		}
+		return sb.toString();
 	}
 
 	public static boolean check(RunnableB seg)

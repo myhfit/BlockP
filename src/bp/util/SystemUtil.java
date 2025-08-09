@@ -156,21 +156,31 @@ public class SystemUtil
 		return r;
 	}
 
-	public final static String execSimpleProcess(String[] cmd, String encoding)
+	public final static class EXECPROCESS_RESULT
+	{
+		public int exitcode;
+		public String out;
+		public Exception err;
+	}
+
+	public final static EXECPROCESS_RESULT execSimpleProcess(String[] cmd, String encoding)
 	{
 		StringBuilder sb = new StringBuilder();
 		Process process = null;
+		EXECPROCESS_RESULT rc = new EXECPROCESS_RESULT();
 		try
 		{
-			process = Runtime.getRuntime().exec(cmd);
+			process = new ProcessBuilder().command(cmd).redirectErrorStream(true).start();
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), encoding));)
 			{
 				boolean flag = false;
 				String newline;
+				boolean initflag = false;
 				while (process.isAlive())
 				{
-					while (reader.ready())
+					if (reader.ready())
 					{
+						initflag = true;
 						if (flag)
 							sb.append("\n");
 						else
@@ -180,12 +190,25 @@ public class SystemUtil
 							sb.append(newline);
 					}
 				}
+				if (!initflag)
+				{
+					if (flag)
+						sb.append("\n");
+					else
+						flag = true;
+					newline = reader.readLine();
+					if (newline != null)
+						sb.append(newline);
+				}
 				process.waitFor();
 				process.destroyForcibly();
+				rc.exitcode = process.exitValue();
+				rc.out = sb.toString();
 			}
 			catch (Exception e2)
 			{
 				Std.err(e2);
+				rc.err = e2;
 			}
 			finally
 			{
@@ -194,13 +217,15 @@ public class SystemUtil
 		catch (IOException e)
 		{
 			Std.err(e);
+			rc.err = e;
 		}
 		finally
 		{
 			if (process != null)
 				process.destroy();
 		}
-		return sb.toString();
+
+		return rc;
 	}
 
 	public final static SystemOS getOS()

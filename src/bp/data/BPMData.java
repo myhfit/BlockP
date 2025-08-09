@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bp.util.ClassUtil;
 
-public interface BPMData
+public interface BPMData extends BPData
 {
 	default Map<String, Object> getMappedData()
 	{
@@ -16,6 +16,11 @@ public interface BPMData
 	default void setMappedData(Map<String, Object> data)
 	{
 
+	}
+
+	default BPDataStructure getDataStruture()
+	{
+		return BPDataStructure.M;
 	}
 
 	public static class BPMDataCHMap extends ConcurrentHashMap<String, Object> implements BPMData

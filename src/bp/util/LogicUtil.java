@@ -18,6 +18,7 @@ public class LogicUtil
 		}
 	}
 
+	// if v not empty use it do something
 	public final static <V> void IFVU_REF(WeakReference<V> vref, Consumer<V> con)
 	{
 		V v = vref.get();
@@ -33,6 +34,7 @@ public class LogicUtil
 		return v != null ? func.apply(v) : null;
 	}
 
+	// if m not empty get key from map
 	@SuppressWarnings("unchecked")
 	public final static <R> R IFV_M(Map<String, ?> m, String key)
 	{
@@ -41,6 +43,7 @@ public class LogicUtil
 		return (R) m.get(key);
 	}
 
+	// chained apply function
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public final static <T> T CHAIN_NN(Object raw, Function<?, ?>... fs)
 	{
@@ -54,6 +57,7 @@ public class LogicUtil
 		return (T) r;
 	}
 
+	// parallel apply function,return when not null
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public final static <T> T PAR_NN(Object raw, Function<?, ?>... fs)
 	{
@@ -72,11 +76,13 @@ public class LogicUtil
 		return v != null ? v : defaultvalue;
 	}
 
+	// value test and link to second value
 	public final static <T> T VLS(T v, Predicate<T> checkfunc, T targetvalue)
 	{
 		return checkfunc.test(v) ? targetvalue : v;
 	}
 
+	// value test and link to function
 	public final static <T> void VLF(T v, Predicate<T> checkfunc, Consumer<T> targetfunc)
 	{
 		if (checkfunc.test(v))
@@ -164,11 +170,44 @@ public class LogicUtil
 			return null;
 		}
 
+		public <V, ERR extends Exception> V execWithErr(EFunction2<T, V, ERR> seg) throws ERR
+		{
+			T target = m_ref.get();
+			if (target != null)
+			{
+				try
+				{
+					return seg.apply(target);
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
+			}
+			return null;
+		}
+
 		public void callRunnable()
 		{
 			Runnable cb = (Runnable) m_ref.get();
 			if (cb != null)
 				cb.run();
+		}
+
+		public <ERR extends Exception> void acceptWithErr(EConsumer2<T, ERR> seg) throws ERR
+		{
+			T target = m_ref.get();
+			if (target != null)
+			{
+				try
+				{
+					seg.accept(target);
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
+			}
 		}
 
 		public T get()
@@ -280,8 +319,35 @@ public class LogicUtil
 		return null;
 	}
 
+	public final static <ERR extends Throwable, R> R catchGet(ESupplier2<R, ERR> seg, R defaultvalue)
+	{
+		try
+		{
+			return seg.get();
+		}
+		catch (Throwable e)
+		{
+			return defaultvalue;
+		}
+	}
+
 	public static interface ERunnable2<T extends Throwable>
 	{
-		public void run() throws T;
+		void run() throws T;
+	}
+
+	public static interface ESupplier2<R, ERR extends Throwable>
+	{
+		R get() throws ERR;
+	}
+
+	public static interface EConsumer2<T, ERR extends Throwable>
+	{
+		void accept(T target) throws ERR;
+	}
+
+	public static interface EFunction2<T, R, ERR extends Throwable>
+	{
+		R apply(T t) throws ERR;
 	}
 }

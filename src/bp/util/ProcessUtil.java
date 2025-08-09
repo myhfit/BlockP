@@ -13,6 +13,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import bp.scan.state.BPCLIArgsState;
+import bp.scan.state.BPCLIArgsState.BPCLIArgsContext;
+import bp.scan.BPTextScanner2;
+
 public class ProcessUtil
 {
 	protected final static int DEFAULT_CACHE_SIZE = 4096;
@@ -48,6 +52,17 @@ public class ProcessUtil
 				cmdarr[i] = st.nextToken();
 		}
 		return cmdarr;
+	}
+
+	public final static String[] splitCommandArgs(String args)
+	{
+		BPTextScanner2<BPCLIArgsContext> scanner = new BPTextScanner2<>();
+		scanner.bind(args.toCharArray());
+		BPCLIArgsContext r = new BPCLIArgsContext();
+		scanner.setContext(r);
+		scanner.setCurrent(new BPCLIArgsState.BPCLIArgsState0());
+		scanner.run();
+		return r.result.toArray(new String[0]);
 	}
 
 	public static class ReadThread extends Thread

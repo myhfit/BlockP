@@ -79,4 +79,10 @@ public class BPResourceByteArraySupplier extends BPResourceHolder implements BPR
 		m_cb = null;
 		super.release();
 	}
+
+	public long getSize()
+	{
+		byte[] data = readFromSupplier();
+		return data != null ? data.length : 0;
+	}
 }

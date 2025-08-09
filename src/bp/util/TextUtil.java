@@ -87,6 +87,11 @@ public class TextUtil
 		return rc;
 	}
 
+	public final static String toJavaSysString(byte[] bs)
+	{
+		return toString(bs, "utf-16");
+	}
+
 	public final static byte[] fromString(String str, String en)
 	{
 		byte[] bs = null;
@@ -102,6 +107,11 @@ public class TextUtil
 			}
 		}
 		return bs;
+	}
+
+	public final static byte[] fromJavaSysString(String str)
+	{
+		return fromString(str, "utf-16");
 	}
 
 	public final static boolean checkEmpty(String str)

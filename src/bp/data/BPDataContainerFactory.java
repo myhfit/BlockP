@@ -5,7 +5,10 @@ import bp.config.BPSetting;
 
 public interface BPDataContainerFactory
 {
-	BPSetting getSetting();
+	default BPSetting getSetting()
+	{
+		return null;
+	}
 
 	boolean canHandle(String format);
 

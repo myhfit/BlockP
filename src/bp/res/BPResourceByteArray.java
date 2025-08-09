@@ -51,4 +51,9 @@ public class BPResourceByteArray extends BPResourceHolder implements BPResourceI
 	{
 		return m_data != null;
 	}
+
+	public long getSize()
+	{
+		return m_data != null ? ((byte[]) m_data).length : 0;
+	}
 }

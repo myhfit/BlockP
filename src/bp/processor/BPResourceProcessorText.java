@@ -157,7 +157,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 		protected BPResource writeXYData(BPResource out, String txt, BPConfig config)
 		{
 			String facname = config.get("OUTPUT_TYPE");
-			BPDataContainerFactory fac = ClassUtil.findServices(BPDataContainerFactory.class, (c) -> c.getName().equals(facname));
+			BPDataContainerFactory fac = ClassUtil.findService(BPDataContainerFactory.class, c -> c.getName().equals(facname));
 			if (fac != null)
 			{
 				BPSetting setting = fac.getSetting();
@@ -201,7 +201,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 				sels[i] = fac.getName();
 			}
 			rc.addItem(BPSettingItem.create("OUTPUT_TYPE", "Output Resource Type", BPSettingItem.ITEM_TYPE_SELECT, sels));
-			rc.addItem(BPSettingItem.create("OUTPUT", "Output Resource", BPSettingItem.ITEM_TYPE_RESOURCE, null));
+			rc.addItem(BPSettingItem.create("OUTPUT", "Output Resource", BPSettingItem.ITEM_TYPE_RESOURCE_SAVE, null));
 			return rc;
 		}
 	}

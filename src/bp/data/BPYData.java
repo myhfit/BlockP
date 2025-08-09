@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface BPYData
+public interface BPYData extends BPData
 {
 	Object getValue(int index);
 
@@ -26,6 +26,11 @@ public interface BPYData
 		Map<String, Object> rc = new HashMap<String, Object>();
 		rc.put("_list", getList());
 		return rc;
+	}
+
+	default BPDataStructure getDataStruture()
+	{
+		return BPDataStructure.Y;
 	}
 
 	public abstract static class BPYDataList implements BPYData

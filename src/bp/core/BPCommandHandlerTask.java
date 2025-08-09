@@ -12,46 +12,61 @@ import bp.util.ObjUtil;
 
 public class BPCommandHandlerTask extends BPCommandHandlerBase implements BPCommandHandler
 {
-	public final static String CN_TASK_LIST = "TASK_LIST";
-	public final static String CN_TASK_START = "TASK_START";
-	public final static String CN_TASK_STOP = "TASK_STOP";
-	public final static String CN_TASK_DEL = "TASK_DEL";
-	public final static String CN_TASK_UPDATE = "TASK_UPDATE";
+	public final static String CN_TASK_LIST = "task_list";
+	public final static String CN_TASK_START = "task_start";
+	public final static String CN_TASK_STOP = "task_stop";
+	public final static String CN_TASK_DEL = "task_del";
+	public final static String CN_TASK_UPDATE = "task_update";
 
 	public BPCommandHandlerTask()
 	{
-		m_cmdnames = ObjUtil.makeList(CN_TASK_LIST, CN_TASK_START, CN_TASK_STOP, CN_TASK_DEL, CN_TASK_UPDATE);
+		m_cmdnames = ObjUtil.makeList(CN_TASK_LIST, CN_TASK_START, CN_TASK_STOP);//, CN_TASK_DEL, CN_TASK_UPDATE);
 	}
 
 	public BPCommandResult call(BPCommand cmd)
 	{
-		String cmdname = cmd.name.toUpperCase();
+		String cmdname = cmd.name.toLowerCase();
 		switch (cmdname)
 		{
 			case CN_TASK_START:
-				return BPCommandResult.RUN_B(() -> startTask(cmd.ps));
-			// case CN_TASK_LIST:
-			// return BPCommandResult.OK("BlockP - Core" + getExtensionInfos() +
-			// getPlatformInfos());
-			// case CN_ECHO:
-			// return BPCommandResult.OK(cmd.ps);
-			// case CN_HELP:
-			// return BPCommandResult.RUN(() -> showHelp(cmd.ps));
-			// case CN_LOADMODULE:
-			// return BPCommandResult.RUN_B(() -> loadModule(cmd.ps));
-			// case CN_UNLOADMODULE:
-			// return BPCommandResult.RUN_B(() -> unloadModule(cmd.ps));
+				return BPCommandResult.RUN_B(() -> startTask(getPSStringArr(cmd.ps)));
+			case CN_TASK_STOP:
+				return BPCommandResult.RUN_B(() -> stopTask(getPSStringArr(cmd.ps)));
 			case CN_TASK_LIST:
 				return BPCommandResult.RUN(() -> listTasks(cmd.ps));
 		}
 		return null;
 	}
 
-	protected boolean startTask(Object ps)
+	protected boolean startTask(String[] ps)
 	{
-//		String cmds=(String)ps;
-		List<BPTask<?>> tasks=BPCore.getWorkspaceContext().getTaskManager().listTasks();
-		tasks.get(0).getID();
+		if (ps.length == 0)
+			return false;
+		String taskname = ps[0];
+		if (taskname == null || taskname.length() == 0)
+			return false;
+		List<BPTask<?>> tasks = BPCore.getWorkspaceContext().getTaskManager().listTasks();
+		for (BPTask<?> task : tasks)
+		{
+			if (taskname.equals(task.getName()))
+				task.start();
+		}
+		return true;
+	}
+
+	protected boolean stopTask(String[] ps)
+	{
+		if (ps.length == 0)
+			return false;
+		String taskname = ps[0];
+		if (taskname == null || taskname.length() == 0)
+			return false;
+		List<BPTask<?>> tasks = BPCore.getWorkspaceContext().getTaskManager().listTasks();
+		for (BPTask<?> task : tasks)
+		{
+			if (taskname.equals(task.getName()))
+				task.stop();
+		}
 		return true;
 	}
 
@@ -71,6 +86,6 @@ public class BPCommandHandlerTask extends BPCommandHandlerBase implements BPComm
 
 	public String getName()
 	{
-		return "taskman";
+		return "TaskManager";
 	}
 }

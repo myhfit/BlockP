@@ -2,6 +2,10 @@ package bp.data;
 
 import java.util.List;
 
+import bp.config.BPConfig;
+import bp.config.BPSetting;
+import bp.config.BPSettingBase;
+import bp.config.BPSettingItem;
 import bp.data.BPDataConsumer.BPDataConsumerByteArrayCollector;
 import bp.data.BPDataConsumer.BPDataConsumerTextCollector;
 import bp.format.BPFormatText;
@@ -44,19 +48,46 @@ public class BPDataEndpointFactoryTextShow implements BPDataEndpointFactory
 		{
 			return "Show Text";
 		}
+
+		public boolean isEndpoint()
+		{
+			return true;
+		}
 	}
 
 	public static class BPDataConsumerBS2TextShow extends BPDataConsumerByteArrayCollector
 	{
+		protected volatile String m_encoding = null;
+
 		public void finish()
 		{
 			super.finish();
-			Std.info_user(TextUtil.toString(m_bs, "utf-8"));
+			Std.info_user(TextUtil.toString(m_bs, m_encoding == null ? "utf-8" : m_encoding));
 		}
 
 		public String getInfo()
 		{
 			return "Show byte[](Text)";
+		}
+
+		public BPSetting getSetting()
+		{
+			BPSettingBase rc = new BPSettingBase().addItem(BPSettingItem.create("encoding", "Encoding", BPSettingItem.ITEM_TYPE_TEXT, null));
+			rc.set("encoding", m_encoding);
+			return rc;
+		}
+
+		public void setSetting(BPConfig cfg)
+		{
+			String encoding = (String) cfg.get("encoding");
+			if (encoding != null && encoding.length() == 0)
+				encoding = null;
+			m_encoding = encoding;
+		}
+
+		public boolean isEndpoint()
+		{
+			return true;
 		}
 	}
 }

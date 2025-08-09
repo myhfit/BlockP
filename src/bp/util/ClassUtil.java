@@ -174,17 +174,46 @@ public class ClassUtil
 		return rc;
 	}
 
-	public final static <T> T findServices(Class<T> ifcclass, Predicate<T> check)
+	@SuppressWarnings("unchecked")
+	public final static <T, R> R findService(Class<T> ifcclass, Predicate<T> check)
 	{
 		ServiceLoader<T> facs = getExtensionServices(ifcclass);
 		for (T t : facs)
 		{
 			if (check.test(t))
 			{
-				return t;
+				return (R) t;
 			}
 		}
 		return null;
+	}
+
+	public final static List<Field> getFields(Class<?> c)
+	{
+		List<Field> rc = new ArrayList<Field>();
+		List<Class<?>> cc = getClassChain(c);
+		for (Class<?> cls : cc)
+		{
+			Field[] fs = cls.getFields();
+			for (Field f : fs)
+			{
+				rc.add(f);
+			}
+		}
+		return rc;
+	}
+
+	public final static List<Class<?>> getClassChain(Class<?> c)
+	{
+		List<Class<?>> rc = new LinkedList<>();
+		rc.add(c);
+		c = c.getSuperclass();
+		while (c != Object.class)
+		{
+			rc.add(0, c);
+			c = c.getSuperclass();
+		}
+		return new ArrayList<Class<?>>(rc);
 	}
 
 	@SuppressWarnings("unchecked")

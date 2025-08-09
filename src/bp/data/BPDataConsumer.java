@@ -123,11 +123,6 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 			return "Collect Data";
 		}
 
-		public boolean isEndpoint()
-		{
-			return true;
-		}
-
 		public void setup()
 		{
 			super.setup();
@@ -183,11 +178,6 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 		public String getInfo()
 		{
 			return "Collect Text";
-		}
-
-		public boolean isEndpoint()
-		{
-			return true;
 		}
 	}
 

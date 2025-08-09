@@ -14,29 +14,36 @@ import bp.util.ObjUtil;
 
 public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPCommandHandler
 {
-	public final static String CN_INFO = "CORE_INFO";
-	public final static String CN_ECHO = "ECHO";
-	public final static String CN_LOADMODULE = "CORE_LOADMODULE";
-	public final static String CN_UNLOADMODULE = "CORE_UNLOADMODULE";
-	public final static String CN_MODULEINFO = "CORE_MODULEINFO";
-	public final static String CN_HELP = "HELP";
+	public final static String CN_INFO = "core_info";
+	public final static String CN_ECHO = "echo";
+	public final static String CN_GC = "gc";
+	public final static String CN_LOADMODULE = "core_loadmodule";
+	public final static String CN_UNLOADMODULE = "core_unloadmodule";
+	public final static String CN_MODULEINFO = "core_moduleinfo";
+	public final static String CN_CMDNAME_LIST = "cmdname_list";
 
 	public BPCommandHandlerCore()
 	{
-		m_cmdnames = ObjUtil.makeList(CN_INFO, CN_ECHO, CN_HELP, CN_LOADMODULE, CN_UNLOADMODULE, CN_MODULEINFO);
+		m_cmdnames = ObjUtil.makeList(CN_INFO, CN_ECHO, CN_HELP, CN_EXIT, CN_GC, CN_LOADMODULE, CN_UNLOADMODULE, CN_MODULEINFO, CN_CMDNAME_LIST);
 	}
 
 	public BPCommandResult call(BPCommand cmd)
 	{
-		String cmdname = cmd.name.toUpperCase();
+		String cmdname = cmd.name.toLowerCase();
 		switch (cmdname)
 		{
 			case CN_INFO:
 				return BPCommandResult.OK("BlockP - Core" + getExtensionInfos() + getPlatformInfos());
 			case CN_ECHO:
 				return BPCommandResult.OK(cmd.ps);
+			case CN_GC:
+				return BPCommandResult.OK(gc());
 			case CN_HELP:
 				return BPCommandResult.RUN(() -> showHelp(cmd.ps));
+			case CN_EXIT:
+				return BPCommandResult.RUN_B(() -> tryExit(cmd.ps));
+			case CN_CMDNAME_LIST:
+				return BPCommandResult.RUN(() -> BPCore.getCommandHandler().getCommandNames());
 			case CN_LOADMODULE:
 				return BPCommandResult.RUN_B(() -> loadModule(cmd.ps));
 			case CN_UNLOADMODULE:
@@ -64,11 +71,17 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 		return "\n  Platform:" + BPCore.getPlatform().name();
 	}
 
+	protected boolean gc()
+	{
+		System.gc();
+		return true;
+	}
+
 	protected String showHelp(Object ps)
 	{
 		// String cmdps = (String) ps;
 		StringBuilder sb = new StringBuilder();
-		List<String> cns = BPCore.getCommandHandler().getCommandNames();
+		List<String> cns = BPCore.getCommandHandler().getCommandInfos();
 		if (cns != null)
 		{
 			for (String cn : cns)
@@ -79,6 +92,12 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 			}
 		}
 		return sb.toString();
+	}
+
+	protected boolean tryExit(Object ps)
+	{
+		BPCore.safeExit();
+		return true;
 	}
 
 	protected boolean loadModule(Object ps)
@@ -109,7 +128,7 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 
 	public String getName()
 	{
-		return "core";
+		return "Core";
 	}
 
 	public final static BPCommandHandlerList CREATE_MAIN_LIST()
