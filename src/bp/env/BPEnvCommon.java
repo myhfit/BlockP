@@ -12,8 +12,9 @@ public class BPEnvCommon extends BPEnvBase
 	public final static String ENVKEY_AUTO_GC = "AUTO_GC";
 	public final static String ENVKEY_ENABLE_SCHEDULER_FS = "ENABLE_SCHEDULER_FS";
 	public final static String ENVKEY_ENABLE_MODULE_LOAD = "ENABLE_MODULE_LOAD";
+	public final static String ENVKEY_RAWIO_BLOCKSIZE = "RAWIO_BLOCKSIZE";
 
-	private final List<String> m_rawkeys = new CopyOnWriteArrayList<String>(new String[] { ENVKEY_ENABLE_SCHEDULE, ENVKEY_AUTO_GC, ENVKEY_ENABLE_SCHEDULER_FS, ENVKEY_ENABLE_MODULE_LOAD });
+	private final List<String> m_rawkeys = new CopyOnWriteArrayList<String>(new String[] { ENVKEY_ENABLE_SCHEDULE, ENVKEY_AUTO_GC, ENVKEY_ENABLE_SCHEDULER_FS, ENVKEY_ENABLE_MODULE_LOAD, ENVKEY_RAWIO_BLOCKSIZE });
 
 	public String getName()
 	{

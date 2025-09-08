@@ -11,6 +11,11 @@ public abstract class BPStateMachineBase<E, C, SRC> implements BPStateMachine<E,
 		m_src = src;
 	}
 
+	public SRC getSource()
+	{
+		return m_src;
+	}
+
 	public BPState<E, C> current()
 	{
 		return m_cur;

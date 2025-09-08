@@ -16,6 +16,8 @@ import bp.util.ObjUtil;
 
 public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 {
+	void setContext(Map<String, Object> context);
+
 	default void runSegment(Runnable seg)
 	{
 		setup();
@@ -28,6 +30,12 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 		{
 			clear();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	default <T2> void runSegmentWithData(T2 data)
+	{
+		runSegment(() -> accept((T) data));
 	}
 
 	default boolean isEndpoint()
@@ -51,6 +59,11 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 	}
 
 	default void clear()
+	{
+
+	}
+
+	default void setFromAnchor(String anchor)
 	{
 
 	}
@@ -88,6 +101,19 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 	public static abstract class BPDataConsumerBase<T> implements BPDataConsumer<T>
 	{
 		protected String m_id;
+		protected volatile BPDataWrapper<Map<String, Object>> m_contextref;
+
+		public void setContext(Map<String, Object> context)
+		{
+			m_contextref = new BPDataWrapper<>(null);
+			m_contextref.set(context);
+		}
+
+		public Map<String, Object> getContext()
+		{
+			BPDataWrapper<Map<String, Object>> cr = m_contextref;
+			return cr == null ? null : cr.get();
+		}
 
 		public void setID(String id)
 		{
@@ -134,6 +160,43 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 			m_datas.clear();
 			m_datas = null;
 			super.clear();
+		}
+	}
+
+	public static class BPDataConsumerDataHolder<T> extends BPDataConsumerBase<T>
+	{
+		protected volatile T m_data;
+		protected volatile String m_outanchor;
+
+		public String getInfo()
+		{
+			return "dholder";
+		}
+
+		public void accept(T t)
+		{
+			m_data = t;
+		}
+
+		public void setOutAnchor(String anchor)
+		{
+			m_outanchor = anchor;
+		}
+
+		public T getData()
+		{
+			return m_data;
+		}
+
+		public String getOutAnchor()
+		{
+			return m_outanchor;
+		}
+
+		public void clear()
+		{
+			m_data = null;
+			m_outanchor = null;
 		}
 	}
 

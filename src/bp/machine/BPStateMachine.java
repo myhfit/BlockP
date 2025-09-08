@@ -10,9 +10,11 @@ public interface BPStateMachine<E, C, SRC>
 
 	void run();
 
+	SRC getSource();
+
 	public static interface BPState<E, C>
 	{
-		<T extends BPState<E, C>> T input(E e, C context);
+		<T extends BPState<E, C>> T input(E e, C context, BPStateMachine<E, C, ?> machine);
 
 		void end(C context);
 	}

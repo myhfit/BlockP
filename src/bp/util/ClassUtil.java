@@ -2,6 +2,7 @@ package bp.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -123,21 +124,69 @@ public class ClassUtil
 		return null;
 	}
 
-	public final static Map<String, Object> getKVFromObject(Object obj)
+	public final static Map<String, Object> getMappedDataReflect(Object obj)
 	{
 		Map<String, Object> rc = new LinkedHashMap<String, Object>();
-		Class<?> c = obj.getClass();
-		Field[] fs = c.getFields();
-		try
+		List<Field> fs = ClassUtil.getFields(obj.getClass());
+		for (Field f : fs)
 		{
-			for (Field f : fs)
+			if (Modifier.isPublic(f.getModifiers()))
 			{
-				if (Modifier.isPublic(f.getModifiers()))
-					rc.put(f.getName(), f.get(obj));
+				try
+				{
+					rc.put(f.getName(), cloneDataReflect(f.get(obj)));
+				}
+				catch (IllegalArgumentException | IllegalAccessException e)
+				{
+					Std.err(e);
+				}
 			}
 		}
-		catch (IllegalArgumentException | IllegalAccessException e)
+		return rc;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected final static Object cloneDataReflect(Object obj)
+	{
+		Object rc = obj;
+		if (obj != null)
 		{
+			if (obj instanceof List)
+			{
+				List<Object> r = new ArrayList<Object>();
+				List<?> src = (List<?>) obj;
+				for (Object s : src)
+				{
+					r.add(cloneDataReflect(s));
+				}
+				rc = r;
+			}
+			else if (obj instanceof Map)
+			{
+				Map<String, ?> src = (Map<String, ?>) obj;
+				Map<String, Object> r = new LinkedHashMap<String, Object>();
+				for (String k : src.keySet())
+				{
+					r.put(k, cloneDataReflect(src.get(k)));
+				}
+				rc = r;
+			}
+			else
+			{
+				Class<?> c = obj.getClass();
+				if (c.isArray())
+				{
+					int l = Array.getLength(obj);
+					List<Object> r = new ArrayList<Object>();
+					for (int i = 0; i < l; i++)
+						r.add(cloneDataReflect(Array.get(obj, i)));
+					rc = r;
+				}
+				else if (!(c.getName().startsWith("java.")))
+				{
+					rc = getMappedDataReflect(obj);
+				}
+			}
 		}
 		return rc;
 	}
@@ -196,9 +245,8 @@ public class ClassUtil
 		{
 			Field[] fs = cls.getFields();
 			for (Field f : fs)
-			{
-				rc.add(f);
-			}
+				if (!rc.contains(f))
+					rc.add(f);
 		}
 		return rc;
 	}

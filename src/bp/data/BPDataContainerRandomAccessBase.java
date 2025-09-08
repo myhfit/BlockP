@@ -36,8 +36,16 @@ public class BPDataContainerRandomAccessBase extends BPDataContainerBase impleme
 		return -1;
 	}
 
-	public void write(long pos, byte[] bs, int offset, int len)
+	public void overwrite(long pos, byte[] bs, int offset, int len)
 	{
+		BPResource res = m_res;
+		if (res.isIO() && res.isFileSystem() && res.isLocal() && res.isLeaf())
+		{
+			((BPResourceFileLocal) m_res).useRandomAccess(io ->
+			{
+				return IOUtil.write(io, pos, bs, offset, len);
+			});
+		}
 	}
 
 	public long length()
@@ -103,7 +111,6 @@ public class BPDataContainerRandomAccessBase extends BPDataContainerBase impleme
 				int x = 0;
 				int x0;
 				int x1;
-				rc = new byte[size];
 				for (long i = index; i <= lastindex; i += blocksize)
 				{
 					if (m_kv.containsKey(i))
@@ -120,6 +127,14 @@ public class BPDataContainerRandomAccessBase extends BPDataContainerBase impleme
 				}
 			}
 			return rc;
+		}
+
+		public void reload(int blocksize, long len)
+		{
+			m_blocksize = blocksize;
+			m_len = len;
+			m_kv = new CachedMap<Long, byte[]>();
+			m_kv.setCacheSize(64);
 		}
 	}
 }

@@ -2,7 +2,7 @@ package bp.machine;
 
 public abstract class BPStateMachineSeq<E, C, SRC> extends BPStateMachineBase<E, C, SRC>
 {
-	protected abstract E getElement(SRC src, long pos);
+	public abstract E getElement(SRC src, long pos);
 
 	public void run()
 	{
@@ -13,7 +13,7 @@ public abstract class BPStateMachineSeq<E, C, SRC> extends BPStateMachineBase<E,
 		{
 			E ele = getElement(src, cur.pos);
 			if (ele != null)
-				cur = cur.input(getElement(src, cur.pos), context);
+				cur = cur.input(getElement(src, cur.pos), context, this);
 			else
 			{
 				cur.end(context);

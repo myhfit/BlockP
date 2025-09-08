@@ -35,6 +35,8 @@ public class BPEventChannelBase implements BPEventChannel
 	public void off(String key, Consumer<? extends BPEvent> listener)
 	{
 		Queue<WeakReference<Consumer<? extends BPEvent>>> ls = getListeners(key, false);
+		if (ls == null)
+			return;
 		WeakReference<Consumer<? extends BPEvent>> r = null;
 		for (WeakReference<Consumer<? extends BPEvent>> l : ls)
 		{

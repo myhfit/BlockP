@@ -66,7 +66,7 @@ public interface BPMData extends BPData
 	{
 		default Map<String, Object> getMappedData()
 		{
-			return ClassUtil.getKVFromObject(this);
+			return ClassUtil.getMappedDataReflect(this);
 		}
 
 		default void setMappedData(Map<String, Object> data)

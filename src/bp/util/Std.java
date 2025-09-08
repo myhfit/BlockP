@@ -1,5 +1,6 @@
 package bp.util;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -18,6 +19,7 @@ public class Std
 	private static volatile Function<String, Boolean> s_confirm_u;
 	private static volatile Function<String, String> s_prompt_u;
 	private static volatile Function<String[], String> s_select_u;
+	private static volatile Consumer<Object> s_showdata_u;
 
 	public final static void setStdMode(int stdmode)
 	{
@@ -72,6 +74,12 @@ public class Std
 		s_select_u = selectu;
 	}
 
+	@SuppressWarnings("unchecked")
+	public final static void setupAdv(Map<String, Object> m)
+	{
+		s_showdata_u = (Consumer<Object>) m.get("showdata");
+	}
+
 	public final static void info_user(String str)
 	{
 		Consumer<String> infou = s_info_u;
@@ -112,5 +120,14 @@ public class Std
 		if (selectu != null)
 			return selectu.apply(strs);
 		throw new NoSuchMethodError();
+	}
+
+	public final static void showData(Object data)
+	{
+		Consumer<Object> showdatau = s_showdata_u;
+		if (showdatau != null)
+			showdatau.accept(data);
+		else
+			info(ObjUtil.toString(data));
 	}
 }

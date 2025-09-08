@@ -3,6 +3,8 @@ package bp.scan.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import bp.machine.BPStateMachine;
+import bp.machine.BPStateMachineSeq;
 import bp.machine.BPStateMachine.BPState;
 import bp.machine.BPStateMachineSeq.BPStateBase;
 
@@ -18,7 +20,7 @@ public abstract class BPCLIArgsState extends BPStateBase<Character, BPCLIArgsSta
 	public static class BPCLIArgsState0 extends BPCLIArgsState
 	{
 		@SuppressWarnings("unchecked")
-		public <T extends BPState<Character, BPCLIArgsContext>> T input(Character e, BPCLIArgsContext context)
+		public <T extends BPState<Character, BPCLIArgsContext>> T input(Character e, BPCLIArgsContext context, BPStateMachine<Character, BPCLIArgsState.BPCLIArgsContext, ?> machine)
 		{
 			char c = e;
 			if (c != '"')
@@ -63,13 +65,20 @@ public abstract class BPCLIArgsState extends BPStateBase<Character, BPCLIArgsSta
 	public static class BPCLIArgsState1 extends BPCLIArgsState
 	{
 		@SuppressWarnings("unchecked")
-		public <T extends BPState<Character, BPCLIArgsContext>> T input(Character e, BPCLIArgsContext context)
+		public <T extends BPState<Character, BPCLIArgsContext>> T input(Character e, BPCLIArgsContext context, BPStateMachine<Character, BPCLIArgsState.BPCLIArgsContext, ?> machine)
 		{
+			BPStateMachineSeq<Character, BPCLIArgsContext, char[]> m = (BPStateMachineSeq<Character, BPCLIArgsContext, char[]>) machine;
 			char c = e;
 			if (c != '"')
 			{
 				context.sb.append(c);
 				pos++;
+				return (T) this;
+			}
+			else if (m.getElement(m.getSource(), pos + 1) == '"')
+			{
+				context.sb.append(c);
+				pos += 2;
 				return (T) this;
 			}
 			else

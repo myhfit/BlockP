@@ -136,6 +136,7 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 		BPCommandHandlerList rc = new BPCommandHandlerList();
 		rc.addHandler(new BPCommandHandlerCore());
 		rc.addHandler(new BPCommandHandlerTask());
+		rc.addHandler(new BPCommandHandlerClient());
 		return rc;
 	}
 }

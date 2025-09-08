@@ -10,7 +10,7 @@ public class BPBytesHolder extends BPDataHolder implements BPTextContainer, BPDa
 
 	public int read(long pos, byte[] bs, int offset, int len)
 	{
-		byte[] datas = getBytes();
+		byte[] datas = getRawBytes();
 		int c = datas.length - (int) pos;
 		if (c < 0)
 			return -1;
@@ -20,22 +20,43 @@ public class BPBytesHolder extends BPDataHolder implements BPTextContainer, BPDa
 		return c;
 	}
 
-	public void write(long pos, byte[] bs, int offset, int len)
+	public void overwrite(long pos, byte[] bs, int offset, int len)
 	{
-		byte[] datas = getBytes();
-		int c = datas.length - offset;
+		byte[] datas = getRawBytes();
+		int c = datas.length - (int) pos;
 		if (c <= 0)
 			return;
 		System.arraycopy(bs, (int) pos, datas, offset, c);
 	}
 
+	public void replace(long pos, byte[] bs, int offset, int orilen, int len)
+	{
+		if (orilen == len)
+		{
+			overwrite(pos, bs, offset, len);
+			return;
+		}
+		byte[] datas = getRawBytes();
+		int oldlen = datas.length;
+		byte[] newdatas = new byte[oldlen - orilen + len];
+		int insertpos = (int) pos;
+
+		if (pos > 0)
+			System.arraycopy(datas, 0, newdatas, 0, insertpos);
+		System.arraycopy(bs, offset, newdatas, insertpos, len);
+		int endpos = insertpos + orilen;
+		if (endpos < oldlen)
+			System.arraycopy(datas, endpos, newdatas, insertpos + len, oldlen - endpos);
+		m_data = datas;
+	}
+
 	public long length()
 	{
-		byte[] bs = getBytes();
+		byte[] bs = getRawBytes();
 		return bs == null ? 0 : bs.length;
 	}
 
-	protected byte[] getBytes()
+	protected byte[] getRawBytes()
 	{
 		return (byte[]) m_data;
 	}
@@ -49,7 +70,7 @@ public class BPBytesHolder extends BPDataHolder implements BPTextContainer, BPDa
 	{
 		try
 		{
-			return new String(getBytes(), m_encoding);
+			return new String(getRawBytes(), m_encoding);
 		}
 		catch (UnsupportedEncodingException e)
 		{

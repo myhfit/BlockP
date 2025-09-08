@@ -1,34 +1,20 @@
 package bp.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import bp.transform.BPTransformer;
-import bp.util.LogicUtil;
 import bp.util.ObjUtil;
 import bp.util.Std;
 
 public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Object> implements BPSLData
 {
 	protected List<BPDataConsumer<?>> m_children = new ArrayList<BPDataConsumer<?>>();
-	protected Map<String, String> m_links = new HashMap<String, String>();
 
 	public List<BPDataConsumer<?>> getChildren()
 	{
 		return new ArrayList<BPDataConsumer<?>>(m_children);
-	}
-
-	public Map<String, String> getLinks()
-	{
-		return new HashMap<String, String>();
-	}
-
-	public void setLink(BPDataConsumer<?> c0, BPDataConsumer<?> c1)
-	{
-		m_links.put(c0.getID(), c1.getID());
 	}
 
 	public List<BPDataConsumer<?>> getRawChildren()
@@ -42,13 +28,6 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 		m_children.addAll(chs);
 	}
 
-	public void setLinks(Map<String, ?> links)
-	{
-		m_links.clear();
-		for (Entry<String, ?> entry : links.entrySet())
-			m_links.put(entry.getKey(), ObjUtil.toString(entry.getValue()));
-	}
-
 	public String getInfo()
 	{
 		return "Data Pipes";
@@ -56,7 +35,6 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 
 	public static class BPDataPipesDirect extends BPDataPipes
 	{
-		@SuppressWarnings({ "unchecked" })
 		public void accept(Object t)
 		{
 			List<BPDataConsumer<?>> children = new ArrayList<BPDataConsumer<?>>(m_children);
@@ -71,7 +49,7 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 				if (cur.isTransformer())
 					((BPTransformer<?>) cur).setOutput(c);
 			}
-			c0.runSegment(() -> ((BPDataConsumer<Object>) c0).accept(t));
+			c0.runSegmentWithData(t);
 		}
 	}
 
@@ -99,7 +77,6 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 		for (BPDataConsumer<?> chd : chs)
 			chmos.add(chd.getSaveData());
 		rc.put("children", chmos);
-		rc.put("links", new HashMap<String, String>(m_links));
 		return rc;
 	}
 
@@ -119,8 +96,6 @@ public abstract class BPDataPipes extends BPDataConsumer.BPDataConsumerBase<Obje
 			}
 			m_children.addAll(chs);
 		}
-		m_links.clear();
-		LogicUtil.IFVU(data.get("links"), links -> setLinks((Map<String, ?>) links));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

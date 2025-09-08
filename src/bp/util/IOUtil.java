@@ -106,6 +106,21 @@ public class IOUtil
 		}
 	}
 
+	public final static boolean write(RandomAccessFile raf, long pos, byte[] bs, int offset, int len)
+	{
+		try
+		{
+			raf.seek(pos);
+			raf.write(bs, offset, len);
+		}
+		catch (IOException e)
+		{
+			err(e);
+			return false;
+		}
+		return true;
+	}
+
 	public final static void close(Closeable io)
 	{
 		if (io == null)
