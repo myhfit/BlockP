@@ -26,6 +26,7 @@ public abstract class BPTaskBase<V> implements BPTask<V>
 	protected volatile CompletableFuture<V> m_future;
 
 	protected volatile Object m_params;
+	protected volatile Object m_staticparams;
 
 	protected volatile ExecutorService m_exec;
 
@@ -317,5 +318,22 @@ public abstract class BPTaskBase<V> implements BPTask<V>
 	public boolean isAutoRemove()
 	{
 		return m_autoremove;
+	}
+
+	public void mergeDynamicParams(Object dynamicps)
+	{
+		m_staticparams = m_params;
+		m_params = mergeDynamicParams(m_params, dynamicps);
+	}
+
+	protected Object mergeDynamicParams(Object staticps, Object dynamicps)
+	{
+		return dynamicps;
+	}
+
+	public void clearDynamicParams()
+	{
+		m_params = m_staticparams;
+		m_staticparams = null;
 	}
 }

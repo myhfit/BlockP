@@ -136,6 +136,7 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 		Map<String, Object> rc = new HashMap<String, Object>();
 		rc.put("name", m_file.getName());
 		rc.put("lastmodified", getLastModified());
+		rc.put("fullname", m_file.getAbsolutePath());
 
 		if (SystemUtil.getOS() == SystemOS.Windows)
 		{

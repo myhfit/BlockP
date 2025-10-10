@@ -52,6 +52,30 @@ public class IOUtil
 		return bs;
 	}
 
+	public final static long readAndWrite(InputStream in, OutputStream out)
+	{
+		BufferedInputStream bis = new BufferedInputStream(in);
+		byte[] b = new byte[65536];
+		long c = 0;
+		try
+		{
+			int len = bis.read(b);
+			while (len >= 0)
+			{
+				out.write(b, 0, len);
+				out.flush();
+				c += len;
+				len = bis.read(b);
+			}
+		}
+		catch (IOException e)
+		{
+			err(e);
+			return -1;
+		}
+		return c;
+	}
+
 	public final static boolean write(BPResourceIO io, byte[] bs)
 	{
 		if (io == null)

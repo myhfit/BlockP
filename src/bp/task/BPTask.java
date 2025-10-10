@@ -2,6 +2,8 @@ package bp.task;
 
 import java.util.concurrent.Future;
 
+import bp.config.BPConfig;
+import bp.config.BPSetting;
 import bp.data.BPSLData;
 
 public interface BPTask<V> extends BPSLData
@@ -46,4 +48,22 @@ public interface BPTask<V> extends BPSLData
 
 	boolean isAutoRemove();
 
+	default boolean needConfirm()
+	{
+		return false;
+	}
+
+	default BPSetting getSetting()
+	{
+		return null;
+	}
+
+	default void setSetting(BPConfig setting)
+	{
+
+	}
+
+	void mergeDynamicParams(Object params);
+
+	void clearDynamicParams();
 }

@@ -1,6 +1,11 @@
 package bp.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -670,6 +675,43 @@ public class TextUtil
 				return sb.toString();
 			else
 				return null;
+		}
+	}
+
+	public final static class StringDecoderST
+	{
+		protected volatile byte[] m_bs;
+		protected volatile Charset m_ch;
+
+		public StringDecoderST(String ch)
+		{
+			m_ch = Charset.forName(ch);
+		}
+
+		public String write(byte[] datas)
+		{
+			byte[] bs = m_bs;
+			byte[] bs2 = null;
+			if (bs == null || bs.length == 0)
+			{
+				bs2 = datas;
+			}
+			else
+			{
+				bs2 = new byte[bs.length + datas.length];
+				System.arraycopy(bs, 0, bs2, 0, bs.length);
+				System.arraycopy(datas, 0, bs2, bs.length, datas.length);
+			}
+			CharsetDecoder cd = m_ch.newDecoder();
+			CharBuffer cb = CharBuffer.allocate(bs2.length);
+			CoderResult r = cd.decode(ByteBuffer.wrap(bs2), cb, false);
+			int l = r.length();
+			if (l < bs2.length)
+			{
+				bs = new byte[bs2.length - l];
+				System.arraycopy(bs2, l, bs, 0, bs2.length - l);
+			}
+			return r.toString();
 		}
 	}
 }

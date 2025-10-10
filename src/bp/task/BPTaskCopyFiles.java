@@ -109,16 +109,9 @@ public class BPTaskCopyFiles extends BPTaskLocal<Boolean>
 		Object[] ps = (Object[]) m_params;
 		if (ps != null && ps.length > 1)
 		{
-			StringBuilder sb = new StringBuilder();
 			String[] srcs = (String[]) ps[0];
 			String tar = (String) ps[1];
-			for (String src : srcs)
-			{
-				if (sb.length() > 0)
-					sb.append(";");
-				sb.append(src);
-			}
-			rc.put("source", sb.toString());
+			rc.put("source", String.join(";", srcs));
 			rc.put("target", tar);
 			if (ps.length > 2)
 				rc.put("createdir", ObjUtil.toBool(ps[2], false));

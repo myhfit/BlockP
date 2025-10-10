@@ -1,6 +1,7 @@
 package bp.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,6 +68,17 @@ public class ObjUtil
 			return descMap((Map<?, ?>) v, limit);
 		}
 		return v.toString();
+	}
+
+	public final static <T> List<T> collectNotEmpty(T[] src)
+	{
+		List<T> rc = new ArrayList<T>();
+		for (T t : src)
+		{
+			if (t != null)
+				rc.add(t);
+		}
+		return rc;
 	}
 
 	public final static String descCollection(Collection<?> l, int limit)
@@ -602,6 +614,57 @@ public class ObjUtil
 		return rc;
 	}
 
+	public final static <T> String joinDatas(Iterable<T> datas, String delimiter, Function<T, String> transfunc, boolean ignorenull)
+	{
+		StringBuilder sb = new StringBuilder();
+		boolean flag = false;
+		for (T data : datas)
+		{
+			if (data == null && ignorenull)
+				continue;
+			if (flag)
+				sb.append(delimiter);
+			else
+				flag = true;
+			if (transfunc != null)
+				sb.append(transfunc.apply(data));
+			else
+				sb.append(data);
+		}
+		return sb.toString();
+	}
+
+	public final static <T> String joinArray(T[] datas, String delimiter, Function<T, String> transfunc, boolean ignorenull)
+	{
+		StringBuilder sb = new StringBuilder();
+		boolean flag = false;
+		for (T data : datas)
+		{
+			if (data == null && ignorenull)
+				continue;
+			if (flag)
+				sb.append(delimiter);
+			else
+				flag = true;
+			if (transfunc != null)
+				sb.append(transfunc.apply(data));
+			else
+				sb.append(ObjUtil.toString(data));
+		}
+		return sb.toString();
+	}
+
+	@SafeVarargs
+	public final static <T> T[] pushArray(T[] arr1, T... datas)
+	{
+		if (datas.length == 0)
+			return arr1;
+		int l = arr1.length;
+		T[] rc = (T[]) Arrays.copyOf(arr1, l + datas.length);
+		System.arraycopy(datas, 0, rc, l, datas.length);
+		return rc;
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public final static Object wrapUIData(Object data)
 	{
@@ -623,6 +686,16 @@ public class ObjUtil
 		for (T t : eclass.getEnumConstants())
 		{
 			if (t.ordinal() == v)
+				return t;
+		}
+		return null;
+	}
+
+	public final static <T extends Enum<T>> T enumValueOf(Class<T> eclass, String v)
+	{
+		for (T t : eclass.getEnumConstants())
+		{
+			if (t.name().equals(v))
 				return t;
 		}
 		return null;

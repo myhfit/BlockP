@@ -60,20 +60,24 @@ public class IOLineLoop
 					String line = br.readLine();
 					if (line != null)
 					{
-						if (line.length() > 0)
+						cb = cbs.peekLast();
+						if (cb != null)
 						{
-							if (cb.dealLine(line, this))
+							if (line.length() > 0)
 							{
-								cbs.pollLast();
-								// m_cbchanged = true;
+								if (cb.dealLine(line, this))
+								{
+									cbs.pollLast();
+									// m_cbchanged = true;
+								}
 							}
-						}
-						else
-						{
-							if (cb.dealEmptyLine(out, this))
+							else
 							{
-								cbs.pollLast();
-								// m_cbchanged = true;
+								if (cb.dealEmptyLine(out, this))
+								{
+									cbs.pollLast();
+									// m_cbchanged = true;
+								}
 							}
 						}
 
@@ -84,7 +88,7 @@ public class IOLineLoop
 						else
 						{
 							cb = cbs.peekLast();
-							cb.writeStartHint(out, line.length()>0);
+							cb.writeStartHint(out, line.length() > 0);
 						}
 					}
 				}
@@ -134,53 +138,73 @@ public class IOLineLoop
 		BufferedReader br = m_br;
 		ConcurrentLinkedDeque<IOLineHandler> cbs = m_cbs;
 		OutputStream out = m_out;
-		IOLineHandler cb = cbs.peekLast();
-		while (true)
+
+		if (Thread.currentThread() == m_thread)
 		{
-			cb = cbs.peekLast();
-			if (cb != null)
+			IOLineHandler cb = cbs.peekLast();
+			while (true)
 			{
+				cb = cbs.peekLast();
+				if (cb != null)
+				{
+					try
+					{
+						String line = br.readLine();
+						if (line != null)
+						{
+							if (line.length() > 0)
+							{
+								if (cb.dealLine(line, this))
+								{
+									cbs.pollLast();
+								}
+							}
+							else
+							{
+								if (cb.dealEmptyLine(out, this))
+								{
+									cbs.pollLast();
+								}
+							}
+							cb = cbs.peekLast();
+							if (cb != handler)
+								return;
+						}
+					}
+					catch (Exception e)
+					{
+						if (cb.dealException(e))
+						{
+							Std.err(e);
+							cbs.pollLast();
+							if (cbs.size() == 0)
+								m_endflag = true;
+						}
+					}
+					if (m_endflag)
+					{
+						synchronized (m_lo)
+						{
+							m_lo.notifyAll();
+						}
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			while (cbs.size() > 0)
+			{
+				IOLineHandler cb = cbs.peekLast();
+				if (cb != handler)
+					break;
 				try
 				{
-					String line = br.readLine();
-					if (line != null)
-					{
-						if (line.length() > 0)
-						{
-							if (cb.dealLine(line, this))
-							{
-								cbs.pollLast();
-							}
-						}
-						else
-						{
-							if (cb.dealEmptyLine(out, this))
-							{
-								cbs.pollLast();
-							}
-						}
-						cb = cbs.peekLast();
-						if (cb != handler)
-							return;
-					}
+					Thread.sleep(10);
 				}
-				catch (Exception e)
+				catch (InterruptedException e)
 				{
-					if (cb.dealException(e))
-					{
-						Std.err(e);
-						cbs.pollLast();
-						if (cbs.size() == 0)
-							m_endflag = true;
-					}
-				}
-				if (m_endflag)
-				{
-					synchronized (m_lo)
-					{
-						m_lo.notifyAll();
-					}
-					break;
 				}
 			}
 		}

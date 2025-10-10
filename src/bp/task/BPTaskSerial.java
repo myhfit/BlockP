@@ -48,35 +48,44 @@ public class BPTaskSerial<V> extends BPTaskLocal<V>
 			setProgress((float) i / (float) count);
 			setProgressText(i + "/" + count);
 			triggerStatusChanged();
-			if (params != null)
-				task.setParams(params);
-			task.start();
-			taskend = false;
-			while (!taskend)
+			boolean psmerge = params != null;
+			if (psmerge)
+				task.mergeDynamicParams(params);
+			try
 			{
-				try
+				task.start();
+				taskend = false;
+				while (!taskend)
 				{
-					result = task.getFuture().get(1, TimeUnit.SECONDS);
-					taskend = true;
-				}
-				catch (TimeoutException e)
-				{
+					try
+					{
+						result = task.getFuture().get(1, TimeUnit.SECONDS);
+						taskend = true;
+					}
+					catch (TimeoutException e)
+					{
 
+					}
+					catch (InterruptedException | ExecutionException e)
+					{
+						ex = e;
+						taskend = true;
+					}
 				}
-				catch (InterruptedException | ExecutionException e)
+				if (ex == null)
 				{
-					ex = e;
-					taskend = true;
+					if (m_pstrans != null)
+						params = m_pstrans.apply(result);
+				}
+				else
+				{
+					break;
 				}
 			}
-			if (ex == null)
+			finally
 			{
-				if (m_pstrans != null)
-					params = m_pstrans.apply(result);
-			}
-			else
-			{
-				break;
+				if (psmerge)
+					task.clearDynamicParams();
 			}
 			i++;
 			if (m_stopflag)

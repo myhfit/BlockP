@@ -110,6 +110,65 @@ public class SystemUtil
 			return runSimpleProcess_Default(cmd, workdir, args, System.getProperty("file.encoding"));
 	}
 
+	public final static int startSimpleProcess(String cmd, String workdir, String[] args)
+	{
+		BPOSFunctions.RUN_SIMPLE func = null;
+		func = BPOSHandlers.S_SIMPLESTART;
+		if (func != null)
+		{
+			return func.run(cmd, workdir, args);
+		}
+		else
+		{
+			switch (SystemUtil.getOS())
+			{
+				case Linux:
+				{
+					List<String> ps = new ArrayList<String>();
+					ps.add("-c");
+					ps.add(ObjUtil.joinArray(ObjUtil.pushArray(new String[] { (workdir == null ? "" : workdir) + cmd }, args), " ", null, false));
+					ps.add("&");
+					return startSimpleProcess_Default("sh", null, ps.toArray(new String[ps.size()]), System.getProperty("file.encoding"));
+				}
+				case Windows:
+				{
+					List<String> ps = new ArrayList<String>();
+					ps.add("/k");
+					ps.add(ObjUtil.joinArray(ObjUtil.pushArray(new String[] { (workdir == null ? "" : workdir) + cmd }, args), " ", null, false));
+					return startSimpleProcess_Default("cmd", null, ps.toArray(new String[ps.size()]), System.getProperty("file.encoding"));
+				}
+				default:
+					throw new RuntimeException("not support");
+			}
+		}
+	}
+
+	public final static int startSimpleProcess_Default(String cmd, String workdir, String[] args, String encoding)
+	{
+		int r = 0;
+		try
+		{
+			String wd = workdir;
+			if (wd == null)
+				wd = "";
+			else if (!wd.endsWith(File.separator))
+				wd += File.separator;
+
+			String[] rawcmds = new String[] { (workdir == null ? "" : workdir) + cmd };
+			if (args != null)
+				rawcmds = ObjUtil.pushArray(rawcmds, args);
+			Runtime.getRuntime().exec(rawcmds);
+		}
+		catch (IOException e)
+		{
+			Std.err(e);
+		}
+		finally
+		{
+		}
+		return r;
+	}
+
 	public final static int runSimpleProcess_Default(String cmd, String workdir, String[] args, String encoding)
 	{
 		Process process = null;
@@ -122,6 +181,7 @@ public class SystemUtil
 			else if (!wd.endsWith(File.separator))
 				wd += File.separator;
 			String rawcmd = cmd + ((args == null) ? "" : (" " + String.join(" ", args)));
+			Std.info(rawcmd);
 			process = Runtime.getRuntime().exec((workdir == null ? "" : workdir) + rawcmd);
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), encoding));)
 			{

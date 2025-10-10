@@ -69,6 +69,7 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 			srcbase = null;
 		if (tardir == null || tardir.trim().length() == 0)
 			tardir = "./";
+		boolean packlist = ps.length > 4 ? ObjUtil.toBool(ps[4], false) : false;
 		BPFileContext context = (BPFileContext) getContext();
 		if (context == null)
 			context = BPCore.getFileContext();
@@ -109,6 +110,8 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 						fs.add(root);
 						collectAll(root, fs);
 					}
+					if (packlist && srcs.length > 0)
+						zos.setComment("srclist:" + String.join(";", srcs));
 					int count = fs.size();
 					for (BPResourceFileSystem f : fs)
 					{
@@ -245,18 +248,11 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 		Object[] ps = (Object[]) m_params;
 		if (ps != null && ps.length > 1)
 		{
-			StringBuilder sb = new StringBuilder();
 			String[] srcs = (String[]) ps[0];
 			String srcbase = (String) ps[1];
 			String tar = (String) ps[2];
 			String tardir = (String) ps[3];
-			for (String src : srcs)
-			{
-				if (sb.length() > 0)
-					sb.append(";");
-				sb.append(src);
-			}
-			rc.put("source", sb.toString());
+			rc.put("source", String.join(";", srcs));
 			rc.put("sourcebase", srcbase);
 			rc.put("target", tar);
 			rc.put("targetdir", tardir);

@@ -75,7 +75,11 @@ public class BPResourceDirLocal extends BPResourceFileSystemLocal implements BPR
 
 	public BPResourceDir getDir(String name)
 	{
-		File dir = new File(m_file, name);
+		File dir;
+		if (name.equals(".") || name.equals("./"))
+			dir = m_file;
+		else
+			dir = new File(m_file, name);
 		if (!dir.exists())
 		{
 			dir.mkdir();

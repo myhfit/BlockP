@@ -237,6 +237,26 @@ public class ClassUtil
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public final static <T, R> R findServiceByMaxScore(Class<T> ifcclass, Function<T, Integer> scorefunc, Predicate<T> check)
+	{
+		ServiceLoader<T> facs = getExtensionServices(ifcclass);
+		int max = Integer.MIN_VALUE;
+		R rc = null;
+		for (T t : facs)
+		{
+			if (check != null && !check.test(t))
+				continue;
+			int score = scorefunc.apply(t);
+			if (score > max)
+			{
+				max = score;
+				rc = (R) t;
+			}
+		}
+		return rc;
+	}
+
 	public final static List<Field> getFields(Class<?> c)
 	{
 		List<Field> rc = new ArrayList<Field>();

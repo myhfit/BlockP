@@ -2,6 +2,7 @@ package bp.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import bp.BPCore;
@@ -10,6 +11,7 @@ import bp.res.BPResource;
 import bp.res.BPResourceByteArray;
 import bp.res.BPResourceDir;
 import bp.res.BPResourceFileLocal;
+import bp.res.BPResourceFileSystem;
 import bp.res.BPResourceIO;
 
 public class ResourceUtil
@@ -88,6 +90,45 @@ public class ResourceUtil
 			{
 				Std.err(e);
 			}
+		}
+		return rc;
+	}
+
+	public final static int copyResources(BPResource[] ress, BPResourceDir dir, BiConsumer<Integer, Integer> pcb)
+	{
+		int rc = 0;
+		int reslen = ress.length;
+		for (BPResource res : ress)
+		{
+			BPResourceFileSystem sres = dir.getChild(res.getName(), false);
+			if (res.isLeaf())
+			{
+				if (res.isIO())
+				{
+					BPResourceIO fres = (BPResourceIO) res;
+					Std.debug("Copy " + (fres.isFileSystem() ? ((BPResourceFileSystem) fres).getFileFullName() : fres.getName()) + ">" + sres.getFileFullName());
+					long c = ((BPResourceIO) sres).useOutputStream(out -> ((BPResourceIO) res).useInputStream(in -> IOUtil.readAndWrite(in, out)));
+					if (c < 0)
+						Std.info_user("Error on copy");
+				}
+				else
+				{
+					Std.info_user("Can't read source");
+				}
+			}
+			else
+			{
+				BPResourceFileSystem fres = (BPResourceFileSystem) res;
+				if (res.isFileSystem() && res.isLocal())
+				{
+					File tar = new File(dir.getFileFullName(), fres.getName());
+					if (!tar.exists())
+						tar.mkdirs();
+					FileUtil.copyDir(new File(fres.getFileFullName()), tar);
+				}
+			}
+			rc++;
+			pcb.accept(rc, reslen);
 		}
 		return rc;
 	}

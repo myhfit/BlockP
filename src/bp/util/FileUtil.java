@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.BiPredicate;
 
 import bp.BPCore;
@@ -126,7 +128,50 @@ public class FileUtil
 		return false;
 	}
 
-	public static boolean copyFile(String tarbase, String path, ReadResourceResult reader)
+	public final static boolean copyFile(File fsrc, File ftar)
+	{
+		String src = fsrc.getAbsolutePath();
+		String tar = ftar.getAbsolutePath();
+		try
+		{
+			Files.copy(Paths.get(src), Paths.get(tar));
+			Std.debug("Copy " + src + ">" + tar);
+			return true;
+		}
+		catch (IOException e)
+		{
+			Std.err(e);
+		}
+		return false;
+	}
+
+	public final static boolean copyDir(File src, File tarbase)
+	{
+		for (File s : src.listFiles())
+		{
+			if (s.isDirectory())
+			{
+				File tar = new File(tarbase, s.getName());
+				tar.mkdir();
+				copyDir(s, tar);
+			}
+			else if (s.isFile())
+			{
+				try
+				{
+					Files.copy(Paths.get(s.getAbsolutePath()), Paths.get(tarbase.getAbsolutePath(), s.getName()));
+				}
+				catch (IOException e)
+				{
+					Std.err(e);
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public final static boolean copyFileByReader(String tarbase, String path, ReadResourceResult reader)
 	{
 		String base = tarbase;
 		boolean success = false;
@@ -233,6 +278,8 @@ public class FileUtil
 
 	public final static File getFile(String path, String filename)
 	{
+		if (filename.equals(".") || filename.equals("./"))
+			return new File(path);
 		return new File(fixOuterFilename(path, filename));
 	}
 

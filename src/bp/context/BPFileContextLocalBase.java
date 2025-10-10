@@ -47,7 +47,11 @@ public class BPFileContextLocalBase implements BPFileContextLocal
 	public BPResourceDir getDir(String filename)
 	{
 		BPResourceDirLocal file = null;
-		if (filename.startsWith("@"))
+		if (filename.equals(".") || filename.equals("./"))
+		{
+			file = new BPResourceDirLocal(m_path);
+		}
+		else if (filename.startsWith("@"))
 		{
 			file = new BPResourceDirLocal(filename.substring(1));
 		}

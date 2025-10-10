@@ -158,8 +158,14 @@ public class BPConsoleCLI extends BPConsoleBase<BPConsoleCLI.BPConsoleController
 
 	protected void doStop() throws Exception
 	{
-		m_process.destroy();
-		m_controller.stopThread();
+		Process p = m_process;
+		BPConsoleControllerCLI c = m_controller;
+		m_process = null;
+		m_controller = null;
+		if (p != null)
+			p.destroy();
+		if (c != null)
+			c.stopThread();
 	}
 
 	public static class BPConsoleControllerCLI implements BPConsoleController

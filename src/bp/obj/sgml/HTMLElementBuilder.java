@@ -65,28 +65,14 @@ public class HTMLElementBuilder
 	public TextElement createInlineStyle(String... styles)
 	{
 		TextElement te = new TextElement(HTMLElementTag.style);
-		StringBuilder sb = new StringBuilder();
-		for (String s : styles)
-		{
-			if (sb.length() > 0)
-				sb.append("\n");
-			sb.append(s);
-		}
-		te.setText(sb.toString());
+		te.setText(String.join("\n", styles));
 		return te;
 	}
 
 	public TextElement createInlineScript(String... scripts)
 	{
 		TextElement te = new TextElement(HTMLElementTag.script);
-		StringBuilder sb = new StringBuilder();
-		for (String s : scripts)
-		{
-			if (sb.length() > 0)
-				sb.append("\n");
-			sb.append(s);
-		}
-		te.setText(sb.toString());
+		te.setText(String.join("\n", scripts));
 		return te;
 	}
 
