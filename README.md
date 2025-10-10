@@ -36,3 +36,33 @@ Example:BPGUILauncher, with GUI to set workspace path and extensions(extension j
 Example:BPGUIMain, You need set full classpath
 > %JAVA_HOME%\bin\java -cp BlockP\bin;BlockPGUI\bin bp.BPGUIMain [workspace path] [other args]
 
+# Features  
+## Project
+> project type:file/memory
+
+## Format
+>read/write support to archive file zip  
+>read/write support to treedata file json  
+>read/write support to text file  
+>read/write support to raw file  
+
+## Task
+>exec program  
+>kill process  
+>pack files  
+>unpack files
+>timer  
+>serial  
+>serial pipe(put last output to next task to merge dynamic paramaters)  
+>read text file
+>read user input
+
+## Transformer
+> Object->String  
+> Object->byte[]
+> String->Split  
+> Run Script  
+> Read Resource  
+> Divide:Split data to multiple transformer call  
+> Collect List  
+> Collect String  
