@@ -12,6 +12,7 @@ public abstract class BPTransformerBase<T> extends BPDataConsumerBase<T> impleme
 	{
 		BPDataConsumer output = m_output;
 		Object nt = transform(t);
+		
 		if (output != null)
 			output.accept(nt);
 	}

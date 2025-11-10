@@ -34,6 +34,7 @@ public class BPTaskUserInput extends BPTaskLocal<Object>
 		String s = Std.prompt("Input Data(s)");
 		if (s == null && vdefault == null)
 		{
+			m_future.completeExceptionally(new RuntimeException("User Canceled"));
 			setFailed(new RuntimeException("User Canceled"));
 		}
 		else

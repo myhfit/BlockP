@@ -126,23 +126,39 @@ public class ClassUtil
 
 	public final static Map<String, Object> getMappedDataReflect(Object obj)
 	{
+		return getMappedDataReflect(obj, false);
+	}
+
+	public final static Map<String, Object> getMappedDataReflect(Object obj, boolean onlystd)
+	{
 		Map<String, Object> rc = new LinkedHashMap<String, Object>();
 		List<Field> fs = ClassUtil.getFields(obj.getClass());
 		for (Field f : fs)
 		{
-			if (Modifier.isPublic(f.getModifiers()))
+			int mod = f.getModifiers();
+			if (Modifier.isPublic(mod) && !Modifier.isStatic(mod))
 			{
-				try
+				if ((!onlystd) || isStd(f.getType()))
 				{
-					rc.put(f.getName(), cloneDataReflect(f.get(obj)));
-				}
-				catch (IllegalArgumentException | IllegalAccessException e)
-				{
-					Std.err(e);
+					try
+					{
+						rc.put(f.getName(), cloneDataReflect(f.get(obj)));
+					}
+					catch (IllegalArgumentException | IllegalAccessException e)
+					{
+						Std.err(e);
+					}
 				}
 			}
 		}
 		return rc;
+	}
+
+	protected final static boolean isStd(Class<?> c)
+	{
+		if (c.isArray())
+			return true;
+		return c.isPrimitive() || c == String.class || Number.class.isAssignableFrom(c);
 	}
 
 	@SuppressWarnings("unchecked")

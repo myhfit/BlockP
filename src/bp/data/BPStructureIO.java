@@ -148,7 +148,9 @@ public interface BPStructureIO
 		Class<?> c = f.getType();
 		if (c.isArray())
 		{
-			int l = ((Number) fmap.get(fo.arrLengthField()).get(this)).intValue();
+			int l = fo.arrLength();
+			if (l < 0)
+				((Number) fmap.get(fo.arrLengthField()).get(this)).intValue();
 			Class<?> cc = c.getComponentType();
 			Object arr = Array.newInstance(cc, l);
 			for (int i = 0; i < l; i++)
@@ -177,6 +179,8 @@ public interface BPStructureIO
 		String handleReadMethod() default "";
 
 		String handleReadValueMethod() default "";
+
+		int arrLength() default -1;
 
 		String arrLengthField() default "";
 	}

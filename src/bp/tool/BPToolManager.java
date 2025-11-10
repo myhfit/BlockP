@@ -83,4 +83,14 @@ public class BPToolManager extends BPConfigAdvBase
 	{
 		return new ArrayList<BPToolFactory>(s_facs);
 	}
+
+	public final static BPToolFactory getFactory(String name)
+	{
+		for (BPToolFactory fac : s_facs)
+		{
+			if (name.equals(fac.getName()))
+				return fac;
+		}
+		return null;
+	}
 }
