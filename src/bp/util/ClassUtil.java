@@ -158,7 +158,7 @@ public class ClassUtil
 	{
 		if (c.isArray())
 			return true;
-		return c.isPrimitive() || c == String.class || Number.class.isAssignableFrom(c);
+		return c.isPrimitive() || c == String.class || Number.class.isAssignableFrom(c) || c.isEnum();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -197,6 +197,10 @@ public class ClassUtil
 					for (int i = 0; i < l; i++)
 						r.add(cloneDataReflect(Array.get(obj, i)));
 					rc = r;
+				}
+				else if(c.isEnum())
+				{
+					rc = obj.toString();
 				}
 				else if (!(c.getName().startsWith("java.")))
 				{

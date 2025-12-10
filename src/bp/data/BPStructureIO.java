@@ -1,6 +1,7 @@
 package bp.data;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,13 +10,14 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import bp.data.reader.BPBytesReader;
+import bp.data.reader.BPBytesReaderBB;
 import bp.util.ClassUtil;
 import bp.util.IOUtil;
 import bp.util.Std;
@@ -30,35 +32,42 @@ public interface BPStructureIO
 	default <T> T read(InputStream in, BPStructureIOContext context) throws Exception
 	{
 		byte[] bs = IOUtil.read(in);
-		ByteBuffer bb = ByteBuffer.wrap(bs);
-		return read(bb, context);
+		BPBytesReader reader=new BPBytesReaderBB(bs);
+		initContext(reader, context);
+		return read(reader, context);
 	}
 
-	default <T> T read(ByteBuffer bb) throws Exception
+	default <T> T read(BPBytesReader reader) throws Exception
 	{
-		return read(bb, null);
+		return read(reader, null);
 	}
 
 	@SuppressWarnings("unchecked")
-	default <T> T read(ByteBuffer bb, BPStructureIOContext context) throws Exception
+	default <T> T read(BPBytesReader r, BPStructureIOContext context) throws Exception
 	{
 		if (context == null)
 			context = new BPStructureIOContext();
-		BPStructureIO thiso = predicate(bb, context);
-		thiso.readDatas(bb, context);
+		initContext(r, context);
+		BPStructureIO thiso = predicate(r, context);
+		thiso.readDatas(r, context);
 		return (T) thiso;
 	}
 
+	default void initContext(BPBytesReader reader, BPStructureIOContext context)
+	{
+
+	}
+
 	@SuppressWarnings("unchecked")
-	default <T extends BPStructureIO> T predicate(ByteBuffer bb, BPStructureIOContext context) throws Exception
+	default <T extends BPStructureIO> T predicate(BPBytesReader reader, BPStructureIOContext context) throws Exception
 	{
 		return (T) this;
 	}
 
-	default void readDatas(ByteBuffer bb, BPStructureIOContext context) throws Exception
+	default void readDatas(BPBytesReader reader, BPStructureIOContext context) throws Exception
 	{
 		context.objstack.add(this);
-		context.lastpos = bb.position();
+		context.lastpos = reader.position();
 		Class<?> c = getClass();
 		List<Field> fs = context.getFields(c);
 		boolean dealed = false;
@@ -90,7 +99,7 @@ public interface BPStructureIO
 							if (fm != null && fm.length() > 0)
 							{
 								Method m2 = context.getMethod(c, fm, BPStructureIOMethods.READMETHOD);
-								f.set(this, m2.invoke(this, bb, context));
+								f.set(this, m2.invoke(this, reader, context));
 								dealed = true;
 							}
 						}
@@ -112,60 +121,98 @@ public interface BPStructureIO
 			}
 			if (!dealed)
 			{
-				readField(bb, context, f, fo, fmap, mv);
+				readField(reader, context, f, fo, fmap, mv);
 			}
 			if (needstop)
 				break;
 		}
-		context.lastpos = bb.position();
+		context.lastpos = reader.position();
 		readFinished(context);
 		context.objstack.removeLast();
 	}
 
-	default Object readFieldValue(ByteBuffer bb, BPStructureIOContext context, Class<?> c, FieldOption fo, int len, Method m) throws Exception
+	default Object readFieldValue(BPBytesReader reader, BPStructureIOContext context, Class<?> c, FieldOption fo, int len, Method m) throws Exception
 	{
 		if (m != null)
-			return m.invoke(this, bb, context);
+			return m.invoke(this, reader, context);
 		if (byte.class == c)
-			return bb.get();
+			return reader.get();
 		else if (short.class == c)
-			return bb.getShort();
+			return reader.getShort();
 		else if (int.class == c)
-			return bb.getInt();
+			return reader.getInt();
 		else if (long.class == c)
-			return bb.getLong();
+			return reader.getLong();
 		else if (float.class == c)
-			return bb.getFloat();
+			return reader.getFloat();
 		else if (double.class == c)
-			return bb.getDouble();
+			return reader.getDouble();
 		else if (len != 0)
-			bb.position(bb.position() + len);
+			reader.position(reader.position() + len);
+		else if (BPStructureIO.class.isAssignableFrom(c))
+		{
+			try
+			{
+				BPStructureIO newdata = (BPStructureIO) c.newInstance();
+				newdata.read(reader, context);
+				return newdata;
+			}
+			catch (Exception e)
+			{
+				Std.debug(e.getMessage());
+			}
+		}
 		return null;
 	}
 
-	default void readField(ByteBuffer bb, BPStructureIOContext context, Field f, FieldOption fo, Map<String, Field> fmap, Method m) throws Exception
+	default void readField(BPBytesReader reader, BPStructureIOContext context, Field f, FieldOption fo, Map<String, Field> fmap, Method m) throws Exception
 	{
+		// Std.debug(reader.position()+"");
 		Class<?> c = f.getType();
 		if (c.isArray())
 		{
 			int l = fo.arrLength();
 			if (l < 0)
-				((Number) fmap.get(fo.arrLengthField()).get(this)).intValue();
+				l = ((Number) fmap.get(fo.arrLengthField()).get(this)).intValue();
 			Class<?> cc = c.getComponentType();
-			Object arr = Array.newInstance(cc, l);
-			for (int i = 0; i < l; i++)
-				Array.set(arr, i, readFieldValue(bb, context, cc, fo, 0, m));
+			Object arr = null;
+			if (l >= 0)
+			{
+				arr = Array.newInstance(cc, l);
+				for (int i = 0; i < l; i++)
+					Array.set(arr, i, readFieldValue(reader, context, cc, fo, 0, m));
+			}
 			f.set(this, arr);
 		}
 		else
 		{
-			f.set(this, readFieldValue(bb, context, c, fo, 0, m));
+			f.set(this, readFieldValue(reader, context, c, fo, 0, m));
 		}
 	}
 
 	default void readFinished(BPStructureIOContext context)
 	{
 
+	}
+
+	default String readCStr(BPBytesReader reader)
+	{
+		byte[] bs = new byte[1024];
+		byte b = reader.get();
+		int i = 0;
+		while (b != 0)
+		{
+			bs[i++] = b;
+			b = reader.get();
+		}
+		try
+		{
+			return new String(bs, 0, i, "utf-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			return null;
+		}
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -187,7 +234,7 @@ public interface BPStructureIO
 
 	public static enum BPStructureIOMethods
 	{
-		READMETHOD(new Class[] { ByteBuffer.class, BPStructureIOContext.class });
+		READMETHOD(new Class[] { BPBytesReader.class, BPStructureIOContext.class });
 
 		protected Class<?>[] m_ptypes;
 

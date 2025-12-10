@@ -56,7 +56,7 @@ public class BPResourceHolder extends BPResourceVirtual
 	public boolean delete()
 	{
 		BPResource parent = m_parent;
-		if (parent instanceof BPResourceParent)
+		if (parent != null && parent instanceof BPResourceParent)
 		{
 			((BPResourceParent) parent).removeChild(this);
 			m_data = null;

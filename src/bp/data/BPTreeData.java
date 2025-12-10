@@ -1,12 +1,10 @@
 package bp.data;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import bp.data.BPYData.BPYDataArrayList;
+import bp.util.ObjUtil;
 
 public interface BPTreeData extends BPData
 {
@@ -56,7 +54,7 @@ public interface BPTreeData extends BPData
 		public BPTreeData clone()
 		{
 			BPTreeDataArrayList o = new BPTreeDataArrayList();
-			o.setRoot(TreeDataUtil.cloneData(getRoot()));
+			o.setRoot(ObjUtil.cloneData(getRoot()));
 			return o;
 		}
 	}
@@ -84,35 +82,8 @@ public interface BPTreeData extends BPData
 		public BPTreeData clone()
 		{
 			BPTreeDataObj o = new BPTreeDataObj();
-			o.setRoot(TreeDataUtil.cloneData(getRoot()));
+			o.setRoot(ObjUtil.cloneData(getRoot()));
 			return o;
-		}
-	}
-
-	final static class TreeDataUtil
-	{
-		@SuppressWarnings("unchecked")
-		public final static Object cloneData(Object node)
-		{
-			if (node == null)
-				return null;
-			if (node instanceof List)
-			{
-				List<Object> src = (List<Object>) node;
-				List<Object> r = new ArrayList<Object>();
-				for (Object s : src)
-					r.add(cloneData(s));
-				return r;
-			}
-			else if (node instanceof Map)
-			{
-				Map<String, Object> kv = (Map<String, Object>) node;
-				Map<String, Object> r = new LinkedHashMap<>();
-				for (String k : kv.keySet())
-					r.put(k, cloneData(kv.get(k)));
-				return r;
-			}
-			return node;
 		}
 	}
 }

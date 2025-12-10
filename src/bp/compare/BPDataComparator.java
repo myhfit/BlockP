@@ -12,5 +12,47 @@ public interface BPDataComparator<D, R extends BPDataComparator.BPDataCompareRes
 		public final static int MODIFIED = 3;
 
 		public int result;
+
+		public void getCompareResultText(StringBuilder sb)
+		{
+			switch (result)
+			{
+				case EQUALS:
+					sb.append("EQUALS");
+					break;
+				case ADD:
+					sb.append("ADD");
+					break;
+				case LOSS:
+					sb.append("LOSS");
+					break;
+				case MODIFIED:
+					sb.append("MODIFIED");
+					break;
+			}
+		}
+
+		public String toString()
+		{
+			StringBuilder sb = new StringBuilder();
+			getCompareResultText(sb);
+			return sb.toString();
+		}
+
+		public String getResultText(int r)
+		{
+			switch (r)
+			{
+				case EQUALS:
+					return "EQUALS";
+				case ADD:
+					return "ADD";
+				case LOSS:
+					return "LOSS";
+				case MODIFIED:
+					return "MODIFIED";
+			}
+			return "";
+		}
 	}
 }

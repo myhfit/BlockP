@@ -410,6 +410,30 @@ public class ObjUtil
 	}
 
 	@SuppressWarnings("unchecked")
+	public final static <T> T cloneData(Object node)
+	{
+		if (node == null)
+			return null;
+		if (node instanceof List)
+		{
+			List<Object> src = (List<Object>) node;
+			List<Object> r = new ArrayList<Object>();
+			for (Object s : src)
+				r.add(cloneData(s));
+			return (T) r;
+		}
+		else if (node instanceof Map)
+		{
+			Map<String, Object> kv = (Map<String, Object>) node;
+			Map<String, Object> r = new LinkedHashMap<>();
+			for (String k : kv.keySet())
+				r.put(k, cloneData(kv.get(k)));
+			return (T) r;
+		}
+		return (T) node;
+	}
+
+	@SuppressWarnings("unchecked")
 	public final static <T> T mapToObj(Map<String, Object> map)
 	{
 		if (map == null)

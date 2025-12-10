@@ -76,4 +76,27 @@ public class BPTaskManager
 		{
 		}
 	}
+
+	public void moveTask(BPTask<?> t, int delta)
+	{
+		if (delta == 0)
+			return;
+		int pos = m_tasks.indexOf(t);
+		int oldpos = pos;
+		pos += delta;
+		if (pos < 0)
+			return;
+		if (pos >= m_tasks.size())
+			return;
+		if (delta < 0)
+		{
+			m_tasks.remove(oldpos);
+			m_tasks.add(pos, t);
+		}
+		else
+		{
+			m_tasks.remove(oldpos);
+			m_tasks.add(pos, t);
+		}
+	}
 }
