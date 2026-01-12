@@ -3,6 +3,7 @@ package bp.format;
 public class BPFormatTSV implements BPFormatDSV
 {
 	public final static String FORMAT_TSV = "TSV";
+	public final static String MIME_TSV = "text/tab-separated-values";
 
 	public String getName()
 	{
@@ -11,7 +12,12 @@ public class BPFormatTSV implements BPFormatDSV
 
 	public String[] getExts()
 	{
-		return new String[] { ".tsv" };
+		return new String[] { ".tsv", MIME_TSV };
+	}
+
+	public String getMIME()
+	{
+		return MIME_TSV;
 	}
 
 	public boolean checkFeature(BPFormatFeature feature)

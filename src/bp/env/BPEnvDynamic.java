@@ -34,7 +34,7 @@ public abstract class BPEnvDynamic extends BPEnvBase
 			m_rawkeys.add(key);
 	}
 	
-	public final static class BPEnvDynamicSimple extends BPEnvDynamic
+	public static class BPEnvDynamicSimple extends BPEnvDynamic
 	{
 		private String m_name;
 

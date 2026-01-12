@@ -3,6 +3,7 @@ package bp.format;
 public class BPFormatCSV implements BPFormatDSV
 {
 	public final static String FORMAT_CSV = "CSV";
+	public final static String MIME_CSV = "text/csv";
 
 	public String getName()
 	{
@@ -11,7 +12,12 @@ public class BPFormatCSV implements BPFormatDSV
 
 	public String[] getExts()
 	{
-		return new String[] { ".csv", "text/csv" };
+		return new String[] { ".csv", MIME_CSV };
+	}
+
+	public String getMIME()
+	{
+		return MIME_CSV;
 	}
 
 	public boolean checkFeature(BPFormatFeature feature)

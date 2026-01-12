@@ -21,6 +21,7 @@ public abstract class BPResourceProjectBase implements BPResourceProjectDir
 	protected volatile BPResourceDir m_dir;
 	protected volatile String m_name;
 	protected volatile String m_path;
+	protected volatile boolean m_disabled;
 
 	public BPResourceProjectBase(BPResourceDir dir)
 	{
@@ -114,6 +115,11 @@ public abstract class BPResourceProjectBase implements BPResourceProjectDir
 	public void setName(String name)
 	{
 		m_name = name;
+	}
+
+	public void setEnabled(boolean flag)
+	{
+		m_disabled = !flag;
 	}
 
 	public BPResourceFileSystem getChild(String name)

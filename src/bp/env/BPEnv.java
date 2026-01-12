@@ -13,6 +13,8 @@ public interface BPEnv extends BPMData
 	boolean isRawKey(String key);
 
 	void setEnv(String key, String value);
+	
+	void clearEnv(String key);
 
 	String getName();
 
@@ -22,4 +24,6 @@ public interface BPEnv extends BPMData
 	{
 		return false;
 	}
+
+	BPEnv getSub(String prefix);
 }

@@ -79,7 +79,6 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 
 	protected String showHelp(Object ps)
 	{
-		// String cmdps = (String) ps;
 		StringBuilder sb = new StringBuilder();
 		List<String> cns = BPCore.getCommandHandler().getCommandInfos();
 		if (cns != null)
@@ -106,8 +105,8 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 		String cfilename = FileUtil.getContextFileFullName(filename);
 		if (cfilename != null)
 		{
-			Object rc = BPModuleManager.loadModule(cfilename);
-			return rc != null;
+			List<?> rc = BPModuleManager.loadModules(cfilename);
+			return rc != null && rc.size() > 0;
 		}
 		return false;
 	}
@@ -122,8 +121,10 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 	protected String getModuleInfo(Object ps)
 	{
 		String name = (String) ps;
+		if (name == null)
+			name = "";
 		BPModule m = BPModuleManager.getModule(name);
-		return m == null ? "No Module" : m.toString();
+		return m == null ? ("No Module:" + name) : m.toString();
 	}
 
 	public String getName()

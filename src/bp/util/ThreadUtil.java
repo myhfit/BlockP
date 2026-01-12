@@ -33,7 +33,7 @@ public class ThreadUtil
 		return S_CACHEASYNCPOOL;
 	}
 
-	public final static void wrapContextClassLoader(Runnable seg, ClassLoader cl)
+	public final static void runWithContextClassLoader(Runnable seg, ClassLoader cl)
 	{
 		ClassLoader oldcl = Thread.currentThread().getContextClassLoader();
 		boolean needc = oldcl != cl;

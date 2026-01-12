@@ -1,5 +1,6 @@
 package bp.env;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,13 @@ public abstract class BPEnvBase implements BPEnv
 		if (!customKey() && !isRawKey(key))
 			return;
 		m_kvs.put(key, value);
+	}
+
+	public void clearEnv(String key)
+	{
+		if (!customKey() && !isRawKey(key))
+			return;
+		m_kvs.remove(key);
 	}
 
 	public List<String> listKeys()
@@ -79,6 +87,110 @@ public abstract class BPEnvBase implements BPEnv
 				{
 					m_kvs.put(key, (String) entry.getValue());
 				}
+			}
+		}
+	}
+
+	public BPEnv getSub(String prefix)
+	{
+		return new BPEnvSub(this, getName() + ">" + prefix, prefix);
+	}
+
+	protected static class BPEnvSub implements BPEnv
+	{
+		protected WeakReference<BPEnv> m_parref;
+		protected String m_prefix;
+		protected String m_name;
+
+		public BPEnvSub(BPEnv par, String name, String prefix)
+		{
+			m_parref = new WeakReference<BPEnv>(par);
+			m_prefix = prefix;
+			m_name = name;
+		}
+
+		public List<String> listKeys()
+		{
+			List<String> rc = new ArrayList<String>();
+			String prefix = m_prefix;
+			BPEnv par = m_parref.get();
+			List<String> parkeys = par.listKeys();
+			int l = prefix.length();
+			for (String k : parkeys)
+			{
+				if (k.startsWith(prefix) && k.length() > l)
+					rc.add(k.substring(l));
+			}
+			return rc;
+		}
+
+		public List<String> listRawKeys()
+		{
+			return listKeys();
+		}
+
+		public boolean isRawKey(String key)
+		{
+			return true;
+		}
+
+		public void setEnv(String key, String value)
+		{
+			m_parref.get().setEnv(m_prefix + key, value);
+		}
+		
+		public void clearEnv(String key)
+		{
+			m_parref.get().clearEnv(m_prefix + key);
+		}
+
+		public String getName()
+		{
+			return m_name;
+		}
+
+		public String getValue(String key)
+		{
+			return m_parref.get().getValue(m_prefix + key);
+		}
+
+		public BPEnv getSub(String prefix)
+		{
+			return new BPEnvSub(this, m_name + ">" + prefix, prefix);
+		}
+
+		public Map<String, Object> getMappedData()
+		{
+			Map<String, Object> rc = new HashMap<String, Object>();
+			BPEnv par = m_parref.get();
+			String prefix = m_prefix;
+			int l = prefix.length();
+			for (String k : par.listKeys())
+			{
+				if (k.startsWith(prefix) && k.length() > l)
+				{
+					rc.put(k.substring(l), par.getValue(k));
+				}
+			}
+			return rc;
+		}
+
+		public void setMappedData(Map<String, Object> data)
+		{
+			BPEnv par = m_parref.get();
+			String prefix = m_prefix;
+			int l = prefix.length();
+			List<String> parkeys = par.listKeys();
+			for (String k : parkeys)
+			{
+				if (k.startsWith(prefix) && k.length() > l)
+				{
+					par.clearEnv(k);
+				}
+			}
+			for (String k : data.keySet())
+			{
+				par.setEnv(prefix + k, (String) data.get(k));
 			}
 		}
 	}

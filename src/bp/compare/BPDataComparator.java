@@ -10,6 +10,7 @@ public interface BPDataComparator<D, R extends BPDataComparator.BPDataCompareRes
 		public final static int ADD = 1;
 		public final static int LOSS = 2;
 		public final static int MODIFIED = 3;
+		public final static int BASE = 99;
 
 		public int result;
 
@@ -28,6 +29,9 @@ public interface BPDataComparator<D, R extends BPDataComparator.BPDataCompareRes
 					break;
 				case MODIFIED:
 					sb.append("MODIFIED");
+					break;
+				case BASE:
+					sb.append("BASE");
 					break;
 			}
 		}
@@ -51,6 +55,8 @@ public interface BPDataComparator<D, R extends BPDataComparator.BPDataCompareRes
 					return "LOSS";
 				case MODIFIED:
 					return "MODIFIED";
+				case BASE:
+					return "BASE";
 			}
 			return "";
 		}

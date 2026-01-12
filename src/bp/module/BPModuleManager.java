@@ -41,8 +41,13 @@ public class BPModuleManager
 		return LockUtil.rwLock(S_MLOCK, false, () -> S_MODULES.get(name));
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static <M extends BPModule> M loadModule(String filename)
+	{
+		return loadModule(filename, null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public final static <M extends BPModule> M loadModule(String filename, String mnameprefix)
 	{
 		if (!("true".equalsIgnoreCase(BPEnvManager.getEnvValue(BPEnvCommon.ENV_NAME_COMMON, BPEnvCommon.ENVKEY_ENABLE_MODULE_LOAD))))
 			return null;
@@ -61,6 +66,8 @@ public class BPModuleManager
 			}
 			if (m != null && m.test())
 			{
+				if (mnameprefix != null)
+					m.setNamePrefix(mnameprefix);
 				m.setLoadTime(System.currentTimeMillis());
 				Object root = m.createRootInstance();
 				if (m.initRoot(root))
@@ -88,8 +95,13 @@ public class BPModuleManager
 		return (M) rc;
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static <M extends BPModule> List<M> loadModules(String filename)
+	{
+		return loadModules(filename, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <M extends BPModule> List<M> loadModules(String filename, String mnameprefix)
 	{
 		if (!("true".equalsIgnoreCase(BPEnvManager.getEnvValue(BPEnvCommon.ENV_NAME_COMMON, BPEnvCommon.ENVKEY_ENABLE_MODULE_LOAD))))
 			return null;
@@ -105,6 +117,8 @@ public class BPModuleManager
 			{
 				if (m.test())
 				{
+					if (mnameprefix != null)
+						m.setNamePrefix(mnameprefix);
 					m.setLoadTime(System.currentTimeMillis());
 					Object root = m.createRootInstance();
 					if (m.initRoot(root))
@@ -145,7 +159,7 @@ public class BPModuleManager
 		});
 		if (oldm != null)
 		{
-			oldm.transferRootData(m);
+			m.transferRootData(oldm);
 			oldm.unload();
 			tryCloseExtClassLoader((BPExtClassLoader) oldm.getClass().getClassLoader());
 		}

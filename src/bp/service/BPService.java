@@ -23,4 +23,9 @@ public interface BPService
 	{
 		return null;
 	}
+
+	default boolean isFromModule()
+	{
+		return false;
+	}
 }

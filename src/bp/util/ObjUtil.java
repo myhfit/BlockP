@@ -609,6 +609,34 @@ public class ObjUtil
 		return rc;
 	}
 
+	@SuppressWarnings("unchecked")
+	public final static Map<String, Object> subAssemble(Map<String, Object> datas, String keyprefix, String sp)
+	{
+		Map<String, Object> rc = new HashMap<String, Object>();
+		int l = keyprefix.length();
+		for (String key : datas.keySet())
+		{
+			if (key.startsWith(keyprefix) && key.length() > l)
+			{
+				String nk = key.substring(l);
+				int vi = nk.indexOf(sp);
+				if (vi > 0)
+				{
+					String lk = nk.substring(0, vi);
+					String rk = nk.substring(vi + 1);
+					Map<String, Object> n = (Map<String, Object>) rc.get(lk);
+					if (n == null)
+					{
+						n = new HashMap<String, Object>();
+						rc.put(lk, n);
+					}
+					n.put(rk, datas.get(key));
+				}
+			}
+		}
+		return rc;
+	}
+
 	public final static Map<String, Object> makeMap(Object... ps)
 	{
 		Map<String, Object> rc = new HashMap<String, Object>();

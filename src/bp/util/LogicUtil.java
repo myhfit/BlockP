@@ -88,6 +88,21 @@ public class LogicUtil
 		if (checkfunc.test(v))
 			targetfunc.accept(v);
 	}
+	
+	// compact if to one line
+	public final static void IFC(boolean v, Runnable segtrue, Runnable segfalse)
+	{
+		if (v)
+		{
+			if (segtrue != null)
+				segtrue.run();
+		}
+		else
+		{
+			if (segfalse != null)
+				segfalse.run();
+		}
+	}
 
 	public final static String tryGetNotEmptyStr(Object obj)
 	{

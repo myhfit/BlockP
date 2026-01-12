@@ -3,6 +3,8 @@ package bp.module;
 public interface BPModule
 {
 	String getName();
+	
+	String getModuleName();
 
 	int getVersion();
 
@@ -29,7 +31,7 @@ public interface BPModule
 
 	}
 
-	default void transferRootData(BPModule newmodule)
+	default void transferRootData(BPModule oldmodule)
 	{
 
 	}
@@ -38,4 +40,6 @@ public interface BPModule
 	{
 
 	}
+
+	void setNamePrefix(String prefix);
 }

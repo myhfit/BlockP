@@ -71,7 +71,7 @@ public class BPResourceByteArraySupplier extends BPResourceHolder implements BPR
 
 	public boolean exists()
 	{
-		return m_data != null;
+		return m_cb != null || m_data != null;
 	}
 
 	public void release()

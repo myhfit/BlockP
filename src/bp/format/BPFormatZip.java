@@ -3,6 +3,7 @@ package bp.format;
 public class BPFormatZip implements BPFormat
 {
 	public final static String FORMAT_ZIP = "ZIP";
+	public final static String MIME_ZIP = "application/zip";
 
 	public String getName()
 	{
@@ -11,7 +12,12 @@ public class BPFormatZip implements BPFormat
 
 	public String[] getExts()
 	{
-		return new String[] { ".zip", "application/zip" };
+		return new String[] { ".zip", MIME_ZIP };
+	}
+
+	public String getMIME()
+	{
+		return MIME_ZIP;
 	}
 
 	public boolean checkFeature(BPFormatFeature feature)

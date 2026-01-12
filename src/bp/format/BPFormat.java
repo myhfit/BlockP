@@ -6,6 +6,11 @@ public interface BPFormat
 
 	String[] getExts();
 
+	default String getMIME()
+	{
+		return null;
+	}
+
 	default boolean canCover(String ext)
 	{
 		return false;

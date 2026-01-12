@@ -30,40 +30,39 @@ import java.util.jar.JarFile;
 public class ClassUtil
 {
 	// adv method makes some langserver high cpu usage
-	// @SuppressWarnings("unchecked")
-	// public final static <T, R> R useMethod(Class<?> cls, String methodname,
-	// Function<CBFunction<T, R>, R> cb, Class<?>... pcls)
-	// {
-	// try
-	// {
-	// Method m = cls.getMethod(methodname, pcls);
-	// if (m != null)
-	// {
-	// return cb.apply((obj, params) ->
-	// {
-	// try
-	// {
-	// return (R) m.invoke(obj, params);
-	// }
-	// catch (IllegalAccessException | IllegalArgumentException |
-	// InvocationTargetException e)
-	// {
-	// throw new RuntimeException(e);
-	// }
-	// });
-	// }
-	// }
-	// catch (NoSuchMethodException | SecurityException e)
-	// {
-	// Std.err(e);
-	// }
-	// return null;
-	// }
-	//
-	// public static interface CBFunction<T, R>
-	// {
-	// R apply(T obj, Object... params);
-	// }
+	@SuppressWarnings("unchecked")
+	public final static <T, R> R useMethod(Class<?> cls, String methodname, Function<CBFunction<T, R>, R> cb, Class<?>... pcls)
+	{
+		try
+		{
+			Method m = cls.getMethod(methodname, pcls);
+			if (m != null)
+			{
+				return cb.apply((obj, params) ->
+				{
+					try
+					{
+						return (R) m.invoke(obj, params);
+					}
+					catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+					{
+						throw new RuntimeException(e);
+					}
+				});
+			}
+		}
+		catch (NoSuchMethodException | SecurityException e)
+		{
+			Std.err(e);
+		}
+		return null;
+	}
+
+	public static interface CBFunction<T, R>
+	{
+		R apply(T obj, Object... params);
+	}
+	
 	private final static BPExtClassLoader S_CL = new BPExtClassLoader();
 
 	@SuppressWarnings("unchecked")

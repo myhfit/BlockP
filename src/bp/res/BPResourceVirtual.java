@@ -27,6 +27,11 @@ public class BPResourceVirtual implements BPResource
 		return m_name;
 	}
 
+	public void setName(String name)
+	{
+		m_name = name;
+	}
+
 	public String getResType()
 	{
 		return "virtual";

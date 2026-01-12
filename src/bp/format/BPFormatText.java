@@ -15,6 +15,11 @@ public class BPFormatText implements BPFormat
 		return new String[] { ".txt", ".text", MIME_TEXT };
 	}
 
+	public String getMIME()
+	{
+		return MIME_TEXT;
+	}
+
 	public boolean canCover(String ext)
 	{
 		if (ext.indexOf("text/") == 0)
