@@ -44,6 +44,7 @@ public class BPEnvs extends BPConfigAdvBase
 			}
 		}
 		BPEnvManager.setEnvs(pmap);
+		BPEnvManager.loadCustomEnvs();
 	}
 
 	protected void saveConfig(BPConfigAdv config)
@@ -53,6 +54,11 @@ public class BPEnvs extends BPConfigAdvBase
 		boolean flag = false;
 		for (BPEnv env : envs)
 		{
+			if (env.customSL())
+			{
+				env.save();
+				continue;
+			}
 			String envname = env.getName();
 			List<String> keys = env.listKeys();
 			for (String key : keys)

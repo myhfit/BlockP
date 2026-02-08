@@ -83,4 +83,14 @@ public class BPEnvManager
 			}
 		});
 	}
+
+	public final static void loadCustomEnvs()
+	{
+		List<BPEnv> envs = listEnv();
+		for (BPEnv env : envs)
+		{
+			if (env.customSL())
+				env.load();
+		}
+	}
 }

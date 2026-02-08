@@ -10,9 +10,12 @@ import bp.format.BPFormatJSON;
 import bp.util.JSONUtil;
 import bp.util.ObjUtil;
 import bp.util.Std;
+import bp.util.JSONUtil.JSONOptions;
 
 public class BPJSONContainerBase<D extends BPMData> extends BPTextContainerBase implements BPMContainer<D>, BPTreeDataContainer
 {
+	public boolean m_orderedmap;
+	
 	@SuppressWarnings("unchecked")
 	public D readMData(boolean loadsub)
 	{
@@ -50,7 +53,9 @@ public class BPJSONContainerBase<D extends BPMData> extends BPTextContainerBase 
 	public BPTreeData readTreeData()
 	{
 		String text = readAllText();
-		Object mobj = JSONUtil.decode(text);
+		JSONOptions options = new JSONOptions();
+		options.mapwithorder = m_orderedmap;
+		Object mobj = JSONUtil.decode(text, options);
 		BPTreeData rc = new BPTreeData.BPTreeDataObj();
 		if (mobj != null)
 		{
@@ -88,6 +93,11 @@ public class BPJSONContainerBase<D extends BPMData> extends BPTextContainerBase 
 			Std.err(e);
 		}
 		return false;
+	}
+
+	public void setOrderedMap(boolean flag)
+	{
+		m_orderedmap = flag;
 	}
 
 	public CompletionStage<Boolean> writeTreeDataAsync(BPTreeData data)

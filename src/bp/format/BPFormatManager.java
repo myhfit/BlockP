@@ -136,6 +136,7 @@ public class BPFormatManager implements BPMData
 			regfunc.accept(new BPFormatTreeData());
 			regfunc.accept(new BPFormatDir());
 			regfunc.accept(new BPFormatProject());
+			regfunc.accept(new BPFormatBPPD());
 		}
 	}
 

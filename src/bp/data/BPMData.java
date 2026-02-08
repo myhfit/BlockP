@@ -62,6 +62,14 @@ public interface BPMData extends BPData
 		}
 	}
 
+	public static class BPMDataWMapOrdered extends BPMDataWMap
+	{
+		public BPMDataWMapOrdered(Map<String, Object> map)
+		{
+			super(map);
+		}
+	}
+
 	public static interface BPMDataReflect extends BPMData
 	{
 		default Map<String, Object> getMappedData()

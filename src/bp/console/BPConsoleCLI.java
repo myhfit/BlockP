@@ -55,6 +55,8 @@ public class BPConsoleCLI extends BPConsoleBase<BPConsoleCLI.BPConsoleController
 	public void setCommand(String... cmd)
 	{
 		m_cmd = cmd;
+		if (cmd[0] == null)
+			cmd[0] = SystemUtil.getShellName();
 		m_name = cmd[0] + "#" + S_IDGEN.genID();
 	}
 

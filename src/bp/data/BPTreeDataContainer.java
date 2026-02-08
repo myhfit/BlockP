@@ -11,4 +11,9 @@ public interface BPTreeDataContainer extends BPDataContainer
 	Boolean writeTreeData(BPTreeData data);
 
 	CompletionStage<Boolean> writeTreeDataAsync(BPTreeData data);
+
+	default void setOrderedMap(boolean flag)
+	{
+
+	}
 }

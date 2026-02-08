@@ -5,6 +5,7 @@ bp.task.BPTaskTimer$BPTaskFactoryTimer
 bp.task.BPTaskSerial$BPTaskFactorySerial
 bp.task.BPTaskSerialPipe$BPTaskFactorySerialPipe
 bp.task.BPTaskExec$BPTaskFactoryExec
+bp.task.BPTaskExecStated$BPTaskFactoryExecStated
 bp.task.BPTaskReadTextFile$BPTaskFactoryReadTextFile
 bp.task.BPTaskRemind$BPTaskFactoryRemind
 bp.task.BPTaskUserInput$BPTaskFactoryUserInput

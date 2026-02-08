@@ -753,6 +753,14 @@ public class ObjUtil
 		return null;
 	}
 
+	public final static <T extends Enum<T>> Map<String, Integer> enumToMap(Class<T> eclass, boolean needorder)
+	{
+		Map<String, Integer> rc = needorder ? new LinkedHashMap<String, Integer>() : new HashMap<String, Integer>();
+		for (T t : eclass.getEnumConstants())
+			rc.put(t.name(), t.ordinal());
+		return rc;
+	}
+
 	public final static class Wrapper<T>
 	{
 		public T data;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,10 +33,17 @@ public class JSONUtil
 		}
 		return null;
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public final static <T> T decode(String text)
 	{
+		return decode(text, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <T> T decode(String text, JSONOptions options)
+	{
+		if (options == null)
+			options = new JSONOptions();
 		if (text == null)
 			return null;
 		Object obj = null;
@@ -47,15 +55,15 @@ public class JSONUtil
 			{
 				if (c == '{')
 				{
-					Map<String, Object> newmap = new HashMap<String, Object>();
-					innerDecodeObject(text, i + 1, len, newmap);
+					Map<String, Object> newmap = options.createMap();
+					innerDecodeObject(text, i + 1, len, newmap, options);
 					obj = newmap;
 					break;
 				}
 				else if (c == '[')
 				{
 					List<Object> newlist = new ArrayList<Object>();
-					innerDecodeArray(text, i + 1, len, newlist);
+					innerDecodeArray(text, i + 1, len, newlist, options);
 					obj = newlist;
 					break;
 				}
@@ -68,7 +76,7 @@ public class JSONUtil
 		return (T) obj;
 	}
 
-	private final static int innerDecodeArray(String text, int pos, int len, List<Object> list)
+	private final static int innerDecodeArray(String text, int pos, int len, List<Object> list, JSONOptions options)
 	{
 		int i = pos;
 		int state = 0;// 0:wait value,1:wait comma
@@ -87,15 +95,15 @@ public class JSONUtil
 			}
 			else if (c == '{' && state == 0)
 			{
-				Map<String, Object> subobj = new HashMap<String, Object>();
-				i = innerDecodeObject(text, i + 1, len, subobj);
+				Map<String, Object> subobj = options.createMap();
+				i = innerDecodeObject(text, i + 1, len, subobj, options);
 				list.add(subobj);
 				state = 1;
 			}
 			else if (c == '[' && state == 0)
 			{
 				List<Object> subarr = new ArrayList<Object>();
-				i = innerDecodeArray(text, i + 1, len, subarr);
+				i = innerDecodeArray(text, i + 1, len, subarr, options);
 				list.add(subarr);
 				state = 1;
 			}
@@ -148,7 +156,7 @@ public class JSONUtil
 		return i;
 	}
 
-	private final static int innerDecodeObject(String text, int pos, int len, Map<String, Object> obj)
+	private final static int innerDecodeObject(String text, int pos, int len, Map<String, Object> obj,JSONOptions options)
 	{
 		int i = pos;
 		int state = 0;// 1:wait value,2:wait key,3:wait comma
@@ -179,15 +187,15 @@ public class JSONUtil
 			}
 			else if (c == '{' && state == 1)
 			{
-				Map<String, Object> subobj = new HashMap<String, Object>();
-				i = innerDecodeObject(text, i + 1, len, subobj);
+				Map<String, Object> subobj = options.createMap();
+				i = innerDecodeObject(text, i + 1, len, subobj, options);
 				obj.put(key, subobj);
 				state = 3;
 			}
 			else if (c == '[' && state == 1)
 			{
 				List<Object> subarr = new ArrayList<Object>();
-				i = innerDecodeArray(text, i + 1, len, subarr);
+				i = innerDecodeArray(text, i + 1, len, subarr, options);
 				obj.put(key, subarr);
 				state = 3;
 			}
@@ -677,5 +685,15 @@ public class JSONUtil
 		StringBuilder sb = new StringBuilder();
 		seekStrEnd(text, 0, text.length(), sb);
 		return sb.toString();
+	}
+	
+	public final static class JSONOptions
+	{
+		public boolean mapwithorder;
+		
+		public Map<String, Object> createMap()
+		{
+			return !mapwithorder ? new HashMap<String, Object>() : new LinkedHashMap<String, Object>();
+		}
 	}
 }

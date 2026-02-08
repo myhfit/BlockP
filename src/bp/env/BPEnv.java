@@ -13,7 +13,7 @@ public interface BPEnv extends BPMData
 	boolean isRawKey(String key);
 
 	void setEnv(String key, String value);
-	
+
 	void clearEnv(String key);
 
 	String getName();
@@ -26,4 +26,19 @@ public interface BPEnv extends BPMData
 	}
 
 	BPEnv getSub(String prefix);
+
+	default boolean customSL()
+	{
+		return false;
+	}
+
+	default void load()
+	{
+
+	}
+
+	default void save()
+	{
+
+	}
 }
