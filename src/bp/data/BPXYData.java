@@ -25,7 +25,7 @@ public interface BPXYData extends BPData, Cloneable
 		return getColumnNames();
 	}
 
-	default BPDataStructure getDataStruture()
+	default BPDataStructure getDataStructure()
 	{
 		return BPDataStructure.XY;
 	}

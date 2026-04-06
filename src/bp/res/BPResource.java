@@ -1,5 +1,7 @@
 package bp.res;
 
+import bp.config.BPConfig;
+import bp.config.BPSetting;
 import bp.data.BPMData;
 
 public interface BPResource extends BPMData
@@ -87,6 +89,16 @@ public interface BPResource extends BPMData
 	default boolean fullHandleAction()
 	{
 		return false;
+	}
+
+	default BPSetting getSetting()
+	{
+		return null;
+	}
+
+	default void setSetting(BPConfig config)
+	{
+
 	}
 
 	boolean rename(String newname);

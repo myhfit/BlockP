@@ -2,6 +2,8 @@ package bp.util;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class LockUtil
@@ -57,6 +59,49 @@ public class LockUtil
 		finally
 		{
 			l.unlock();
+		}
+	}
+
+	public final static class BPLockedRef<T>
+	{
+		protected ReadWriteLock m_rwlock;
+		protected volatile T m_value;
+
+		public BPLockedRef()
+		{
+			m_rwlock = new ReentrantReadWriteLock();
+		}
+
+		public BPLockedRef(T value)
+		{
+			m_value = value;
+		}
+
+		public T getNoLock()
+		{
+			return m_value;
+		}
+
+		public T get()
+		{
+			return rwLock(m_rwlock, false, () -> m_value);
+		}
+
+		public T lazyInit(Supplier<T> initfunc)
+		{
+			return checkOrSet(v -> v != null, initfunc);
+		}
+
+		public T checkOrSet(Predicate<T> checkfunc, Supplier<T> initfunc)
+		{
+			T v = rwLock(m_rwlock, false, () -> checkfunc.test(m_value) ? m_value : null);
+			if (v != null)
+				return v;
+			return rwLock(m_rwlock, true, () ->
+			{
+				m_value = initfunc.get();
+				return m_value;
+			});
 		}
 	}
 }

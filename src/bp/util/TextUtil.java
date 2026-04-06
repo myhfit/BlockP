@@ -298,17 +298,11 @@ public class TextUtil
 	{
 		int rightIndex = sourceCount - targetCount;
 		if (fromIndex < 0)
-		{
 			return -1;
-		}
 		if (fromIndex > rightIndex)
-		{
 			fromIndex = rightIndex;
-		}
 		if (targetCount == 0)
-		{
 			return fromIndex;
-		}
 
 		int strLastIndex = targetOffset + targetCount - 1;
 		char strLastChar = target[strLastIndex];
@@ -359,6 +353,66 @@ public class TextUtil
 			else
 				return src.contains(target);
 		}
+	}
+
+	public final static String replaceText(String src, String target, String dest, boolean whole, boolean ignorecase)
+	{
+		if (whole)
+		{
+			int r = find(src, target, 0, whole, ignorecase);
+			if (r > -1)
+			{
+				return dest;
+			}
+		}
+		else
+		{
+			int pos = 0;
+			int r = find(src, target, pos, whole, ignorecase);
+			if (r >= pos)
+			{
+				StringBuilder sb = new StringBuilder();
+				do
+				{
+					if (r > pos)
+						sb.append(src.substring(pos, r));
+					sb.append(dest);
+					pos = r + target.length();
+					if (pos >= src.length())
+						break;
+					r = find(src, target, pos, whole, ignorecase);
+				} while (r >= pos);
+				if (pos < src.length())
+					sb.append(src.substring(pos));
+				return sb.toString();
+			}
+		}
+		return null;
+	}
+
+	protected final static int find(String src, String target, int startindex, boolean whole, boolean ignorecase)
+	{
+		if (whole)
+		{
+			boolean f;
+			if (ignorecase)
+				f = src.equalsIgnoreCase(target);
+			else
+				f = src.equals(target);
+			if (f)
+				return 0;
+			return -1;
+		}
+		else
+		{
+			int rc;
+			if (ignorecase)
+				rc = src.toLowerCase().indexOf(target.toLowerCase(), startindex);
+			else
+				rc = src.indexOf(target, startindex);
+			return rc;
+		}
+
 	}
 
 	public final static int indexOfIgnoreCase(String text, String target, int fromIndex)

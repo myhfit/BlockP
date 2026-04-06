@@ -10,7 +10,7 @@ public interface BPTreeData extends BPData
 {
 	public final static String EXT_TREEDATA = "[TREEDATA]";
 
-	default BPDataStructure getDataStruture()
+	default BPDataStructure getDataStructure()
 	{
 		return BPDataStructure.T;
 	}
@@ -23,7 +23,7 @@ public interface BPTreeData extends BPData
 
 	public class BPTreeDataArrayList extends BPYDataArrayList implements BPTreeData
 	{
-		public BPDataStructure getDataStruture()
+		public BPDataStructure getDataStructure()
 		{
 			return BPDataStructure.T;
 		}
@@ -63,7 +63,7 @@ public interface BPTreeData extends BPData
 	{
 		protected volatile Object m_data;
 
-		public BPDataStructure getDataStruture()
+		public BPDataStructure getDataStructure()
 		{
 			return BPDataStructure.T;
 		}

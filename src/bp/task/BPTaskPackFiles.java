@@ -58,6 +58,16 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 			throw new RuntimeException("Source Base Error");
 	}
 
+	protected List<BPResourceFileSystem> findRoots(BPFileContext fcontext, String src)
+	{
+		return ObjUtil.makeList((BPResourceFileSystem) fcontext.getRes(src));
+	}
+
+	protected String[] remapSources(BPFileContext fcontext, String[] srcs)
+	{
+		return srcs;
+	}
+
 	protected void doStart()
 	{
 		Object[] ps = (Object[]) m_params;
@@ -103,15 +113,22 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 					zos = new ZipOutputStream(out);
 					List<BPResourceFileSystem> fs = new ArrayList<BPResourceFileSystem>();
 					List<String> pars = new ArrayList<String>();
-					for (String src : srcs)
+					String[] srcs2 = remapSources(fcontext, srcs);
+					for (String src : srcs2)
 					{
-						BPResourceFileSystem root = (BPResourceFileSystem) fcontext.getRes(src);
-						collectParent(root, fcontext, fs, pars, srcbasepath);
-						fs.add(root);
-						collectAll(root, fs);
+						List<BPResourceFileSystem> roots = findRoots(fcontext, src);
+						if (roots != null)
+						{
+							for (BPResourceFileSystem root : roots)
+							{
+								collectParent(root, fcontext, fs, pars, srcbasepath);
+								fs.add(root);
+								collectAll(root, fs);
+							}
+						}
 					}
-					if (packlist && srcs.length > 0)
-						zos.setComment("srclist:" + String.join(";", srcs));
+					if (packlist && srcs2.length > 0)
+						zos.setComment("srclist:" + String.join(";", normalizeSourcePaths(srcs2)));
 					int count = fs.size();
 					for (BPResourceFileSystem f : fs)
 					{
@@ -172,6 +189,22 @@ public class BPTaskPackFiles extends BPTaskLocal<Boolean>
 				m_future.complete(true);
 			}
 		}
+	}
+
+	protected final static String[] normalizeSourcePaths(String[] srcs)
+	{
+		if (srcs == null)
+			return null;
+		String[] rc = new String[srcs.length];
+		for (int i = 0; i < srcs.length; i++)
+		{
+			String src = srcs[i];
+			char c = File.separatorChar;
+			if (c != '/')
+				src = src.replace(c, '/');
+			rc[i] = src;
+		}
+		return rc;
 	}
 
 	protected final static void collectParent(BPResourceFileSystem node, BPFileContext fcontext, List<BPResourceFileSystem> fs, List<String> pars, String srcbasepath)

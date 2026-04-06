@@ -14,6 +14,11 @@ public class BPTaskSerialPipe<V> extends BPTaskSerial<V>
 		return lastresult;
 	}
 
+	public String getTaskName()
+	{
+		return "Serial Pipe";
+	}
+
 	public static class BPTaskFactorySerialPipe extends BPTaskFactoryBase<BPTaskSerialPipe<?>>
 	{
 		public String getName()

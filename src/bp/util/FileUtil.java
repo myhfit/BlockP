@@ -29,16 +29,16 @@ public class FileUtil
 		{
 			Std.err(e);
 		}
-		try
-		{
-			File a = new File(".bpenvs");
-			File b = new File(".BPENVS");
-			return a.equals(b);
-		}
-		catch (Exception e)
-		{
-			Std.err(e);
-		}
+//		try
+//		{
+//			File a = new File(".bpenvs");
+//			File b = new File(".BPENVS");
+//			return a.equals(b);
+//		}
+//		catch (Exception e)
+//		{
+//			Std.err(e);
+//		}
 		return false;
 	}
 

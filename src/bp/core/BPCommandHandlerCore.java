@@ -33,7 +33,7 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 		switch (cmdname)
 		{
 			case CN_INFO:
-				return BPCommandResult.OK("BlockP - Core" + getExtensionInfos() + getPlatformInfos());
+				return BPCommandResult.OK("BlockP@" + BPCore.getPlatform().name() + getExtensionInfos());
 			case CN_ECHO:
 				return BPCommandResult.OK(cmd.ps);
 			case CN_GC:
@@ -58,17 +58,12 @@ public class BPCommandHandlerCore extends BPCommandHandlerBase implements BPComm
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n  Extensions:");
-		BPExtensionLoader[] exts = BPExtensionManager.getExtensionLoaders();
+		BPExtensionLoader[] exts = BPExtensionManager.getLoadedExtensionLoaders();
 		for (BPExtensionLoader ext : exts)
 		{
 			sb.append("\n    " + ext.getName());
 		}
 		return sb.toString();
-	}
-
-	protected String getPlatformInfos()
-	{
-		return "\n  Platform:" + BPCore.getPlatform().name();
 	}
 
 	protected boolean gc()

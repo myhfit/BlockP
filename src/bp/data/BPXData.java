@@ -10,7 +10,7 @@ public interface BPXData extends BPData
 	{
 	}
 
-	default BPDataStructure getDataStruture()
+	default BPDataStructure getDataStructure()
 	{
 		return BPDataStructure.X;
 	}

@@ -35,8 +35,24 @@ public class BPTaskUnpackFiles extends BPTaskLocal<Boolean>
 	protected String[] getPackList(String comment) throws IOException
 	{
 		if (comment != null && comment.startsWith("srclist:"))
-			return comment.substring(8).trim().split(";");
+			return normalizePackPaths(comment.substring(8).trim().split(";"));
 		return null;
+	}
+	
+	protected final static String[] normalizePackPaths(String[] paths)
+	{
+		if (paths == null)
+			return null;
+		String[] rc = new String[paths.length];
+		for (int i = 0; i < paths.length; i++)
+		{
+			String p = paths[i];
+			char c = File.separatorChar;
+			if (c != '/')
+				p = p.replace('/', c);
+			rc[i] = p;
+		}
+		return rc;
 	}
 
 	protected OVERWRITE_MODE getOWMode(Object[] ps)
@@ -170,10 +186,12 @@ public class BPTaskUnpackFiles extends BPTaskLocal<Boolean>
 					String rsrc = src.replaceAll("\\\\", "/");
 					if (!rsrc.endsWith("/"))
 						rsrc += "/";
+					BPResourceDir td = getTargetDir(ftarbasedir, tar, src);
 					if (owmode == OVERWRITE_MODE.CLEAN)
-						pathmap.put(rsrc, new File(cleanDir(getTargetDir(ftarbasedir, tar, src)).getFileFullName()));
+						pathmap.put(rsrc, new File(cleanDir(td).getFileFullName()));
 					else
-						pathmap.put(rsrc, new File(getTargetDir(ftarbasedir, tar, src).getFileFullName()));
+						pathmap.put(rsrc, new File(td.getFileFullName()));
+					td.makeDir();
 				}
 			}
 			else

@@ -34,6 +34,8 @@ public interface BPConfigAdv extends BPConfig
 
 	void putAll(Map<String, ?> map);
 
+	<R> R del(String k);
+
 	public static abstract class BPConfigAdvBase implements BPConfigAdv
 	{
 		protected Map<String, Object> m_map;
@@ -82,6 +84,12 @@ public interface BPConfigAdv extends BPConfig
 				if(data!=null)
 					m_map.putAll(data);
 			}
+		}
+
+		@SuppressWarnings("unchecked")
+		public <R> R del(String k)
+		{
+			return (R) m_map.remove(k);
 		}
 	}
 }

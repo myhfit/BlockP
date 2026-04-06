@@ -1,6 +1,7 @@
 package bp.util;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -286,9 +287,9 @@ public class LogicUtil
 			T data = null;
 			try
 			{
-				data = cls.newInstance();
+				data = cls.getConstructor().newInstance();
 			}
-			catch (InstantiationException | IllegalAccessException e)
+			catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
 			{
 				Std.err(e);
 			}

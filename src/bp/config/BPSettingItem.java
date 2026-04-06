@@ -7,6 +7,7 @@ public class BPSettingItem
 	public String itemtype;
 	public String[] candidates;
 	public boolean required;
+	public boolean readonly;
 
 	public final static String ITEM_TYPE_TEXT = "TEXT";
 	public final static String ITEM_TYPE_INTEGER = "INT";
@@ -18,6 +19,12 @@ public class BPSettingItem
 	public BPSettingItem setRequired(boolean flag)
 	{
 		required = flag;
+		return this;
+	}
+
+	public BPSettingItem setEditable(boolean flag)
+	{
+		readonly = !flag;
 		return this;
 	}
 

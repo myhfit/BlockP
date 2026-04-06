@@ -122,6 +122,8 @@ public class IOUtil
 			while (callback.apply(line))
 			{
 				line = reader.readLine();
+				if (line == null)
+					break;
 			}
 		}
 		catch (IOException e)

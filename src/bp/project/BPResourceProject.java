@@ -84,6 +84,11 @@ public interface BPResourceProject extends BPResourceParent
 	{
 		
 	}
+	
+	default boolean onlyListProjectItems()
+	{
+		return false;
+	}
 
 	public static class ActionResult
 	{

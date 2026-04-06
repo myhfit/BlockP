@@ -7,9 +7,11 @@ import java.util.function.Function;
 
 import bp.BPCore;
 import bp.cache.BPCacheDataResource;
+import bp.project.BPResourceProject;
 import bp.res.BPResource;
 import bp.res.BPResourceByteArray;
 import bp.res.BPResourceDir;
+import bp.res.BPResourceDirLocal;
 import bp.res.BPResourceFileLocal;
 import bp.res.BPResourceFileSystem;
 import bp.res.BPResourceIO;
@@ -131,5 +133,113 @@ public class ResourceUtil
 			pcb.accept(rc, reslen);
 		}
 		return rc;
+	}
+
+	public final static String getResourceLink(BPResource res)
+	{
+		if (res != null)
+		{
+			if (res.isProjectResource())
+			{
+				if(res instanceof BPResourceProject)
+				{
+					return getResourceLinkForProject((BPResourceProject) res);
+				}
+			}
+			else if (res.isFileSystem())
+			{
+				return getResourceLinkForFS(res);
+			}
+		}
+		return null;
+	}
+
+	public final static String getResourceLinkForProject(BPResourceProject prj)
+	{
+		return "prj:" + prj.getName();
+	}
+
+	public final static String getResourceLinkForFS(BPResource res)
+	{
+		String rc = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("file:");
+		BPResourceFileSystem rfs = (BPResourceFileSystem) res;
+		String fname = rfs.getFileFullName();
+		String fname2 = BPCore.getFileContext().comparePath(rfs.getFileFullName());
+		if (fname2 != null)
+		{
+			if (fname.equals(fname2) && FileUtil.checkIsAbsolute(fname))
+			{
+				sb.append("@");
+			}
+			sb.append(fname2);
+			rc = sb.toString();
+		}
+		return rc;
+	}
+
+	public final static BPResource getResourceByLink(String reslink)
+	{
+		BPResource rc = null;
+		if (reslink != null)
+		{
+			try
+			{
+				int vi = reslink.indexOf(":");
+				if (vi > -1)
+				{
+					String rltype = reslink.substring(0, vi);
+					String resc = reslink.substring(vi + 1);
+					if (rltype != null)
+					{
+						switch (rltype)
+						{
+							case "file":
+								rc = getResourceFSByLink(resc.split(File.pathSeparator));
+								break;
+							case "prj":
+								rc = BPCore.getProjectsContext().getProjectByName(resc);
+								break;
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Std.err(e);
+			}
+		}
+		return rc;
+	}
+
+	public final static BPResourceFileSystem getResourceFSByLink(String... ps)
+	{
+		BPResourceFileSystem cur = null;
+		for (int i = 0; i < ps.length; i++)
+		{
+			String p = ps[i];
+			if (i > 0)
+			{
+				cur = ((BPResourceDir) cur).getChild(p);
+			}
+			else
+			{
+				if (p.startsWith("@"))
+				{
+					File f = FileUtil.getFile(null, p);
+					if (f.exists())
+					{
+						if (f.isFile())
+							cur = new BPResourceFileLocal(f);
+						else if (f.isDirectory())
+							cur = new BPResourceDirLocal(f);
+					}
+				}
+				else
+					cur = (BPResourceFileSystem) BPCore.getFileContext().getRes(p);
+			}
+		}
+		return cur;
 	}
 }

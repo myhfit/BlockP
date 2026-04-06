@@ -30,6 +30,17 @@ public class BPConfigManager
 		}
 	}
 
+	public BPConfig getConfig(String name)
+	{
+		List<BPConfig> cs = new ArrayList<BPConfig>(m_configs);
+		for (BPConfig c : cs)
+		{
+			if (name.equals(c.getConfigName()))
+				return c;
+		}
+		return null;
+	}
+
 	public List<BPConfig> getConfigs()
 	{
 		return new ArrayList<BPConfig>(m_configs);

@@ -51,20 +51,27 @@ public class BPToolManager extends BPConfigAdvBase
 		List<BPToolFactory> rfacs = new ArrayList<BPToolFactory>();
 		s_facs.clear();
 		Iterator<BPToolFactory> facit = facs.iterator();
-		while (facit.hasNext())
+		try
 		{
-			try
+			while (facit.hasNext())
 			{
-				BPToolFactory fac = facit.next();
-				if (fac.canRunAt(platform))
+				try
 				{
-					rfacs.add(fac);
+					BPToolFactory fac = facit.next();
+					if (fac.canRunAt(platform))
+					{
+						rfacs.add(fac);
+					}
+				}
+				catch (Error e)
+				{
+					Std.err(e.toString());
 				}
 			}
-			catch (Error e)
-			{
-				Std.err(e.toString());
-			}
+		}
+		catch (Error e)
+		{
+			Std.err(e.toString());
 		}
 		s_facs.addAll(rfacs);
 	}

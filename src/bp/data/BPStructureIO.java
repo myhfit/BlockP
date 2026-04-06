@@ -153,7 +153,7 @@ public interface BPStructureIO
 		{
 			try
 			{
-				BPStructureIO newdata = (BPStructureIO) c.newInstance();
+				BPStructureIO newdata = (BPStructureIO) c.getConstructor().newInstance();
 				newdata.read(reader, context);
 				return newdata;
 			}

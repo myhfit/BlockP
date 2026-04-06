@@ -46,6 +46,11 @@ public class BPResourceVirtual implements BPResource
 	{
 		return m_parent;
 	}
+	
+	public void setParentResource(BPResource par)
+	{
+		m_parent = par;
+	}
 
 	public boolean isFileSystem()
 	{
@@ -152,5 +157,14 @@ public class BPResourceVirtual implements BPResource
 	public void setChildren(List<BPResource> children)
 	{
 		m_children = new CopyOnWriteArrayList<BPResource>(children);
+	}
+
+	//ve use setting
+	public static class BPResourceVirtualEntity extends BPResourceVirtual
+	{
+		public String getResType()
+		{
+			return "virtualentity";
+		}
 	}
 }

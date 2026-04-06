@@ -27,22 +27,37 @@ public class BPPDUtil
 	public final static byte BT_DATE = 17;
 	public final static byte BT_LIST = 32;
 	public final static byte BT_MAP = 48;
+	public final static byte BT_VERSION = -1;
+	
+	private final static short BPPD_VER = 0;
 
 	public final static <T> T read(byte[] bs)
 	{
 		return read(new BPBytesReaderBB(bs));
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static <T> T read(BPBytesReader bb)
 	{
-		return (T) readObject(bb);
+		return read(bb, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <T> T read(BPBytesReader bb, BPPDIOContext context)
+	{
+		return (T) readObject(bb, context);
 	}
 
 	public static void write(OutputStream out, Object obj)
 	{
+		BPPDIOContext context = new BPPDIOContext(BPPD_VER);
+		write(out, obj, context);
+	}
+
+	public static void write(OutputStream out, Object obj, BPPDIOContext context)
+	{
 		BPBytesWriter bw = new BPBytesWriterStream(out);
-		writeObject(bw, obj);
+		writeVer(bw, context);
+		writeObject(bw, obj, context);
 		try
 		{
 			out.flush();
@@ -52,9 +67,20 @@ public class BPPDUtil
 		}
 	}
 
-	protected final static Object readObject(BPBytesReader bb)
+	protected final static Object readObject(BPBytesReader bb, BPPDIOContext context)
 	{
 		byte bt = bb.get();
+		if (context == null)
+		{
+			context = new BPPDIOContext();
+			if (bt == BT_VERSION)
+			{
+				context.ver = bb.getShort();
+				if (context.ver > BPPD_VER)
+					throw new RuntimeException("bppd ver:" + context.ver + ">" + BPPD_VER);
+				bt = bb.get();
+			}
+		}
 		switch (bt)
 		{
 			case BT_NULL:
@@ -72,19 +98,19 @@ public class BPPDUtil
 			case BT_DOUBLE:
 				return bb.getDouble();
 			case BT_STR:
-				return readStr(bb);
+				return readStr(bb, context);
 			case BT_DATE:
 				return new Date(bb.getLong());
 			case BT_LIST:
-				return readList(bb);
+				return readList(bb, context);
 			case BT_MAP:
-				return readMap(bb);
+				return readMap(bb, context);
 		}
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected final static void writeObject(BPBytesWriter bw, Object v)
+	protected final static void writeObject(BPBytesWriter bw, Object v, BPPDIOContext context)
 	{
 		if (v == null)
 		{
@@ -138,17 +164,26 @@ public class BPPDUtil
 			else if (v instanceof Collection)
 			{
 				bw.put(BT_LIST);
-				writeList(bw, (Collection<?>) v);
+				writeList(bw, (Collection<?>) v, context);
 			}
 			else if (v instanceof Map)
 			{
 				bw.put(BT_MAP);
-				writeMap(bw, (Map<String, ?>) v);
+				writeMap(bw, (Map<String, ?>) v, context);
 			}
 		}
 	}
 
-	private final static String readStr(BPBytesReader bb)
+	private final static void writeVer(BPBytesWriter bw, BPPDIOContext context)
+	{
+		if (context != null && context.ver > 0)
+		{
+			bw.put(BT_VERSION);
+			bw.putShort(context.ver);
+		}
+	}
+
+	private final static String readStr(BPBytesReader bb, BPPDIOContext context)
 	{
 		long len = bb.getInt();
 		byte[] bs = new byte[(int) len];
@@ -156,45 +191,45 @@ public class BPPDUtil
 		return TextUtil.toString(bs, "utf-8");
 	}
 
-	private final static List<Object> readList(BPBytesReader bb)
+	private final static List<Object> readList(BPBytesReader bb, BPPDIOContext context)
 	{
 		int c = 0;
 		int s = bb.getInt();
 		List<Object> rc = new ArrayList<Object>();
 		while (c < s)
 		{
-			Object o = readObject(bb);
+			Object o = readObject(bb, context);
 			rc.add(o);
 			c++;
 		}
 		return rc;
 	}
 
-	private final static void writeList(BPBytesWriter bw, Collection<?> l)
+	private final static void writeList(BPBytesWriter bw, Collection<?> l, BPPDIOContext context)
 	{
 		bw.putInt(l.size());
 		for (Object v : l)
 		{
-			writeObject(bw, v);
+			writeObject(bw, v, context);
 		}
 	}
 
-	private final static Map<String, Object> readMap(BPBytesReader bb)
+	private final static Map<String, Object> readMap(BPBytesReader bb, BPPDIOContext context)
 	{
 		int c = 0;
 		int s = bb.getInt();
 		Map<String, Object> rc = new LinkedHashMap<String, Object>();
 		while (c < s)
 		{
-			String k = readStr(bb);
-			Object v = readObject(bb);
+			String k = readStr(bb, context);
+			Object v = readObject(bb, context);
 			rc.put(k, v);
 			c++;
 		}
 		return rc;
 	}
 
-	private final static void writeMap(BPBytesWriter bw, Map<String, ?> m)
+	private final static void writeMap(BPBytesWriter bw, Map<String, ?> m, BPPDIOContext context)
 	{
 		bw.putInt(m.size());
 		for (String k : m.keySet())
@@ -202,7 +237,22 @@ public class BPPDUtil
 			byte[] bs = TextUtil.fromString(k, "utf-8");
 			bw.putInt(bs.length);
 			bw.put(bs);
-			writeObject(bw, m.get(k));
+			writeObject(bw, m.get(k), context);
+		}
+	}
+
+	protected static class BPPDIOContext
+	{
+		public short ver;
+
+		public BPPDIOContext()
+		{
+
+		}
+
+		public BPPDIOContext(short ver)
+		{
+			this.ver = ver;
 		}
 	}
 }

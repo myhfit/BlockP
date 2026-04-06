@@ -126,14 +126,15 @@ public class SystemUtil
 				{
 					List<String> ps = new ArrayList<String>();
 					ps.add("-c");
-					ps.add(ObjUtil.joinArray(ObjUtil.pushArray(new String[] { (workdir == null ? "" : workdir) + cmd }, args), " ", null, false));
-					ps.add("&");
+					ps.add("nohup " + ObjUtil.joinArray(ObjUtil.pushArray(new String[] { (workdir == null ? "" : workdir) + cmd }, args), " ", null, false) + " > /dev/null 2>&1 &");
 					return startSimpleProcess_Default("sh", null, ps.toArray(new String[ps.size()]), System.getProperty("file.encoding"));
 				}
 				case Windows:
 				{
 					List<String> ps = new ArrayList<String>();
-					ps.add("/k");
+					ps.add("/c");
+					ps.add("start");
+					ps.add("/b");
 					ps.add(ObjUtil.joinArray(ObjUtil.pushArray(new String[] { (workdir == null ? "" : workdir) + cmd }, args), " ", null, false));
 					return startSimpleProcess_Default("cmd", null, ps.toArray(new String[ps.size()]), System.getProperty("file.encoding"));
 				}
@@ -157,7 +158,11 @@ public class SystemUtil
 			String[] rawcmds = new String[] { (workdir == null ? "" : workdir) + cmd };
 			if (args != null)
 				rawcmds = ObjUtil.pushArray(rawcmds, args);
-			Runtime.getRuntime().exec(rawcmds);
+			ProcessBuilder pb = new ProcessBuilder(rawcmds);
+			if (workdir != null)
+				pb.directory(new File(workdir));
+			pb.inheritIO();
+			pb.start();
 		}
 		catch (IOException e)
 		{
@@ -303,6 +308,30 @@ public class SystemUtil
 		else
 			return SystemOS.Other;
 	}
+	
+	public final static boolean checkOSVersion(int major,int minor)
+	{
+		String osver = (String) OSInfoHandlers.getOSInfo().get("OS Version");
+		if (osver != null)
+		{
+			try
+			{
+				String[] ovs = osver.split("\\.");
+				String ovmajor = ovs[0];
+				String ovminor = ovs.length > 1 ? ovs[1] : "0";
+				int ov0 = Integer.parseInt(ovmajor);
+				if (major < ov0)
+					return true;
+				else if (major == ov0)
+					return minor <= Integer.parseInt(ovminor);
+			}
+			catch (Exception e)
+			{
+
+			}
+		}
+		return false;
+	}
 
 	private final static Map<String, Object> getProperties()
 	{
@@ -389,6 +418,23 @@ public class SystemUtil
 
 	public enum SystemOS
 	{
-		Windows, Linux, Mac, Other, Unknown
+		Windows(false), Linux(true), Mac(true), Other(false), Unknown(false);
+
+		private boolean m_isposix;
+
+		private SystemOS(boolean isposix)
+		{
+			m_isposix = isposix;
+		}
+
+		public boolean isWindows()
+		{
+			return this == Windows;
+		}
+
+		public boolean isPosix()
+		{
+			return m_isposix;
+		}
 	}
 }

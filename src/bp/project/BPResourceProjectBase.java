@@ -60,7 +60,7 @@ public abstract class BPResourceProjectBase implements BPResourceProjectDir
 
 	public String getName()
 	{
-		return m_dir.getName();
+		return (m_name != null && m_name.length() > 0) ? m_name : m_dir.getName();
 	}
 
 	public boolean isReadOnly()

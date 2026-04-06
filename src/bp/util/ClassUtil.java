@@ -2,6 +2,7 @@ package bp.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -10,6 +11,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
@@ -62,7 +65,7 @@ public class ClassUtil
 	{
 		R apply(T obj, Object... params);
 	}
-	
+
 	private final static BPExtClassLoader S_CL = new BPExtClassLoader();
 
 	@SuppressWarnings("unchecked")
@@ -197,7 +200,7 @@ public class ClassUtil
 						r.add(cloneDataReflect(Array.get(obj, i)));
 					rc = r;
 				}
-				else if(c.isEnum())
+				else if (c.isEnum())
 				{
 					rc = obj.toString();
 				}
@@ -226,6 +229,28 @@ public class ClassUtil
 	{
 		ServiceLoader<T> facs = ServiceLoader.load(ifcclass, S_CL);
 		return facs;
+	}
+
+	public final static List<String> readServiceNames(Class<?> ifcclass, ClassLoader loader)
+	{
+		List<String> rc = new ArrayList<>();
+		try
+		{
+			Enumeration<URL> urls = loader.getResources("META-INF/services/" + ifcclass.getName());
+			while (urls.hasMoreElements())
+			{
+				URL url = urls.nextElement();
+				try (InputStream in = url.openStream())
+				{
+					IOUtil.interReadLines(in, "utf-8", line -> rc.add(line));
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			Std.err(e);
+		}
+		return rc;
 	}
 
 	public final static <T> List<T> filterServices(Class<T> ifcclass, Predicate<T> check)
@@ -589,7 +614,7 @@ public class ClassUtil
 		{
 			cls = cl.loadClass(classname);
 		}
-		catch (ClassNotFoundException | NoClassDefFoundError | IllegalAccessError e)
+		catch (Throwable e)
 		{
 		}
 		return cls;
@@ -632,6 +657,22 @@ public class ClassUtil
 		return rc;
 	}
 
+	public final static List<URL> getResources(ClassLoader cl, String name)
+	{
+		List<URL> rc = new ArrayList<URL>();
+		try
+		{
+			Enumeration<URL> urls = cl.getResources(name);
+			while (urls.hasMoreElements())
+				rc.add(urls.nextElement());
+		}
+		catch (IOException e)
+		{
+			Std.err(e);
+		}
+		return rc;
+	}
+
 	public final static BPExtClassLoader getExtensionClassLoader()
 	{
 		return S_CL;
@@ -653,10 +694,10 @@ public class ClassUtil
 		{
 			try
 			{
-				URL url = new URL("file:" + filename);
+				URL url = new URI("file:" + filename).toURL();
 				addURL(url);
 			}
-			catch (MalformedURLException e)
+			catch (MalformedURLException | URISyntaxException e)
 			{
 				Std.err(e);
 			}

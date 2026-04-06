@@ -291,7 +291,7 @@ public class BPWorkspaceContextLocalBase extends BPFileContextLocalBase implemen
 		BPResourceDir rootdir = getRootDir();
 		if (m_hasbpdir)
 		{
-			return (BPResourceDir) rootdir.getChild(".bp", true);
+			return (BPResourceDir) rootdir.getChild(S_BPDIR, true);
 		}
 		return rootdir;
 	}

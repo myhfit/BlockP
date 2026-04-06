@@ -55,6 +55,7 @@ public class BPCore
 	protected static volatile boolean s_autosaveconfig = false;
 	protected final static List<BPScheduler> S_SS = new CopyOnWriteArrayList<BPScheduler>();
 	protected final static List<Runnable> S_ELIST = new CopyOnWriteArrayList<Runnable>();
+	protected final static List<String> S_EXTS = new CopyOnWriteArrayList<String>();
 
 	protected static IDGenerator S_IDGEN;
 
@@ -66,6 +67,8 @@ public class BPCore
 
 	protected static int S_EVENT_CH_FS;
 	protected static int S_EVENT_CH_COREUI;
+
+	public volatile static String S_LOCALE = null;
 
 	private static BPPlatform s_platform = BPPlatform.CLI;
 
@@ -113,40 +116,89 @@ public class BPCore
 
 	protected final static void loadExtensions()
 	{
-		BPExtensionLoader[] loaders = BPExtensionManager.getExtensionLoaders(true);
-		if (loaders != null && loaders.length > 0)
+		BPExtensionLoader[] rawloaders = BPExtensionManager.getExtensionLoaders(true);
+		if (rawloaders != null && rawloaders.length > 0)
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("Extensions:");
-			boolean flag = false;
-			for (BPExtensionLoader loader : loaders)
+			List<BPExtensionLoader> rls = new ArrayList<BPExtensionLoader>();
+			List<BPExtensionLoader> nrls = new ArrayList<BPExtensionLoader>();
 			{
-				loader.preload();
-				if (flag)
-					sb.append(",");
-				else
-					flag = true;
-				sb.append(loader.getName());
+				List<BPExtensionLoader> loaders = BPExtensionManager.sortExtensionLoaders(rawloaders);
+				for (BPExtensionLoader loader : loaders)
+				{
+					boolean flag = false;
+					try
+					{
+						loader.preload();
+						rls.add(loader);
+						flag = true;
+					}
+					catch (Throwable e)
+					{
+						Std.err(e);
+					}
+					if (!flag)
+						nrls.add(loader);
+				}
+				BPExtensionManager.setLoadedExtensionLoaders(rls);
 			}
-			Std.info(sb.toString());
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.append("Extensions:");
+				boolean flag = false;
+				for (BPExtensionLoader loader : rls)
+				{
+					if (flag)
+						sb.append(",");
+					else
+						flag = true;
+					sb.append(loader.getName());
+				}
+				Std.info(sb.toString());
+			}
+			if (nrls.size() > 0)
+			{
+				StringBuilder sb = new StringBuilder();
+				sb.append("Extensions(Not Loaded):");
+				boolean flag = false;
+				for (BPExtensionLoader loader : nrls)
+				{
+					if (flag)
+						sb.append(",");
+					else
+						flag = true;
+					sb.append(loader.getName());
+				}
+				Std.info(sb.toString());
+			}
 		}
 	}
 
 	protected final static void installExtensions()
 	{
-		BPExtensionLoader[] loaders = BPExtensionManager.getExtensionLoaders();
+		List<String> exts = new ArrayList<String>();
+		BPExtensionLoader[] loaders = BPExtensionManager.getLoadedExtensionLoaders();
 		if (loaders != null && loaders.length > 0)
 		{
 			for (BPExtensionLoader loader : loaders)
 			{
-				loader.install(S_PRJSCONTEXT);
+				try
+				{
+					loader.install(S_PRJSCONTEXT);
+					exts.add(loader.getName());
+				}
+				catch (Exception e)
+				{
+					Std.err(e);
+				}
 			}
 		}
+		S_EXTS.clear();
+		S_EXTS.addAll(exts);
 	}
 
 	protected final static void uninstallExtensions()
 	{
-		BPExtensionLoader[] loaders = BPExtensionManager.getExtensionLoaders();
+		BPExtensionLoader[] loaders = BPExtensionManager.getLoadedExtensionLoaders();
 		if (loaders != null && loaders.length > 0)
 		{
 			for (BPExtensionLoader loader : loaders)
@@ -154,6 +206,12 @@ public class BPCore
 				loader.uninstall(S_PRJSCONTEXT);
 			}
 		}
+		S_EXTS.clear();
+	}
+
+	public final static boolean checkExtension(String name)
+	{
+		return S_EXTS.contains(name);
 	}
 
 	public final static void setCommandLineArgs(CommandLineArgs args)

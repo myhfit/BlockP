@@ -657,6 +657,18 @@ public class ObjUtil
 		return rc;
 	}
 
+	public final static <T, R> List<R> mappingList(List<T> src, Function<T, R> transfunc, boolean ignoreempty)
+	{
+		List<R> rc = new ArrayList<>();
+		for (T t : src)
+		{
+			R r = transfunc.apply(t);
+			if (r != null || !ignoreempty)
+				rc.add(r);
+		}
+		return rc;
+	}
+
 	@SuppressWarnings("unchecked")
 	public final static <T> List<T> makeList(Object... ps)
 	{
@@ -709,7 +721,7 @@ public class ObjUtil
 	@SafeVarargs
 	public final static <T> T[] pushArray(T[] arr1, T... datas)
 	{
-		if (datas.length == 0)
+		if (datas == null || datas.length == 0)
 			return arr1;
 		int l = arr1.length;
 		T[] rc = (T[]) Arrays.copyOf(arr1, l + datas.length);

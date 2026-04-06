@@ -41,6 +41,11 @@ public interface BPExtensionLoader
 		return true;
 	}
 
+	default boolean checkPlatform()
+	{
+		return true;
+	}
+
 	default void install(BPFileContext context)
 	{
 	}

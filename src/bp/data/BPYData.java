@@ -28,7 +28,7 @@ public interface BPYData extends BPData
 		return rc;
 	}
 
-	default BPDataStructure getDataStruture()
+	default BPDataStructure getDataStructure()
 	{
 		return BPDataStructure.Y;
 	}

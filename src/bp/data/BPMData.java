@@ -18,7 +18,7 @@ public interface BPMData extends BPData
 
 	}
 
-	default BPDataStructure getDataStruture()
+	default BPDataStructure getDataStructure()
 	{
 		return BPDataStructure.M;
 	}

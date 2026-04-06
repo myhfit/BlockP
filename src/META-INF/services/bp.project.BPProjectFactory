@@ -1,2 +1,3 @@
 bp.project.BPProjectFactoryFile
 bp.project.BPResourceProjectMemory$BPProjectFactoryMemory
+bp.project.BPResourceProjectDataSource$BPProjectFactoryDataSource
