@@ -16,6 +16,9 @@ Target of the project is to save code for personal use in anytime, Especially wh
 |BlockPJDBC|JDBC|bpjdbc.jar|[Link](https://github.com/myhfit/BlockPJDBC)|
 |BlockPGUIJDBC|GUI for JDBC|bpguijdbc.jar|[Link](https://github.com/myhfit/BlockPGUIJDBC)|bpgui+bpjdbc
 |BlockPAria2GUI|Aria2C GUI|bparia2gui.jar|[Link](https://github.com/myhfit/BlockPAria2GUI)|bpguiwebcfs
+|BlockPOSManagement|OSManagement|bposman.jar|[Link](https://github.com/myhfit/BlockPOSManagement)|bpgui+(jna/ffm)
+|BlockPWindows|Windows|bpwindows.jar|[Link](https://github.com/myhfit/BlockPWindows)|bposman+(jna/ffm)
+|BlockPGUIWindows|GUI for Windows|bpguiwindows.jar|[Link](https://github.com/myhfit/BlockPGUIWindows)|bpgui+bposman
 
 # Requirement
 JRE>=8, windows/linux with basic tested, x86 JRE also can be used and has better performance in simple use.
