@@ -67,7 +67,7 @@ public interface BPUnit<U extends BPUnit<U, C>, C>
 
 		default BigDecimal convert(U dest, BigDecimal v)
 		{
-			return v.multiply(getValue()).divide(dest.getValue(), 24, RoundingMode.HALF_UP);// BigDecimal.ROUND_HALF_UP);
+			return v.multiply(getValue()).divide(dest.getValue(), 24, RoundingMode.HALF_UP);
 		}
 	}
 }

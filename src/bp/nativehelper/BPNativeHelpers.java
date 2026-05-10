@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import bp.util.ClassUtil;
+import bp.util.Std;
+
 public class BPNativeHelpers
 {
 	public static List<BPNativeHelper> S_HS;
+
+	private static boolean S_JNA;
 
 	static
 	{
@@ -15,6 +20,8 @@ public class BPNativeHelpers
 
 	private final static void INIT()
 	{
+		S_JNA = ClassUtil.getTClass("com.sun.jna.Native", ClassUtil.getExtensionClassLoader()) != null;
+		Std.debug("JNA Support:" + S_JNA);
 		S_HS = new CopyOnWriteArrayList<>();
 		S_HS.add(new BPNativeHelperJNI());
 		{
@@ -22,6 +29,11 @@ public class BPNativeHelpers
 			if (ffm.checkPlatform())
 				S_HS.add(ffm);
 		}
+	}
+
+	public final static boolean hasJNASupport()
+	{
+		return S_JNA;
 	}
 
 	public final static <INTF> INTF getInterface(String name)

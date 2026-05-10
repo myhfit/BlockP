@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -46,7 +45,7 @@ public class BPToolManager extends BPConfigAdvBase
 
 	protected void loadConfig(BPConfigAdv config)
 	{
-		ServiceLoader<BPToolFactory> facs = ClassUtil.getExtensionServices(BPToolFactory.class);
+		List<BPToolFactory> facs = ClassUtil.getServicesOnPlatform(BPToolFactory.class, ClassUtil.getExtensionClassLoader(), true);
 		BPPlatform platform = BPCore.getPlatform();
 		List<BPToolFactory> rfacs = new ArrayList<BPToolFactory>();
 		s_facs.clear();
@@ -71,7 +70,7 @@ public class BPToolManager extends BPConfigAdvBase
 		}
 		catch (Error e)
 		{
-			Std.err(e.toString());
+			Std.err(e);
 		}
 		s_facs.addAll(rfacs);
 	}

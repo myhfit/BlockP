@@ -261,9 +261,19 @@ public class SystemUtil
 						sb.append("\n");
 					else
 						flag = true;
-					newline = reader.readLine();
-					if (newline != null)
-						sb.append(newline);
+					try
+					{
+						newline = reader.readLine();
+						while (newline != null)
+						{
+							sb.append(newline);
+							sb.append("\n");
+							newline = reader.readLine();
+						}
+					}
+					catch (Exception e)
+					{
+					}
 				}
 				process.waitFor();
 				process.destroyForcibly();

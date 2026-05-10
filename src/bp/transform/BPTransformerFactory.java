@@ -8,6 +8,11 @@ public interface BPTransformerFactory
 
 	boolean checkData(Object source);
 
+	default boolean isRuleFilter()
+	{
+		return false;
+	}
+
 	Collection<String> getFunctionTypes();
 
 	BPTransformer<?> createTransformer(String func);

@@ -66,7 +66,7 @@ public class BPDataContainerArchive extends BPDataContainerBase implements BPDat
 		{
 			ArchiveEntry entry = m_datamap.get(name);
 			byte[] bs = entry.bs;
-			String ext = entry.isdir ? BPFormatDir.FORMAT_DIR : FileUtil.getExt(name);
+			String ext = entry.isdir ? BPFormatDir.EXT_DIR : FileUtil.getExt(name);
 			BPResourceByteArray res = new BPResourceByteArray(bs, null, ext, BPCore.genID(BPCore.getFileContext()), name, bs != null);
 			rc.add(res);
 		}

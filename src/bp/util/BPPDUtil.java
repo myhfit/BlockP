@@ -33,6 +33,8 @@ public class BPPDUtil
 
 	public final static <T> T read(byte[] bs)
 	{
+		if (bs == null || bs.length == 0)
+			return null;
 		return read(new BPBytesReaderBB(bs));
 	}
 

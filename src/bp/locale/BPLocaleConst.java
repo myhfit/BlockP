@@ -17,14 +17,19 @@ public interface BPLocaleConst
 			n = n.substring(0, 1).toUpperCase() + n.substring(1).toLowerCase();
 		return n;
 	}
-	
+
 	default boolean needSwapSpace()
 	{
 		return true;
 	}
-	
+
 	default boolean needNormalizeCase()
 	{
 		return true;
+	}
+
+	default String text()
+	{
+		return BPLocaleHelpers.getValue(this);
 	}
 }

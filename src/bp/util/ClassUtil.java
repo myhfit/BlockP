@@ -29,6 +29,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+
+import bp.BPCore;
 
 public class ClassUtil
 {
@@ -231,18 +234,51 @@ public class ClassUtil
 		return facs;
 	}
 
-	public final static List<String> readServiceNames(Class<?> ifcclass, ClassLoader loader)
+	public final static <T> List<T> getServicesOnPlatform(Class<T> ifcclass, ClassLoader loader, boolean ignoreempty)
+	{
+		List<T> rc = new ArrayList<T>();
+		List<String> clsnames = readServiceNames(ifcclass, loader, BPCore.getPlatform().getBlockPrefix());
+		for (String clsname : clsnames)
+		{
+			T r = createObject(clsname, loader);
+			if (!ignoreempty || r != null)
+				rc.add(r);
+		}
+		return rc;
+	}
+
+	public final static List<String> readServiceNames(Class<?> ifcclass, ClassLoader loader, String blockprefix)
 	{
 		List<String> rc = new ArrayList<>();
 		try
 		{
+			List<String> blocklist = new ArrayList<String>();
+			if (blockprefix != null)
+			{
+				Enumeration<URL> urls = loader.getResources("META-INF/services/" + blockprefix + ifcclass.getName());
+				while (urls.hasMoreElements())
+				{
+					URL url = urls.nextElement();
+					try (InputStream in = url.openStream())
+					{
+						IOUtil.interReadLines(in, "utf-8", line -> blocklist.add(line));
+					}
+				}
+			}
+			boolean withblock = blocklist.size() > 0;
+
 			Enumeration<URL> urls = loader.getResources("META-INF/services/" + ifcclass.getName());
 			while (urls.hasMoreElements())
 			{
 				URL url = urls.nextElement();
 				try (InputStream in = url.openStream())
 				{
-					IOUtil.interReadLines(in, "utf-8", line -> rc.add(line));
+					IOUtil.interReadLines(in, "utf-8", line ->
+					{
+						if (!withblock || !blocklist.contains(line))
+							rc.add(line);
+						return true;
+					});
 				}
 			}
 		}
@@ -328,19 +364,28 @@ public class ClassUtil
 		return new ArrayList<Class<?>>(rc);
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static <T> T createObject(String classname)
+	{
+		return createObject(classname, S_CL);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <T> T createObject(String classname, ClassLoader cl)
 	{
 		T rc = null;
 		try
 		{
-			Class<?> cls = Class.forName(classname, true, S_CL);
+			Class<?> cls = Class.forName(classname, true, cl);
 			Constructor<?> cons = cls.getConstructor();
 			rc = (T) cons.newInstance();
 		}
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e)
 		{
 			Std.err(e);
+		}
+		catch (Throwable e)
+		{
+			Std.err(e.toString() + " " + classname);
 		}
 		return rc;
 	}
@@ -475,53 +520,90 @@ public class ClassUtil
 		}
 		return urls;
 	}
+	
+	public final static List<URL> getClassLoaderURLs(String packname)
+	{
+		Enumeration<URL> direnum;
+		List<URL> dirs = new ArrayList<URL>(20);
+		if (packname.length() == 0)
+		{
+			addClassLoaderURLs(ClassLoader.getSystemClassLoader(), dirs, true);
+			addClassLoaderURLs(Thread.currentThread().getContextClassLoader(), dirs, false);
+		}
+		else
+		{
+			try
+			{
+				direnum = ClassLoader.getSystemResources(packname);
+				while (direnum.hasMoreElements())
+				{
+					URL url = direnum.nextElement();
+					if (!dirs.contains(url))
+						dirs.add(url);
+				}
+			}
+			catch (Exception e)
+			{
+				Std.err(e);
+			}
+			try
+			{
+				direnum = Thread.currentThread().getContextClassLoader().getResources(packname);
+				while (direnum.hasMoreElements())
+				{
+					URL url = direnum.nextElement();
+					if (!dirs.contains(url))
+						dirs.add(url);
+				}
+			}
+			catch (Exception e)
+			{
+				Std.err(e);
+			}
+		}
+
+		return dirs;
+	}
+
+	public final static long getURLTime(URL url, String packname)
+	{
+		String protocol = url.getProtocol();
+		try
+		{
+			if ("file".equals(protocol))
+			{
+				File f = new File(url.toURI());
+				return f.lastModified();
+			}
+			else if ("jar".equals(protocol))
+			{
+				JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+				JarEntry entry = jar.getJarEntry(packname);
+				entry.getLastModifiedTime().toMillis();
+			}
+		}
+		catch (Exception e)
+		{
+			Std.err(e);
+		}
+		return 0;
+	}
+
+	public final static <R> R useClass(String classname, Function<List<URL>, R> cb)
+	{
+		String packname = classname.replace('.', '/') + ".class";
+		List<URL> dirs = getClassLoaderURLs(packname);
+		return cb.apply(dirs);
+	}
 
 	public final static List<String> getClassNames(String packname, boolean recursive)
 	{
 		List<String> classnames = new ArrayList<String>(20);
 		Set<String> cnset = new HashSet<String>();
-		String pack = packname;
 		String packageDirName = packname.replace('.', '/');
-		List<URL> dirs = new ArrayList<URL>(20);
-		Enumeration<URL> direnum;
 		try
 		{
-			if (packname.length() == 0)
-			{
-				addClassLoaderURLs(ClassLoader.getSystemClassLoader(), dirs, true);
-				addClassLoaderURLs(Thread.currentThread().getContextClassLoader(), dirs, false);
-			}
-			else
-			{
-				try
-				{
-					direnum = ClassLoader.getSystemResources(packageDirName);
-					while (direnum.hasMoreElements())
-					{
-						URL url = direnum.nextElement();
-						if (!dirs.contains(url))
-							dirs.add(url);
-					}
-				}
-				catch (Exception e)
-				{
-					Std.err(e);
-				}
-				try
-				{
-					direnum = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
-					while (direnum.hasMoreElements())
-					{
-						URL url = direnum.nextElement();
-						if (!dirs.contains(url))
-							dirs.add(url);
-					}
-				}
-				catch (Exception e)
-				{
-					Std.err(e);
-				}
-			}
+			List<URL> dirs = getClassLoaderURLs(packageDirName);
 
 			for (URL url : dirs)
 			{
@@ -529,7 +611,7 @@ public class ClassUtil
 				if ("file".equals(protocol))
 				{
 					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-					findClassNameInPackage(pack, filePath, recursive, classnames, cnset);
+					findClassNameInPackage(packname, filePath, recursive, classnames, cnset);
 				}
 				else if ("jar".equals(protocol))
 				{
@@ -625,18 +707,25 @@ public class ClassUtil
 		return getTClass(classname, Thread.currentThread().getContextClassLoader());
 	}
 
-	public final static boolean checkChildClass(Class<?> parent, Class<?> childclass)
+	public final static boolean checkChildClass(Class<?> parent, Class<?> childclass, Predicate<Class<?>> checkcb)
 	{
 		if (childclass == null)
 			return false;
 		if (childclass == parent)
 			return false;
+		if (checkcb != null && !checkcb.test(childclass))
+			return false;
 		return parent.isAssignableFrom(childclass);
+	}
+
+	public final static boolean checkChildClass(Class<?> parent, String childclassname, ClassLoader cl, Predicate<Class<?>> checkcb)
+	{
+		return checkChildClass(parent, getTClass(childclassname, cl), checkcb);
 	}
 
 	public final static boolean checkChildClass(Class<?> parent, String childclassname, ClassLoader cl)
 	{
-		return checkChildClass(parent, getTClass(childclassname, cl));
+		return checkChildClass(parent, childclassname, cl, null);
 	}
 
 	public final static <T> T tryLoopSuperClass(Function<Class<?>, T> testfunc, Class<?> cls, Class<?> root)
@@ -698,6 +787,26 @@ public class ClassUtil
 				addURL(url);
 			}
 			catch (MalformedURLException | URISyntaxException e)
+			{
+				Std.err(e);
+			}
+		}
+
+		public void addExtURLWithCheck(String filename, Predicate<Manifest> checker)
+		{
+			try
+			{
+				URL url = new URI("file:" + filename).toURL();
+				boolean flag = checker == null;
+				if (!flag)
+				{
+					JarFile f = new JarFile(new File(filename));
+					flag = checker.test(f.getManifest());
+				}
+				if (flag)
+					addURL(url);
+			}
+			catch (IOException | URISyntaxException e)
 			{
 				Std.err(e);
 			}

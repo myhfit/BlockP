@@ -116,7 +116,7 @@ public class BPCore
 
 	protected final static void loadExtensions()
 	{
-		BPExtensionLoader[] rawloaders = BPExtensionManager.getExtensionLoaders(true);
+		BPExtensionLoader[] rawloaders = BPExtensionManager.getExtensionLoaders(true, null, getPlatform().getBlockPrefix());
 		if (rawloaders != null && rawloaders.length > 0)
 		{
 			List<BPExtensionLoader> rls = new ArrayList<BPExtensionLoader>();
@@ -440,6 +440,18 @@ public class BPCore
 
 	public static enum BPPlatform
 	{
-		CLI, GUI_SWING
+		CLI, GUI_SWING;
+
+		private String m_blockprefix;
+
+		private BPPlatform()
+		{
+			m_blockprefix = "no_" + name().toLowerCase() + "_";
+		}
+
+		public String getBlockPrefix()
+		{
+			return m_blockprefix;
+		}
 	}
 }
