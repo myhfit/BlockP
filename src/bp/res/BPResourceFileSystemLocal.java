@@ -36,7 +36,14 @@ public abstract class BPResourceFileSystemLocal implements BPResourceFileSystem
 
 	public String getName()
 	{
-		return m_file.getName();
+		File f = m_file;
+		String rc = f.getName();
+		if (rc.length() == 0)
+		{
+			if (f.isAbsolute())
+				rc = f.getAbsolutePath();
+		}
+		return rc;
 	}
 
 	public boolean isReadOnly()

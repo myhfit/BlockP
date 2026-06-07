@@ -52,6 +52,12 @@ public enum BPLocaleConstCC implements BPLocaleConstDirect
 	PARAMETERS,
 	ENCODING,
 	VERSION,
+	RUNNING,
+	ENABLED,
+	DISABLED,
+	DATA,
+	UNIT,
+	CLONE,
 	;
 
 	public final static String PACK_COMPUTER_COMMON = "c_c";

@@ -101,16 +101,26 @@ public class BPResourceProjectDataSource extends BPResourceProjectFile
 
 	protected BPResource readDSLink(BPResourceFile res)
 	{
-		String mname = res.getName();
 		try
 		{
-			mname = mname.substring(0, mname.length() - res.getExt().length());
-			int vi = mname.lastIndexOf(".");
-			if (vi > -1 && vi < mname.length() - 1)
+			String typename = null;
+			Map<String, Object> dsps = JSONUtil.decode(TextUtil.toString(IOUtil.read(res), "utf-8"));
+			typename = (String) dsps.get("dstype");
+			if (typename == null)
 			{
-				String subname = mname.substring(vi + 1);
+				String mname = res.getName();
+				mname = mname.substring(0, mname.length() - res.getExt().length());
+				int vi = mname.lastIndexOf(".");
+				if (vi > -1 && vi < mname.length() - 1)
+				{
+					typename = mname.substring(vi + 1);
+				}
+			}
 
-				BPDataSourceFactory dsfac = ClassUtil.findService(BPDataSourceFactory.class, s -> subname.equals(s.getName()));
+			if (typename != null)
+			{
+				final String tname = typename;
+				BPDataSourceFactory dsfac = ClassUtil.findService(BPDataSourceFactory.class, s -> tname.equals(s.getName()));
 				if (dsfac != null)
 				{
 					BPResourceDataSource rc = dsfac.create(JSONUtil.decode(TextUtil.toString(IOUtil.read(res), "utf-8"))).getStructureResource();

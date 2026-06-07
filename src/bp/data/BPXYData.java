@@ -41,17 +41,40 @@ public interface BPXYData extends BPData, Cloneable
 		if (datas != null && datas.size() > 0)
 		{
 			String[] cnames = getColumnNames();
-			for (BPXData line : datas)
+			for (BPXData row : datas)
 			{
 				Map<String, Object> data = new HashMap<String, Object>();
 				for (int i = 0; i < cnames.length; i++)
 				{
-					data.put(cnames[i], line.getColValue(i));
+					data.put(cnames[i], row.getColValue(i));
 				}
 				rc.add(data);
 			}
 		}
 		return rc;
+	}
+
+	default Map<String, Object> toMap(BPXData row)
+	{
+		String[] cnames = getColumnNames();
+		Map<String, Object> rc = new HashMap<String, Object>();
+		for (int i = 0; i < cnames.length; i++)
+		{
+			rc.put(cnames[i], row.getColValue(i));
+		}
+		return rc;
+	}
+
+	default BPXYData reList(List<BPXData> rows)
+	{
+		BPXYDataList rc = new BPXYDataList(this, false);
+		rc.setDatas(rows);
+		return rc;
+	}
+
+	default BPXYData shadowList(String[] cols, int[] lines)
+	{
+		return new BPXYDataShadow(this, cols, lines);
 	}
 
 	final static class XYDataUtil
@@ -101,6 +124,146 @@ public interface BPXYData extends BPData, Cloneable
 				}
 			}
 			return rc;
+		}
+	}
+
+	public final static class BPXYDataShadow implements BPXYData
+	{
+		private BPXYData m_par;
+		private String[] m_cns;
+		private String[] m_cls;
+		private Class<?>[] m_ccs;
+		private int[] m_lines;
+
+		private int[] m_colcds;
+
+		public BPXYDataShadow(BPXYData par, String[] cols, int[] lines)
+		{
+			m_par = par;
+			m_lines = lines;
+			m_cns = cols;
+			m_cls = new String[cols.length];
+			m_ccs = new Class<?>[cols.length];
+			String[] parcns = par.getColumnNames();
+			String[] parcls = par.getColumnLabels();
+			Class<?>[] parccs = par.getColumnClasses();
+			m_colcds = new int[cols.length];
+			for (int i = 0; i < cols.length; i++)
+			{
+				String c = cols[i];
+				int vi = -1;
+				for (int j = 0; j < parcns.length; j++)
+				{
+					if (parcns[j].equals(c))
+					{
+						vi = j;
+						break;
+					}
+				}
+				m_cls[i] = parcls[vi];
+				m_ccs[i] = parccs[vi];
+				m_colcds[i] = vi;
+			}
+		}
+
+		public List<BPXData> getDatas()
+		{
+			List<BPXData> pardatas = m_par.getDatas();
+			List<BPXData> rc = new ArrayList<BPXData>();
+			int[] lines = m_lines;
+			if (lines != null)
+			{
+				for (int i = 0; i < lines.length; i++)
+					rc.add(new BPXDataShadow(pardatas.get(lines[i])));
+			}
+			else
+			{
+				for (int i = 0; i < pardatas.size(); i++)
+				{
+					rc.add(new BPXDataShadow(pardatas.get(i)));
+				}
+			}
+			return rc;
+		}
+
+		public Class<?>[] getColumnClasses()
+		{
+			return m_ccs;
+		}
+
+		public String[] getColumnNames()
+		{
+			return m_cns;
+		}
+
+		public String[] getColumnLabels()
+		{
+			return m_cls;
+		}
+
+		public void setDatas(List<BPXData> datas)
+		{
+
+		}
+
+		public BPXYData clone()
+		{
+			Class<?>[] ccs = new Class<?>[m_ccs.length];
+			String[] cns = new String[m_cns.length];
+			System.arraycopy(m_ccs, 0, ccs, 0, m_ccs.length);
+			System.arraycopy(m_cns, 0, cns, 0, m_cns.length);
+			String[] cls = null;
+			if (m_cls != null)
+			{
+				cls = new String[m_cls.length];
+				System.arraycopy(m_cls, 0, cls, 0, m_cls.length);
+			}
+			BPXYDataList rc = new BPXYDataList(ccs, cns, cls, null, false);
+			rc.m_list = XYDataUtil.cloneDatas(getDatas());
+			return rc;
+		}
+
+		public final class BPXDataShadow implements BPXData
+		{
+			private BPXData m_parxdata;
+
+			public BPXDataShadow(BPXData parxdata)
+			{
+				m_parxdata = parxdata;
+			}
+
+			public Object getColValue(int col)
+			{
+				int c = m_colcds[col];
+				return c > -1 ? m_parxdata.getColValue(c) : null;
+			}
+
+			public Object[] getValues()
+			{
+				int[] colcds = m_colcds;
+				Object[] rc = new Object[colcds.length];
+				for (int i = 0; i < colcds.length; i++)
+				{
+					int c = colcds[i];
+					rc[i] = c > -1 ? m_parxdata.getColValue(c) : null;
+				}
+				return rc;
+			}
+
+			public int length()
+			{
+				return m_colcds.length;
+			}
+
+			public void ensureSize(int size)
+			{
+				m_parxdata.ensureSize(size);
+			}
+
+			public BPXData cloneX(boolean copydata)
+			{
+				return m_parxdata.cloneX(copydata);
+			}
 		}
 	}
 

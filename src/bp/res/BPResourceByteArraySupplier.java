@@ -1,13 +1,10 @@
 package bp.res;
 
-import static bp.util.Std.err;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BPResourceByteArraySupplier extends BPResourceHolder implements BPResourceIO
@@ -41,32 +38,18 @@ public class BPResourceByteArraySupplier extends BPResourceHolder implements BPR
 		}
 	}
 
-	public <T> T useInputStream(Function<InputStream, T> in)
+	@SuppressWarnings("unchecked")
+	public <T extends InputStream> T getInputStream()
 	{
-		try (ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) getData()))
-		{
-			return in.apply(bis);
-		}
-		catch (IOException e)
-		{
-			err(e);
-		}
-		return null;
+		if (m_data == null)
+			return null;
+		return (T) new ByteArrayInputStream((byte[]) getData());
 	}
 
-	public <T> T useOutputStream(Function<OutputStream, T> out)
+	@SuppressWarnings("unchecked")
+	public <T extends OutputStream> T getOutputStream()
 	{
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream())
-		{
-			T rc = out.apply(bos);
-			m_data = bos.toByteArray();
-			return rc;
-		}
-		catch (IOException e)
-		{
-			err(e);
-		}
-		return null;
+		return (T) new BPResourceByteArraySupplierOutputStream();
 	}
 
 	public boolean exists()
@@ -84,5 +67,26 @@ public class BPResourceByteArraySupplier extends BPResourceHolder implements BPR
 	{
 		byte[] data = readFromSupplier();
 		return data != null ? data.length : 0;
+	}
+	
+	protected class BPResourceByteArraySupplierOutputStream extends ByteArrayOutputStream
+	{
+		protected volatile boolean closed = false;
+
+		public void flush() throws IOException
+		{
+			BPResourceByteArraySupplier.this.m_data = buf;
+			super.flush();
+		}
+
+		public void close() throws IOException
+		{
+			if (!closed)
+			{
+				BPResourceByteArraySupplier.this.m_data = buf;
+				closed = true;
+			}
+			super.close();
+		}
 	}
 }

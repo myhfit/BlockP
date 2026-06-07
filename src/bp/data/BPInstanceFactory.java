@@ -9,4 +9,6 @@ public interface BPInstanceFactory<T>
 	T create(Map<String, Object> params);
 
 	Class<? extends T> getInstanceClass();
+
+	Class<T> getInstanceRootClass();
 }

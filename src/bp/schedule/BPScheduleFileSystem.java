@@ -72,7 +72,7 @@ public class BPScheduleFileSystem extends BPScheduleBase
 			return rc;
 		}
 
-		public Class<? extends BPSchedule> getScheduleClass()
+		public Class<? extends BPSchedule> getInstanceClass()
 		{
 			return BPScheduleFileSystem.class;
 		}

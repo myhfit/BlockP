@@ -55,19 +55,30 @@ public class BPResourceFileLocal extends BPResourceFileSystemLocal implements BP
 		return null;
 	}
 
-	public <T> T useInputStream(Function<InputStream, T> in)
+	@SuppressWarnings("unchecked")
+	public <T extends InputStream> T getInputStream()
 	{
-		try (FileInputStream fis = new FileInputStream(m_file))
+		try
 		{
-			return in.apply(fis);
-		}
-		catch (FileNotFoundException e)
-		{
-			err(e);
+			return (T) new FileInputStream(m_file);
 		}
 		catch (IOException e)
 		{
-			err(e);
+			Std.err(e);
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends OutputStream> T getOutputStream()
+	{
+		try
+		{
+			return (T) new FileOutputStream(m_file);
+		}
+		catch (IOException e)
+		{
+			Std.err(e);
 		}
 		return null;
 	}

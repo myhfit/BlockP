@@ -1,13 +1,10 @@
 package bp.res;
 
-import static bp.util.Std.err;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.function.Function;
 
 public class BPResourceByteArray extends BPResourceHolder implements BPResourceIO
 {
@@ -15,36 +12,19 @@ public class BPResourceByteArray extends BPResourceHolder implements BPResourceI
 	{
 		super(bs, parent, ext, id, name, isleaf);
 	}
-
-	public <T> T useInputStream(Function<InputStream, T> in)
+	
+	@SuppressWarnings("unchecked")
+	public <T extends InputStream> T getInputStream()
 	{
-		if (m_data != null)
-		{
-			try (ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) m_data))
-			{
-				return in.apply(bis);
-			}
-			catch (IOException e)
-			{
-				err(e);
-			}
-		}
-		return null;
+		if (m_data == null)
+			return null;
+		return (T) new ByteArrayInputStream((byte[]) m_data);
 	}
 
-	public <T> T useOutputStream(Function<OutputStream, T> out)
+	@SuppressWarnings("unchecked")
+	public <T extends OutputStream> T getOutputStream()
 	{
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream())
-		{
-			T rc = out.apply(bos);
-			m_data = bos.toByteArray();
-			return rc;
-		}
-		catch (IOException e)
-		{
-			err(e);
-		}
-		return null;
+		return (T) new BPResourceByteArrayOutputStream();
 	}
 
 	public boolean exists()
@@ -55,5 +35,26 @@ public class BPResourceByteArray extends BPResourceHolder implements BPResourceI
 	public long getSize()
 	{
 		return m_data != null ? ((byte[]) m_data).length : 0;
+	}
+	
+	protected class BPResourceByteArrayOutputStream extends ByteArrayOutputStream
+	{
+		protected volatile boolean closed = false;
+
+		public void flush() throws IOException
+		{
+			BPResourceByteArray.this.m_data = buf;
+			super.flush();
+		}
+
+		public void close() throws IOException
+		{
+			if (!closed)
+			{
+				BPResourceByteArray.this.m_data = buf;
+				closed = true;
+			}
+			super.close();
+		}
 	}
 }

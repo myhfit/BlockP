@@ -88,5 +88,10 @@ public class BPTransformerFactoryScript implements BPTransformerFactory
 				script = null;
 			m_scripttext = script;
 		}
+
+		public boolean needSettingUI()
+		{
+			return true;
+		}
 	}
 }

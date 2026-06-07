@@ -50,6 +50,12 @@ public class BPLocaleHelperDict<C extends BPLocaleConstDirect> implements BPLoca
 		return m_actps.get(txt);
 	}
 
+	public String translate(String txt)
+	{
+		String rc = v(txt);
+		return rc != null ? rc : txt;
+	}
+
 	public String getPackName()
 	{
 		return m_packname;

@@ -75,14 +75,19 @@ public class BPLocaleHelpers
 		return rc;
 	}
 
-	@SuppressWarnings("unchecked")
 	public final static <C extends BPLocaleConstDirect> String translate(C key, String txt)
+	{
+		return translate(key, txt, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <C extends BPLocaleConstDirect> String translate(C key, String txt, String dictprefix)
 	{
 		String pname = key.getPackName();
 		BPLocaleHelperDict<C> helper = getHelperOrCreate(pname, () -> new BPLocaleHelperDict<C>((Class<C>) key.getClass(), key.getPackName()));
 		String rc = null;
 		if (helper != null)
-			rc = helper.v(txt);
+			rc = helper.v(dictprefix != null ? dictprefix + txt : txt);
 		if (rc == null)
 			rc = txt;
 		return rc;

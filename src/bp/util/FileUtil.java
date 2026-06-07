@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.function.BiPredicate;
 
 import bp.BPCore;
@@ -134,7 +136,7 @@ public class FileUtil
 		String tar = ftar.getAbsolutePath();
 		try
 		{
-			Files.copy(Paths.get(src), Paths.get(tar));
+			Files.copy(Paths.get(src), Paths.get(tar), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 			Std.debug("Copy " + src + ">" + tar);
 			return true;
 		}
@@ -307,5 +309,38 @@ public class FileUtil
 			p = p.replace(c, '/');
 		}
 		return p.split("/");
+	}
+
+	public final static void genCopyList(String src, String tarpar, List<String> srcs, List<String> tars)
+	{
+		File srcf = new File(src);
+		if (!srcf.exists())
+			return;
+		if (srcf.isFile())
+		{
+			srcs.add(srcf.getAbsolutePath());
+			File tar = new File(tarpar, srcf.getName());
+			tars.add(tar.getAbsolutePath());
+			return;
+		}
+		else if (srcf.isDirectory())
+		{
+			String basepath = srcf.getAbsolutePath();
+			int b = basepath.length()+((!(basepath.endsWith("/") || basepath.endsWith(File.separator)))?1:0);
+			File tarf = new File(tarpar, srcf.getName());
+			String tar = tarf.getAbsolutePath() + ((!(basepath.endsWith("/") || basepath.endsWith(File.separator))) ? File.separator : "");
+			FileUtil.forEachFile(srcf, true, (d, f) ->
+			{
+				String filename = f.getAbsolutePath();
+				String relname = filename.substring(b);
+				srcs.add(filename);
+				tars.add(tar + relname);
+				return true;
+			});
+		}
+		else
+		{
+			return;
+		}
 	}
 }

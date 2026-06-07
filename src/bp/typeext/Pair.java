@@ -48,6 +48,11 @@ public interface Pair<L, R>
 		{
 			return right;
 		}
+
+		public String toString()
+		{
+			return (left != null ? left.toString() : "") + ":" + (right != null ? right.toString() : "");
+		}
 	}
 
 	public static class PairKV extends PairBase<String, Object>

@@ -8,6 +8,11 @@ public interface BPDataEndpointFactory
 
 	<D> BPDataConsumer<D> create(String formatname);
 
+	default boolean refuseSelectFormat()
+	{
+		return false;
+	}
+
 	List<String> getSupportedFormats();
 
 	default boolean canHandle(String formatname)

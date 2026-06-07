@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import bp.data.BPMData;
 import bp.data.BPSLData;
@@ -716,6 +717,20 @@ public class ObjUtil
 				sb.append(ObjUtil.toString(data));
 		}
 		return sb.toString();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public final static <T> List<T> mergeList(Supplier<T> separator, List<T> dest, List... srcs)
+	{
+		List<T> rc = dest == null ? new ArrayList<T>() : dest;
+		for (List<T> src : srcs)
+		{
+			if (separator != null && rc.size() > 0)
+				rc.add(separator.get());
+			if (src != null)
+				rc.addAll(src);
+		}
+		return rc;
 	}
 
 	@SafeVarargs

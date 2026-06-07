@@ -9,6 +9,13 @@ public interface BPXData extends BPData
 	default void setColValue(int col, Object v)
 	{
 	}
+	
+	default void setColValueOrResize(int col, Object v)
+	{
+		ensureSize(col + 1);
+	}
+
+	void ensureSize(int size);
 
 	default BPDataStructure getDataStructure()
 	{
@@ -18,6 +25,8 @@ public interface BPXData extends BPData
 	Object[] getValues();
 
 	int length();
+	
+	BPXData cloneX(boolean copydata);
 
 	public final static class BPXDataArray implements BPXData
 	{
@@ -31,6 +40,16 @@ public interface BPXData extends BPData
 		public Object getColValue(int col)
 		{
 			return values[col];
+		}
+		
+		public void ensureSize(int size)
+		{
+			if (values.length < size)
+			{
+				Object[] vs = new Object[size];
+				System.arraycopy(values, 0, vs, 0, values.length);
+				values = vs;
+			}
 		}
 
 		public void setColValue(int col, Object v)
@@ -46,6 +65,14 @@ public interface BPXData extends BPData
 		public int length()
 		{
 			return values.length;
+		}
+
+		public BPXData cloneX(boolean copydata)
+		{
+			Object[] vs = new Object[] { values.length };
+			if (copydata)
+				System.arraycopy(values, 0, vs, 0, values.length);
+			return new BPXDataArray(vs);
 		}
 	}
 
@@ -67,6 +94,17 @@ public interface BPXData extends BPData
 		{
 			values.set(col, v);
 		}
+		
+		public void ensureSize(int size)
+		{
+			if (values.size() < size)
+			{
+				Object[] arr = values.toArray();
+				Object[] arr2 = new Object[size];
+				System.arraycopy(arr, 0, arr2, 0, arr.length);
+				values = new CopyOnWriteArrayList<>(arr2);
+			}
+		}
 
 		public Object[] getValues()
 		{
@@ -76,6 +114,14 @@ public interface BPXData extends BPData
 		public int length()
 		{
 			return values.size();
+		}
+
+		public BPXData cloneX(boolean copydata)
+		{
+			if (copydata)
+				return new BPXDataList(getValues());
+			else
+				return new BPXDataList(new Object[values.size()]);
 		}
 	}
 }

@@ -204,6 +204,10 @@ public class ResourceUtil
 						}
 					}
 				}
+				else
+				{
+					rc = getResourceFSByLink(reslink.split(File.pathSeparator));
+				}
 			}
 			catch (Exception e)
 			{

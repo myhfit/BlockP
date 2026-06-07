@@ -68,6 +68,11 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 
 	}
 
+	default boolean needSettingUI()
+	{
+		return false;
+	}
+
 	String getInfo();
 
 	void setID(String id);

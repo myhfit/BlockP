@@ -1,12 +1,16 @@
 package bp.schedule;
 
-import java.util.Map;
+import bp.data.BPInstanceFactory;
 
-public interface BPScheduleFactory
+public interface BPScheduleFactory extends BPInstanceFactory<BPSchedule>
 {
-	String getName();
-	
-	BPSchedule create(Map<String, Object> params);
-	
-	Class<? extends BPSchedule> getScheduleClass();
+	default Class<BPSchedule> getInstanceRootClass()
+	{
+		return BPSchedule.class;
+	}
+
+	public static String getFactoryTypeName()
+	{
+		return "Schedule";
+	}
 }
