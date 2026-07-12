@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatProject implements BPFormat
+public class BPFormatProject extends BPFormatBase
 {
 	public final static String FORMAT_PROJECT = "Project";
 	public final static String EXT_PROJECT = "[PROJECT]";

@@ -9,6 +9,7 @@ import bp.BPCore;
 import bp.config.BPConfig;
 import bp.format.BPFormat;
 import bp.format.BPFormatManager;
+import bp.locale.BPLocaleHelpers;
 import bp.project.BPResourceProjectMemory;
 
 public abstract class BPResourceFactory implements BPResource
@@ -168,6 +169,11 @@ public abstract class BPResourceFactory implements BPResource
 		{
 			m_name = "Create temporary";
 			m_isleaf = true;
+		}
+
+		public String toString()
+		{
+			return BPLocaleHelpers.translateByClass(BPResourceFactory.class, m_name);
 		}
 
 		public BPResource makeResource(BPConfig params)

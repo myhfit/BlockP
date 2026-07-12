@@ -2,11 +2,12 @@ package bp.ui.data;
 
 import java.util.ServiceLoader;
 
+import bp.BPCore.BPPlatform;
 import bp.util.ClassUtil;
 
 public class BPDataUIManager
 {
-	public final static <C> C getUIForData(Object data)
+	public final static <C> C getUIForData(Object data, BPPlatform platform)
 	{
 		if (data == null)
 			return null;
@@ -14,6 +15,8 @@ public class BPDataUIManager
 		ServiceLoader<BPDataUIAdapter> adapters = ClassUtil.getServices(BPDataUIAdapter.class);
 		for (BPDataUIAdapter a : adapters)
 		{
+			if (platform != null && !a.supportPlatform(platform))
+				continue;
 			if (a.canHandle(data, c))
 				return a.getUIForData(data);
 		}

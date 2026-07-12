@@ -27,8 +27,10 @@ public class BPPDUtil
 	public final static byte BT_DATE = 17;
 	public final static byte BT_LIST = 32;
 	public final static byte BT_MAP = 48;
+	public final static byte BT_STR_INDICT_BYTE = 64;
+	public final static byte BT_STR_INDICT_INT = 65;
 	public final static byte BT_VERSION = -1;
-	
+
 	private final static short BPPD_VER = 0;
 
 	public final static <T> T read(byte[] bs)
@@ -107,6 +109,10 @@ public class BPPDUtil
 				return readList(bb, context);
 			case BT_MAP:
 				return readMap(bb, context);
+			case BT_STR_INDICT_BYTE:
+				return context.translate((int) bb.get());
+			case BT_STR_INDICT_INT:
+				return context.translate(bb.getInt());
 		}
 		return null;
 	}
@@ -153,10 +159,16 @@ public class BPPDUtil
 			}
 			else if (c == String.class)
 			{
-				bw.put(BT_STR);
-				byte[] bs = TextUtil.fromString((String) v, "utf-8");
-				bw.putInt(bs.length);
-				bw.put(bs);
+				boolean flag = false;
+				if (context.dictmode)
+					flag = context.writeTestRTranslate(bw, v);
+				if (!flag)
+				{
+					bw.put(BT_STR);
+					byte[] bs = TextUtil.fromString((String) v, "utf-8");
+					bw.putInt(bs.length);
+					bw.put(bs);
+				}
 			}
 			else if (c == Date.class)
 			{
@@ -246,6 +258,10 @@ public class BPPDUtil
 	protected static class BPPDIOContext
 	{
 		public short ver;
+		public Map<Integer, Object> dict;
+		public Map<Object, Integer> rdict;
+		public boolean dictmode;
+		public boolean noerr;
 
 		public BPPDIOContext()
 		{
@@ -255,6 +271,58 @@ public class BPPDUtil
 		public BPPDIOContext(short ver)
 		{
 			this.ver = ver;
+		}
+
+		public Object translate(int index)
+		{
+			if (index == 0)
+				return null;
+			if (dict == null && (!noerr))
+				throw new RuntimeException("bppd dict not found");
+			Object v = dict.get(index);
+			if (v == null && !dict.containsKey(index) && (!noerr))
+				throw new RuntimeException("bppd dict not found key:" + index);
+			return v;
+		}
+
+		public int rTranslate(Object obj)
+		{
+			if (obj == null)
+				return 0;
+			if (rdict == null)
+				throw new RuntimeException("bppd dict not found");
+			Integer k = rdict.get(obj);
+			if (k == null)
+				throw new RuntimeException("bppd dict not found key:" + obj);
+
+			return k;
+		}
+
+		public byte rTranslateToByte(Object obj)
+		{
+			int r = rTranslate(obj);
+			if (r > Byte.MAX_VALUE || r < Byte.MIN_VALUE)
+				throw new RuntimeException("bppd dict value error:" + obj);
+			return (byte) r;
+		}
+
+		public boolean writeTestRTranslate(BPBytesWriter bw, Object obj)
+		{
+			Integer k = rdict.get(obj);
+			if (k == null)
+				return false;
+			int r = k;
+			if (r <= Byte.MAX_VALUE && r >= Byte.MIN_VALUE)
+			{
+				bw.put(BT_BYTE);
+				bw.put((byte) r);
+			}
+			else
+			{
+				bw.put(BT_INT);
+				bw.putInt(r);
+			}
+			return true;
 		}
 	}
 }

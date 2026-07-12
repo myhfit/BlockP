@@ -98,7 +98,7 @@ public class BPTaskUserInput extends BPTaskLocal<Object>
 			return new BPTaskUserInput();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskUserInput.class;
 		}

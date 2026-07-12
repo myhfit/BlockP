@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatDir implements BPFormat
+public class BPFormatDir extends BPFormatBase
 {
 	public final static String FORMAT_DIR = "Directory";
 	public final static String EXT_DIR = "[DIR]";

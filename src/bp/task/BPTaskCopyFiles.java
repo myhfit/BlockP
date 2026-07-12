@@ -141,7 +141,7 @@ public class BPTaskCopyFiles extends BPTaskLocal<Boolean>
 			return new BPTaskCopyFiles();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskCopyFiles.class;
 		}

@@ -2,7 +2,9 @@ package bp.transform;
 
 import java.util.Collection;
 
-public interface BPTransformerFactory
+import bp.typeext.Nameable;
+
+public interface BPTransformerFactory extends Nameable
 {
 	String getName();
 

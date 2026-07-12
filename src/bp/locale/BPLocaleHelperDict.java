@@ -10,6 +10,7 @@ import java.util.Map;
 import bp.util.BPPDUtil;
 import bp.util.ClassUtil;
 import bp.util.IOUtil;
+import bp.util.ObjUtil;
 import bp.util.Std;
 
 public class BPLocaleHelperDict<C extends BPLocaleConstDirect> implements BPLocaleHelper<C, BPLocaleVerb>
@@ -182,6 +183,12 @@ public class BPLocaleHelperDict<C extends BPLocaleConstDirect> implements BPLoca
 	public List<String> getKeys()
 	{
 		return new ArrayList<String>(m_actps.keySet());
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public C findConst(String name)
+	{
+		return (C) ObjUtil.enumValueOf((Class) getConstClass(), name);
 	}
 
 	protected Class<C> getConstClass()

@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatBPPD implements BPFormat
+public class BPFormatBPPD extends BPFormatBase
 {
 	public final static String FORMAT_BPPD = "BlockP Packed Data";
 

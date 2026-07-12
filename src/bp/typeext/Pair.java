@@ -28,6 +28,10 @@ public interface Pair<L, R>
 		public L left;
 		public R right;
 
+		public PairBase()
+		{
+		}
+
 		public PairBase(L l, R r)
 		{
 			left = l;
@@ -55,11 +59,21 @@ public interface Pair<L, R>
 		}
 	}
 
-	public static class PairKV extends PairBase<String, Object>
+	public static class Leader<R> extends PairBase<String, R>
 	{
-		public PairKV(String l, Object r)
+		public String toString()
 		{
-			super(l, r);
+			return left != null ? left.toString() : "";
+		}
+
+		public Leader()
+		{
+		}
+
+		public Leader(String l, R r)
+		{
+			left = l;
+			right = r;
 		}
 	}
 }

@@ -98,10 +98,7 @@ public class BPEnvs extends BPConfigAdvBase
 	{
 		Map<String, Object> rc = new HashMap<String, Object>();
 		List<BPEnv> envs = BPEnvManager.listEnv();
-		envs.sort((a, b) ->
-		{
-			return a.getName().compareTo(b.getName());
-		});
+		envs.sort((a, b) -> a.getName().compareTo(b.getName()));
 		rc.put("envs", envs);
 		return rc;
 	}

@@ -3,6 +3,7 @@ package bp.res;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BPResourceVirtual implements BPResource
@@ -16,6 +17,7 @@ public class BPResourceVirtual implements BPResource
 	protected volatile String m_id;
 	protected volatile String m_customext;
 	protected volatile boolean m_openwithtempid;
+	protected volatile Map<String, Object> m_metas;
 
 	public String getExt()
 	{
@@ -157,6 +159,22 @@ public class BPResourceVirtual implements BPResource
 	public void setChildren(List<BPResource> children)
 	{
 		m_children = new CopyOnWriteArrayList<BPResource>(children);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getMeta(String key)
+	{
+		return m_metas == null ? null : (T) m_metas.get(key);
+	}
+
+	public void setMeta(String key, Object value)
+	{
+		if (m_metas == null)
+			m_metas = new ConcurrentHashMap<>();
+		if (value == null)
+			m_metas.remove(key);
+		else
+			m_metas.put(key, value);
 	}
 
 	//ve use setting

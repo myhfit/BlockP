@@ -1,6 +1,8 @@
 package bp.format;
 
-public interface BPFormat
+import bp.typeext.Nameable;
+
+public interface BPFormat extends Nameable
 {
 	String getName();
 

@@ -149,7 +149,7 @@ public class BPTaskExecStated extends BPTaskExec
 			return new BPTaskExecStated();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskExecStated.class;
 		}

@@ -33,6 +33,11 @@ public class FormatAssocs extends BPConfigAdvBase
 		return man.getMappedData();
 	}
 
+	public void setMappedData(Map<String, Object> data)
+	{
+
+	}
+
 	protected Map<String, Object> createMap()
 	{
 		return new HashMap<String, Object>();

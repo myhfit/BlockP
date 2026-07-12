@@ -53,7 +53,7 @@ public class BPLocaleHelpers
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public final static <T> T getValueReflect(String classname, String key)
 	{
-		Class<?> c = ClassUtil.getTClass(classname, ClassUtil.getExtensionClassLoader());
+		Class<?> c = ClassUtil.getEClass(classname);
 		if (c != null)
 		{
 			BPLocaleConst lc = (BPLocaleConst) ObjUtil.enumValueOf((Class) c, key);
@@ -61,6 +61,12 @@ public class BPLocaleHelpers
 				return getValue(lc);
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final static <C extends BPLocaleConst> C findConst(String packname, String name)
+	{
+		return (C) getHelper(packname).findConst(name);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -101,7 +107,12 @@ public class BPLocaleHelpers
 
 	public final static String translateByClass(Class<?> cls, String txt)
 	{
-		String rc = translateByClassInner(cls, txt, true);
+		return translateByClass(cls, txt, null);
+	}
+
+	public final static String translateByClass(Class<?> cls, String txt, String dictprefix)
+	{
+		String rc = translateByClassInner(cls, dictprefix == null ? txt : dictprefix + txt, true);
 		return rc == null ? txt : rc;
 	}
 

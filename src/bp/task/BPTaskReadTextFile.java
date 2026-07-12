@@ -78,7 +78,7 @@ public class BPTaskReadTextFile extends BPTaskLocal<String>
 			return new BPTaskReadTextFile();
 		}
 
-		public Class<BPTaskReadTextFile> getTaskClass()
+		public Class<BPTaskReadTextFile> getInstanceClass()
 		{
 			return BPTaskReadTextFile.class;
 		}

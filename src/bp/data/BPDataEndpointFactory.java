@@ -2,7 +2,9 @@ package bp.data;
 
 import java.util.List;
 
-public interface BPDataEndpointFactory
+import bp.typeext.Nameable;
+
+public interface BPDataEndpointFactory extends Nameable
 {
 	String getName();
 

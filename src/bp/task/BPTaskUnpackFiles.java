@@ -311,7 +311,7 @@ public class BPTaskUnpackFiles extends BPTaskLocal<Boolean>
 			return new BPTaskUnpackFiles();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskUnpackFiles.class;
 		}

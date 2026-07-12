@@ -25,6 +25,8 @@ public interface BPLocaleHelper<C extends BPLocaleConst, VERB extends BPLocaleVe
 		String l = BPCore.S_LOCALE;
 		return l == null ? Locale.getDefault().toString() : l;
 	}
+	
+	C findConst(String name);
 
 	public final static BPLocaleHelper<?, ?> HELPER_NULL = new BPLocaleHelperEmpty();
 
@@ -47,6 +49,11 @@ public interface BPLocaleHelper<C extends BPLocaleConst, VERB extends BPLocaleVe
 
 		public void reInit()
 		{
+		}
+
+		public BPLocaleConst findConst(String name)
+		{
+			return null;
 		}
 	}
 }

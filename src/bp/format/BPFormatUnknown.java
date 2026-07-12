@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatUnknown implements BPFormat
+public class BPFormatUnknown extends BPFormatBase
 {
 	public final static String FORMAT_NA = "N/A";
 	public final static String MIME_NA = "application/octet-stream";

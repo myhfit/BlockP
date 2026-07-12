@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatTreeData implements BPFormat
+public class BPFormatTreeData extends BPFormatBase
 {
 	public final static String FORMAT_TREEDATA = "TreeData";
 

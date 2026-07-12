@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatGZip implements BPFormat
+public class BPFormatGZip extends BPFormatBase
 {
 	public final static String FORMAT_GZIP = "GZIP";
 	public final static String MIME_GZIP = "application/gzip";

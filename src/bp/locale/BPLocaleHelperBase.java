@@ -207,6 +207,12 @@ public abstract class BPLocaleHelperBase<C extends BPLocaleConst, V extends BPLo
 		return rc;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public C findConst(String name)
+	{
+		return (C) ObjUtil.enumValueOf((Class) getConstClass(), name);
+	}
+
 	protected abstract Class<C> getConstClass();
 
 	protected abstract Class<V> getVerbClass();

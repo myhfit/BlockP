@@ -32,7 +32,7 @@ public class BPTaskSerialPipe<V> extends BPTaskSerial<V>
 		}
 
 		@SuppressWarnings("unchecked")
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return (Class<? extends BPTask<?>>) (Class<?>) BPTaskSerialPipe.class;
 		}

@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import bp.res.BPResource;
 
-public interface BPDataContainer
+public interface BPDataContainer extends AutoCloseable
 {
 	void close();
 

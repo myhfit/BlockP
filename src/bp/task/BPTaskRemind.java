@@ -59,7 +59,7 @@ public class BPTaskRemind extends BPTaskLocal<Boolean>
 			return new BPTaskRemind();
 		}
 
-		public Class<BPTaskRemind> getTaskClass()
+		public Class<BPTaskRemind> getInstanceClass()
 		{
 			return BPTaskRemind.class;
 		}

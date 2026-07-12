@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatJSON implements BPFormat
+public class BPFormatJSON extends BPFormatBase
 {
 	public final static String FORMAT_JSON = "JSON";
 	public final static String MIME_TEXT_JSON = "text/json";

@@ -1,6 +1,8 @@
 package bp.tool;
 
-public interface BPTool
+import bp.typeext.Nameable;
+
+public interface BPTool extends Nameable
 {
 	String getName();
 

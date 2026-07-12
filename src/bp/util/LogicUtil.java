@@ -2,7 +2,11 @@ package bp.util;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -56,6 +60,37 @@ public class LogicUtil
 			r = ((Function) f).apply(r);
 		}
 		return (T) r;
+	}
+
+	public final static <T> ChainBuilder<T> buildChain(T t)
+	{
+		return new ChainBuilder<T>(t);
+	}
+
+	public final static class ChainBuilder<T>
+	{
+		public T target;
+
+		public ChainBuilder(T t)
+		{
+			target = t;
+		}
+
+		public <R> ChainBuilder<R> chain(Function<T, R> func)
+		{
+			R v = null;
+			if (target != null)
+				v = func.apply(target);
+			return new ChainBuilder<>(v);
+		}
+		
+		public <R> ChainBuilder<R> chain(Supplier<R> func)
+		{
+			R v = null;
+			if (target != null)
+				v = func.get();
+			return new ChainBuilder<>(v);
+		}
 	}
 
 	// parallel apply function,return when not null
@@ -178,11 +213,35 @@ public class LogicUtil
 				seg.accept(target);
 		}
 
+		public <P> void run(BiConsumer<T, P> seg, P params)
+		{
+			T target = m_ref.get();
+			if (target != null)
+				seg.accept(target, params);
+		}
+
+		public void runDynamic(Class<?> cls, String method, Object... params)
+		{
+			T target = m_ref.get();
+			if (target != null)
+			{
+				ClassUtil.tryCallSimpleMethod(cls, method, target, params);
+			}
+		}
+
 		public <V> V exec(Function<T, V> seg)
 		{
 			T target = m_ref.get();
 			if (target != null)
 				return seg.apply(target);
+			return null;
+		}
+
+		public <V> V execDynamic(Class<?> cls, String method, Object... params)
+		{
+			T target = m_ref.get();
+			if (target != null)
+				ClassUtil.tryCallSimpleMethod(cls, method, target, params);
 			return null;
 		}
 
@@ -230,6 +289,42 @@ public class LogicUtil
 		{
 			return m_ref.get();
 		}
+
+		@SuppressWarnings("unchecked")
+		public T getIFCProxy(Class<?> ifcclass)
+		{
+			return (T) Proxy.newProxyInstance(ifcclass.getClassLoader(), new Class[] { ifcclass }, this::invoke);
+		}
+
+		protected Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+		{
+			T t = m_ref.get();
+			if (t == null)
+				return null;
+			else
+				return method.invoke(t, args);
+		}
+	}
+
+	public static class WeakRefGoPredicate<T> extends WeakRefGo<Predicate<T>>
+	{
+		public WeakRefGoPredicate(Predicate<T> target)
+		{
+			super(target);
+		}
+
+		public WeakRefGoPredicate()
+		{
+			this(null);
+		}
+
+		public Boolean test(T value)
+		{
+			Predicate<T> cb = m_ref.get();
+			if (cb != null)
+				return cb.test(value);
+			return null;
+		}
 	}
 
 	public static class WeakRefGoConsumer<T> extends WeakRefGo<Consumer<T>>
@@ -252,6 +347,26 @@ public class LogicUtil
 		}
 	}
 
+	public static class WeakRefGoBiConsumer<T, U> extends WeakRefGo<BiConsumer<T, U>>
+	{
+		public WeakRefGoBiConsumer(BiConsumer<T, U> target)
+		{
+			super(target);
+		}
+
+		public WeakRefGoBiConsumer()
+		{
+			this(null);
+		}
+
+		public void accept(T v, U u)
+		{
+			BiConsumer<T, U> cb = m_ref.get();
+			if (cb != null)
+				cb.accept(v, u);
+		}
+	}
+
 	public static class WeakRefGoFunction<T, V> extends WeakRefGo<Function<T, V>>
 	{
 		public WeakRefGoFunction(Function<T, V> target)
@@ -269,6 +384,27 @@ public class LogicUtil
 			Function<T, V> cb = m_ref.get();
 			if (cb != null)
 				return cb.apply(value);
+			return null;
+		}
+	}
+
+	public static class WeakRefGoBiFunction<T, U, R> extends WeakRefGo<BiFunction<T, U, R>>
+	{
+		public WeakRefGoBiFunction(BiFunction<T, U, R> target)
+		{
+			super(target);
+		}
+
+		public WeakRefGoBiFunction()
+		{
+			this(null);
+		}
+
+		public R apply(T t, U u)
+		{
+			BiFunction<T, U, R> cb = m_ref.get();
+			if (cb != null)
+				return cb.apply(t, u);
 			return null;
 		}
 	}

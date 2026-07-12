@@ -39,11 +39,11 @@ public class BPDataContainerArchive extends BPDataContainerBase implements BPDat
 					{
 						if (!isdir)
 						{
-							m_datamap.put(ename, new ArchiveEntry(false, IOUtil.read(zis)));
+							m_datamap.put(ename, new ArchiveEntry(false, IOUtil.read(zis), entry.getLastModifiedTime().toMillis()));
 						}
 						else
 						{
-							m_datamap.put(ename, new ArchiveEntry(true, null));
+							m_datamap.put(ename, new ArchiveEntry(true, null, entry.getLastModifiedTime().toMillis()));
 						}
 					}
 					entry = zis.getNextEntry();
@@ -68,6 +68,7 @@ public class BPDataContainerArchive extends BPDataContainerBase implements BPDat
 			byte[] bs = entry.bs;
 			String ext = entry.isdir ? BPFormatDir.EXT_DIR : FileUtil.getExt(name);
 			BPResourceByteArray res = new BPResourceByteArray(bs, null, ext, BPCore.genID(BPCore.getFileContext()), name, bs != null);
+			res.setMeta("lastModified", entry.lastmodified);
 			rc.add(res);
 		}
 		return rc.toArray(new BPResource[rc.size()]);
@@ -87,15 +88,17 @@ public class BPDataContainerArchive extends BPDataContainerBase implements BPDat
 	{
 		public boolean isdir;
 		public byte[] bs;
+		public long lastmodified;
 
 		public ArchiveEntry()
 		{
 		}
 
-		public ArchiveEntry(boolean isdir, byte[] bs)
+		public ArchiveEntry(boolean isdir, byte[] bs, long lastmodified)
 		{
 			this.isdir = isdir;
 			this.bs = bs;
+			this.lastmodified = lastmodified;
 		}
 	}
 }

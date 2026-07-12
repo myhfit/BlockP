@@ -132,7 +132,7 @@ public class BPTaskExec extends BPTaskLocal<Boolean>
 			return new BPTaskExec();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskExec.class;
 		}

@@ -1,5 +1,9 @@
 package bp.util;
 
+import java.util.Comparator;
+
+import bp.typeext.Nameable;
+
 public class CompareUtil
 {
 	public final static boolean compareValue(Object v0, Object v1, COMPARE_FLAGS flags)
@@ -35,6 +39,38 @@ public class CompareUtil
 		if (n0)
 			return true;
 		return null;
+	}
+
+	public final static Comparator<String> COMPARATOR_TXT_NOCASE()
+	{
+		return new Comparator_Text_NOCase();
+	}
+
+	public final static Comparator<Nameable> COMPARATOR_NAMEABLE()
+	{
+		return new Comparator_Nameable();
+	}
+
+	private final static class Comparator_Text_NOCase implements Comparator<String>
+	{
+		public int compare(String str1, String str2)
+		{
+			if (str1 == null)
+				return str2 == null ? 0 : -1;
+			return str1.compareToIgnoreCase(str2);
+		}
+	}
+
+	private final static class Comparator_Nameable implements Comparator<Nameable>
+	{
+		public int compare(Nameable n1, Nameable n2)
+		{
+			String str1 = n1 == null ? null : n1.getName();
+			String str2 = n2 == null ? null : n2.getName();
+			if (str1 == null)
+				return str2 == null ? 0 : -1;
+			return str1.compareToIgnoreCase(str2);
+		}
 	}
 
 	public static class COMPARE_FLAGS

@@ -108,7 +108,7 @@ public class BPTaskTimer extends BPTaskLocal<Boolean>
 			return new BPTaskTimer();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskTimer.class;
 		}

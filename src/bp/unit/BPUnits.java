@@ -7,10 +7,10 @@ public interface BPUnits<U extends BPUnit<?, ?>>
 {
 	String getUnitsName();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	default List<U> getUnitValues()
 	{
-		Class<Enum<?>> cls = (Class<Enum<?>>) getUnitClass();
+		Class<Enum<?>> cls = (Class) getUnitClass();
 		Enum<?>[] es = cls.getEnumConstants();
 		List<U> rc = new ArrayList<U>();
 		for (Enum<?> e : es)

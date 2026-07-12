@@ -5,6 +5,8 @@ import java.lang.management.OperatingSystemMXBean;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import bp.typeext.KV.KVs;
+
 public class OSInfoHandlers
 {
 	public final static Map<String, Object> getOSInfo()
@@ -23,5 +25,10 @@ public class OSInfoHandlers
 			rc.put("Free Swap Space", NumberUtil.formatByteCount(osb2.getFreeSwapSpaceSize()));
 		}
 		return rc;
+	}
+
+	public final static KVs getOSInfoKVs()
+	{
+		return new KVs(getOSInfo());
 	}
 }

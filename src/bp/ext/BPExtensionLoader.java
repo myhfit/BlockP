@@ -1,8 +1,9 @@
 package bp.ext;
 
 import bp.context.BPFileContext;
+import bp.typeext.Nameable;
 
-public interface BPExtensionLoader
+public interface BPExtensionLoader extends Nameable
 {
 	String getName();
 

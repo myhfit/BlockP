@@ -103,8 +103,8 @@ public class BPTaskPackSources extends BPTaskPackFiles
 		String tardir = (String) data.get("targetdir");
 		boolean packlist = ObjUtil.toBool(data.get("packlist"), false);
 
-		String[] srcs = srcstr == null ? null : srcstr.trim().split(";");
-		m_params = new Object[] { srcs, srcbase, tarstr.trim(), tardir != null ? tardir.trim() : null, packlist };
+		String[] srcs = srcstr == null ? null : srcstr.split(";");
+		m_params = new Object[] { srcs, srcbase, tarstr, tardir != null ? tardir : null, packlist };
 	}
 
 	public static class BPTaskFactoryPackSources extends BPTaskFactoryBase<BPTaskPackSources>
@@ -119,7 +119,7 @@ public class BPTaskPackSources extends BPTaskPackFiles
 			return new BPTaskPackSources();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskPackSources.class;
 		}

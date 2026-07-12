@@ -98,6 +98,33 @@ public class ClassUtil
 
 		return rc;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public final static <T> T tryCallSimpleMethod(Class<?> cls, String methodname, Object obj, Object... params)
+	{
+		T rc = null;
+		try
+		{
+			if (cls != null)
+			{
+				Method[] ms = cls.getMethods();
+				for (Method m : ms)
+				{
+					if (methodname.equals(m.getName()))
+					{
+						rc = (T) m.invoke(obj, params);
+						break;
+					}
+				}
+			}
+		}
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
+		}
+
+		return rc;
+	}
 
 	@SuppressWarnings("unchecked")
 	public final static <T> T callMethod(Class<?> cls, String methodname, Class<?>[] paramcls, Object obj, boolean ignoreNoMethod, Object... params)
@@ -579,7 +606,7 @@ public class ClassUtil
 			{
 				JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
 				JarEntry entry = jar.getJarEntry(packname);
-				entry.getLastModifiedTime().toMillis();
+				return entry.getLastModifiedTime().toMillis();
 			}
 		}
 		catch (Exception e)
@@ -705,6 +732,11 @@ public class ClassUtil
 	public final static Class<?> getTClass(String classname)
 	{
 		return getTClass(classname, Thread.currentThread().getContextClassLoader());
+	}
+
+	public final static Class<?> getEClass(String classname)
+	{
+		return getTClass(classname, S_CL);
 	}
 
 	public final static boolean checkChildClass(Class<?> parent, Class<?> childclass, Predicate<Class<?>> checkcb)

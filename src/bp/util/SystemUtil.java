@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import bp.os.BPOSFunctions;
 import bp.os.BPOSHandlers;
+import bp.typeext.KV.KVs;
 
 public class SystemUtil
 {
@@ -343,7 +344,7 @@ public class SystemUtil
 		return false;
 	}
 
-	private final static Map<String, Object> getProperties()
+	private final static KVs getProperties()
 	{
 		Properties props = System.getProperties();
 		Map<String, Object> mo = new TreeMap<String, Object>();
@@ -351,7 +352,7 @@ public class SystemUtil
 		{
 			mo.put((String) key, props.get(key));
 		}
-		return mo;
+		return new KVs(mo);
 	}
 
 	private final static List<String> getClassPaths()

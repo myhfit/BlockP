@@ -158,7 +158,7 @@ public class BPTaskSerial<V> extends BPTaskLocal<V>
 		}
 
 		@SuppressWarnings({ "unchecked" })
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return (Class<? extends BPTask<?>>) (Class<?>) BPTaskSerial.class;
 		}

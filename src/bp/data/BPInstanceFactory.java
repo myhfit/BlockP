@@ -10,5 +10,5 @@ public interface BPInstanceFactory<T>
 
 	Class<? extends T> getInstanceClass();
 
-	Class<T> getInstanceRootClass();
+	Class<? extends T> getInstanceRootClass();
 }

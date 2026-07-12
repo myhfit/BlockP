@@ -120,7 +120,7 @@ public class DateUtil
 		}
 		catch (ParseException e)
 		{
-			Std.err(e);
+			Std.debug(e.getMessage());
 		}
 		return -1;
 	}

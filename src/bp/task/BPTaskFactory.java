@@ -2,13 +2,15 @@ package bp.task;
 
 import java.util.Map;
 
-public interface BPTaskFactory
+import bp.data.BPInstanceFactory;
+
+public interface BPTaskFactory extends BPInstanceFactory<BPTask<?>>
 {
-	BPTask<?> create(Map<String, Object> taskdata);
-
-	String getName();
-
-	Class<? extends BPTask<?>> getTaskClass();
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	default Class<? extends BPTask<?>> getInstanceRootClass()
+	{
+		return (Class)BPTask.class;
+	}
 
 	default String getCategory()
 	{
@@ -18,6 +20,11 @@ public interface BPTaskFactory
 	default String[] getExts()
 	{
 		return null;
+	}
+
+	public static String getFactoryTypeName()
+	{
+		return "Task";
 	}
 
 	public static abstract class BPTaskFactoryBase<T extends BPTask<?>> implements BPTaskFactory

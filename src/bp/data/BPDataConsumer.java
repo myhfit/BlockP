@@ -33,7 +33,7 @@ public interface BPDataConsumer<T> extends Consumer<T>, BPSLData
 	}
 
 	@SuppressWarnings("unchecked")
-	default <T2> void runSegmentWithData(T2 data)
+	default void runSegmentWithData(Object data)
 	{
 		runSegment(() -> accept((T) data));
 	}

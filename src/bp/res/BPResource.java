@@ -3,8 +3,9 @@ package bp.res;
 import bp.config.BPConfig;
 import bp.config.BPSetting;
 import bp.data.BPMData;
+import bp.typeext.Nameable;
 
-public interface BPResource extends BPMData
+public interface BPResource extends BPMData, Nameable
 {
 	String getExt();
 
@@ -99,6 +100,11 @@ public interface BPResource extends BPMData
 	default void setSetting(BPConfig config)
 	{
 
+	}
+
+	default <T> T getMeta(String key)
+	{
+		return null;
 	}
 
 	boolean rename(String newname);

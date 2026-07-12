@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatText implements BPFormat
+public class BPFormatText extends BPFormatBase
 {
 	public final static String FORMAT_TEXT = "TEXT";
 	public final static String MIME_TEXT = "text/plain";

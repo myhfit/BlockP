@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatXYData implements BPFormat
+public class BPFormatXYData extends BPFormatBase
 {
 	public final static String FORMAT_XYDATA = "XYData";
 
