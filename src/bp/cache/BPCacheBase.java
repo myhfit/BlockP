@@ -25,7 +25,7 @@ public abstract class BPCacheBase implements BPCache
 
 	public void start()
 	{
-		boolean canstart = withStatus((status) ->
+		boolean canstart = withStatus(status ->
 		{
 			boolean cs = (status == STATUS_STOPPED || status == STATUS_COMPLETE);
 			status = STATUS_RUNNING;
@@ -44,9 +44,7 @@ public abstract class BPCacheBase implements BPCache
 		{
 			boolean c = false;
 			while (!c && !m_stopflag)
-			{
 				c = doCache();
-			}
 			end(c);
 		});
 	}
@@ -74,7 +72,7 @@ public abstract class BPCacheBase implements BPCache
 	protected boolean runCacheSegment(Runnable seg, boolean async)
 	{
 		boolean success = false;
-		boolean canstart = withStatus((status) ->
+		boolean canstart = withStatus(status ->
 		{
 			boolean cs = (status == STATUS_STOPPED || status == STATUS_COMPLETE);
 			status = STATUS_RUNNING;

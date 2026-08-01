@@ -2,8 +2,9 @@ package bp.processor;
 
 import bp.config.BPConfig;
 import bp.config.BPSetting;
+import bp.typeext.Nameable;
 
-public interface BPDataProcessor<T, R>
+public interface BPDataProcessor<T, R> extends Nameable
 {
 	String getName();
 

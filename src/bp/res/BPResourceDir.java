@@ -43,7 +43,10 @@ public interface BPResourceDir extends BPResourceFileSystem
 
 	List<String> listFileNames(boolean isrecursive, List<String> list, String basepath);
 
-	BPResourceFileSystem getChild(String name);
+	default BPResourceFileSystem getChild(String name)
+	{
+		return getChild(name, true);
+	}
 
 	BPResourceFileSystem getChild(String name, boolean needexist);
 

@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import bp.os.BPOSFunctions;
 import bp.os.BPOSHandlers;
@@ -104,9 +103,7 @@ public class SystemUtil
 		if (usenative)
 			func = BPOSHandlers.S_SIMPLERUN;
 		if (func != null)
-		{
 			return func.run(cmd, workdir, args);
-		}
 		else
 			return runSimpleProcess_Default(cmd, workdir, args, System.getProperty("file.encoding"));
 	}
@@ -187,9 +184,9 @@ public class SystemUtil
 			else if (!wd.endsWith(File.separator))
 				wd += File.separator;
 			String rawcmd = cmd + ((args == null) ? "" : (" " + String.join(" ", args)));
-			Std.info(rawcmd);
+			Std.debug(rawcmd);
 			process = Runtime.getRuntime().exec((workdir == null ? "" : workdir) + rawcmd);
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), encoding));)
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), encoding)))
 			{
 				while (process.isAlive())
 				{
@@ -349,9 +346,7 @@ public class SystemUtil
 		Properties props = System.getProperties();
 		Map<String, Object> mo = new TreeMap<String, Object>();
 		for (Object key : props.keySet())
-		{
 			mo.put((String) key, props.get(key));
-		}
 		return new KVs(mo);
 	}
 
@@ -394,13 +389,12 @@ public class SystemUtil
 
 	private final static List<String> getCharsets()
 	{
-
 		SortedMap<String, Charset> charsetmap = Charset.availableCharsets();
 		List<String> charsetnames = new ArrayList<String>();
 		for (String name : charsetmap.keySet())
 		{
 			Charset ch = charsetmap.get(name);
-			charsetnames.add(ch.name() + "(" + ch.aliases().stream().collect(Collectors.joining(",")) + ")");
+			charsetnames.add(ch.name() + "(" + ObjUtil.joinDatas(ch.aliases(), ",", null, false));
 		}
 		return charsetnames;
 	}

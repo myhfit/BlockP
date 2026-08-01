@@ -1,5 +1,6 @@
 package bp.util;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -153,6 +154,11 @@ public class LogicUtil
 		if (check == null)
 			return check2;
 		return new CombineChecker(check, check2, CombineChecker.OP_AND);
+	}
+	
+	public final static <T> T unwrapReference(Reference<T> ref)
+	{
+		return ref != null ? ref.get() : null;
 	}
 
 	public final static class CombineChecker implements Supplier<Boolean>
@@ -324,6 +330,14 @@ public class LogicUtil
 			if (cb != null)
 				return cb.test(value);
 			return null;
+		}
+
+		public boolean test(T value, boolean dv)
+		{
+			Predicate<T> cb = m_ref.get();
+			if (cb != null)
+				return cb.test(value);
+			return dv;
 		}
 	}
 

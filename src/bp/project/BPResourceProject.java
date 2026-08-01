@@ -1,8 +1,6 @@
 package bp.project;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import bp.cache.BPCacheDataFileSystem;
@@ -59,10 +57,9 @@ public interface BPResourceProject extends BPResourceParent
 		return rc;
 	}
 
-	default List<BPResource> getProjectFunctionItems()
+	default BPResource[] getProjectFunctionItems()
 	{
-		List<BPResource> rc = new ArrayList<BPResource>();
-		return rc;
+		return new BPResource[0];
 	}
 
 	default Map<String, Object> getStatistics()

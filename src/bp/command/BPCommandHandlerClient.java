@@ -1,4 +1,4 @@
-package bp.core;
+package bp.command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,6 @@ import java.util.Map;
 import bp.client.BPClient;
 import bp.client.BPClientFactory;
 import bp.client.BPClientManager;
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
 import bp.util.JSONUtil;
 import bp.util.ObjUtil;
 

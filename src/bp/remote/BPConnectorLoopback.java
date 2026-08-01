@@ -3,8 +3,8 @@ package bp.remote;
 import java.util.function.Function;
 
 import bp.BPCore;
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
+import bp.command.BPCommand;
+import bp.command.BPCommandResult;
 
 public class BPConnectorLoopback implements BPConnector
 {

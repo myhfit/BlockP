@@ -1,6 +1,7 @@
 package bp.transform;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -8,21 +9,27 @@ import bp.config.BPConfig;
 import bp.config.BPSetting;
 import bp.config.BPSettingBase;
 import bp.config.BPSettingItem;
+import bp.data.BPDataConsumer;
+import bp.data.BPDataConsumer.BPDataConsumerBase;
 import bp.script.BPScript;
 import bp.script.BPScriptBase;
 import bp.script.BPScriptManager;
 import bp.util.ObjUtil;
 
-public class BPTransformerFactoryScript implements BPTransformerFactory
+public class BPTransformerFactoryCollectScript implements BPTransformerFactory
 {
 	public String getName()
 	{
-		return "Script";
+		return "Collect by Script";
 	}
 
 	public boolean checkData(Object source)
 	{
-		return true;
+		if (source == null)
+			return true;
+		if (source instanceof List)
+			return true;
+		return false;
 	}
 
 	public Collection<String> getFunctionTypes()
@@ -32,18 +39,26 @@ public class BPTransformerFactoryScript implements BPTransformerFactory
 
 	public BPTransformer<?> createTransformer(String func)
 	{
-		return new BPTransformerScript();
+		return new BPTransformerCollectScript();
 	}
 
-	protected static class BPTransformerScript extends BPTransformerBase<Object>
+	public static class BPTransformerCollectScript extends BPDataConsumerBase<Object> implements BPTransformer<Object>
 	{
+		protected BPDataConsumer<?> m_output;
+		protected Object m_data;
+
 		protected BPScript m_script;
 		protected String m_scripttext;
 		protected BPScriptManager m_man;
 
 		public String getInfo()
 		{
-			return "Script";
+			return "Collect by Script";
+		}
+
+		public void setOutput(BPDataConsumer<?> pipe)
+		{
+			m_output = pipe;
 		}
 
 		public void setup()
@@ -59,20 +74,28 @@ public class BPTransformerFactoryScript implements BPTransformerFactory
 			m_man = new BPScriptManager();
 		}
 
+		public void accept(Object t)
+		{
+		}
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public void finish()
+		{
+			BPScript script = m_script;
+			Map<String, Object> ctx = m_contextref.get();
+			Map<String, Object> vars = ObjUtil.makeMap("$in", null, "$ctx", ctx);
+			m_data = m_man.runScripts(new BPScript[] { script }, null, null, true, vars);
+			BPDataConsumer out = m_output;
+			if (out != null)
+				out.runSegment(() -> out.accept(m_data));
+		}
+
 		public void clear()
 		{
 			m_script = null;
 			m_man.clear();
 			m_man = null;
 			super.clear();
-		}
-
-		protected Object transform(Object t)
-		{
-			BPScript script = m_script;
-			Map<String, Object> ctx = m_contextref.get();
-			Map<String, Object> vars = ObjUtil.makeMap("$in", t, "$ctx", ctx);
-			return m_man.runScripts(new BPScript[] { script }, null, null, true, vars);
 		}
 
 		public BPSetting getSetting()
@@ -88,11 +111,6 @@ public class BPTransformerFactoryScript implements BPTransformerFactory
 			if (script != null && script.length() == 0)
 				script = null;
 			m_scripttext = script;
-		}
-
-		public boolean needSettingUI()
-		{
-			return true;
 		}
 	}
 }

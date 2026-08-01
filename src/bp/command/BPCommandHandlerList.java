@@ -1,11 +1,9 @@
-package bp.core;
+package bp.command;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
 import bp.util.Std;
 
 public class BPCommandHandlerList implements BPCommandHandler

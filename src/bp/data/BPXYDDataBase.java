@@ -11,6 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import bp.util.LockUtil;
+import bp.util.LogicUtil;
 
 public class BPXYDDataBase implements BPXYDData
 {
@@ -100,50 +101,23 @@ public class BPXYDDataBase implements BPXYDData
 
 	public void insertPage(List<BPXData> page, Integer pos)
 	{
-		LockUtil.rwLock(m_lock, true, () ->
-		{
-			WeakReference<BiConsumer<List<BPXData>, Integer>> insertcallbackref = m_insertcallback;
-			if (insertcallbackref != null)
-			{
-				BiConsumer<List<BPXData>, Integer> insertcallback = insertcallbackref.get();
-				if (insertcallback != null)
-				{
-					insertcallback.accept(page, null);
-				}
-			}
-		});
+		BiConsumer<List<BPXData>, Integer> insertcallback = LogicUtil.unwrapReference(m_insertcallback);
+		if (insertcallback != null)
+			LockUtil.rwLock(m_lock, true, () -> insertcallback.accept(page, null));
 	}
 
 	public void removePage(int start, int end)
 	{
-		LockUtil.rwLock(m_lock, true, () ->
-		{
-			WeakReference<BiConsumer<Integer, Integer>> removecallbackref = m_removecallback;
-			if (removecallbackref != null)
-			{
-				BiConsumer<Integer, Integer> removecallback = removecallbackref.get();
-				if (removecallback != null)
-				{
-					removecallback.accept(start, end);
-				}
-			}
-		});
+		BiConsumer<Integer, Integer> removecallback = LogicUtil.unwrapReference(m_removecallback);
+		if (removecallback != null)
+			LockUtil.rwLock(m_lock, true, () -> removecallback.accept(start, end));
 	}
 
 	public void complete()
 	{
-		LockUtil.rwLock(m_lock, true, () ->
-		{
-			WeakReference<Runnable> endcallbackref = m_endcallback;
-			if (endcallbackref != null)
-			{
-				Runnable endcallback = endcallbackref.get();
-				if (endcallback != null)
-				{
-					endcallback.run();
-				}
-			}
-		});
+		Runnable endcallback = LogicUtil.unwrapReference(m_endcallback);
+		if (endcallback != null)
+			LockUtil.rwLock(m_lock, true, () -> endcallback.run());
 	}
 
 	public BPXYDData clone()

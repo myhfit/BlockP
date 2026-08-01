@@ -28,12 +28,11 @@ public interface BPResourceIO extends BPResource
 		return null;
 	}
 
-	default <T> T useOutputStream(Function<OutputStream, T> out)
+	default <T> T useOutputStream(Function<OutputStream, T> outseg)
 	{
-		try (OutputStream bos = getOutputStream())
+		try (OutputStream out = getOutputStream())
 		{
-			T rc = out.apply(bos);
-			return rc;
+			return out != null ? outseg.apply(out) : null;
 		}
 		catch (IOException e)
 		{

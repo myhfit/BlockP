@@ -27,6 +27,8 @@ public enum BPLocaleConstCC implements BPLocaleConstDirect
 	SIZE,
 	TYPE,
 	PATH,
+	HOST,
+	PORT,
 	SYS,
 	SOURCE,
 	TARGET,
@@ -58,6 +60,9 @@ public enum BPLocaleConstCC implements BPLocaleConstDirect
 	DATA,
 	UNIT,
 	CLONE,
+	COPYING,
+	WORK_DIR("Work Dir"),
+	BROWSER,
 	;
 
 	public final static String PACK_COMPUTER_COMMON = "c_c";

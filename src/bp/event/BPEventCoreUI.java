@@ -13,8 +13,8 @@ public class BPEventCoreUI extends BPEvent
 	public final static String EVENTKEY_COREUI_CHANGETASK = "COREUI_C_TASK";
 	public final static String EVENTKEY_COREUI_CHANGESCRIPT = "COREUI_C_SCRIPT";
 
-	public String subkey;
-	public Object[] datas;
+	public volatile String subkey;
+	public volatile Object[] datas;
 
 	public BPEventCoreUI(String key, String subkey, Object[] datas)
 	{

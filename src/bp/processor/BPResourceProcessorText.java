@@ -14,8 +14,6 @@ import bp.data.BPXYContainer;
 import bp.data.BPXYData.BPXYDataList;
 import bp.format.BPFormatText;
 import bp.format.BPFormatXYData;
-import bp.locale.BPLocaleConstCoreDict;
-import bp.locale.BPLocaleHelpers;
 import bp.res.BPResource;
 import bp.res.BPResourceFactory;
 import bp.res.BPResourceHolder;
@@ -110,7 +108,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 
 		public String getUILabel()
 		{
-			return BPLocaleHelpers.translate(BPLocaleConstCoreDict.S, "To Uppercase");
+			return "To Uppercase";
 		}
 	}
 
@@ -128,7 +126,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 
 		public String getUILabel()
 		{
-			return BPLocaleHelpers.translate(BPLocaleConstCoreDict.S, "To Lowercase");
+			return "To Lowercase";
 		}
 	}
 
@@ -141,7 +139,7 @@ public abstract class BPResourceProcessorText extends BPResourceProcessorTextBas
 
 		public String getUILabel()
 		{
-			return BPLocaleHelpers.translate(BPLocaleConstCoreDict.S, "Export XY");
+			return "Export XY";
 		}
 
 		public boolean needSettingUI()

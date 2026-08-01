@@ -326,15 +326,14 @@ public class FileUtil
 		else if (srcf.isDirectory())
 		{
 			String basepath = srcf.getAbsolutePath();
-			int b = basepath.length()+((!(basepath.endsWith("/") || basepath.endsWith(File.separator)))?1:0);
+			int b = basepath.length() + ((!(basepath.endsWith("/") || basepath.endsWith(File.separator))) ? 1 : 0);
 			File tarf = new File(tarpar, srcf.getName());
 			String tar = tarf.getAbsolutePath() + ((!(basepath.endsWith("/") || basepath.endsWith(File.separator))) ? File.separator : "");
 			FileUtil.forEachFile(srcf, true, (d, f) ->
 			{
 				String filename = f.getAbsolutePath();
-				String relname = filename.substring(b);
 				srcs.add(filename);
-				tars.add(tar + relname);
+				tars.add(tar + filename.substring(b));
 				return true;
 			});
 		}

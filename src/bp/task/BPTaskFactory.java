@@ -27,6 +27,11 @@ public interface BPTaskFactory extends BPInstanceFactory<BPTask<?>>
 		return "Task";
 	}
 
+	public static String getDictClassName()
+	{
+		return BPTask.class.getName();
+	}
+
 	public static abstract class BPTaskFactoryBase<T extends BPTask<?>> implements BPTaskFactory
 	{
 		protected abstract T createTask();

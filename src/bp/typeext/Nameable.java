@@ -9,23 +9,13 @@ public interface Nameable
 {
 	String getName();
 
-	public static String nameGetter(Object n)
-	{
-		return ((Nameable) n).getName();
-	}
-
 	public static Function<Object, String> nameTranslator(Class<?> cls, String dictprefix)
 	{
-		return obj ->
-		{
-			Nameable n = (Nameable) obj;
-			String name = n.getName();
-			return BPLocaleHelpers.translateByClass(cls, name, dictprefix);
-		};
+		return obj -> BPLocaleHelpers.translateByClass(cls, ((Nameable) obj).getName(), dictprefix);
 	}
 
-	public static String joinName(Iterable<?> ns, String delimiter)
+	public static String joinName(Iterable<? extends Nameable> ns, String delimiter)
 	{
-		return ObjUtil.joinDatas(ns, delimiter, Nameable::nameGetter, false);
+		return ObjUtil.joinDatas(ns, delimiter, Nameable::getName, false);
 	}
 }

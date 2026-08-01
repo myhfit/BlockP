@@ -122,11 +122,6 @@ public abstract class BPResourceProjectBase implements BPResourceProjectDir
 		m_disabled = !flag;
 	}
 
-	public BPResourceFileSystem getChild(String name)
-	{
-		return m_dir.getChild(name);
-	}
-
 	public BPResourceFileSystem getChild(String name, boolean needexist)
 	{
 		return m_dir.getChild(name, needexist);

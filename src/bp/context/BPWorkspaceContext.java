@@ -35,9 +35,12 @@ public interface BPWorkspaceContext extends BPFileContext
 
 	void saveScripts();
 
-	BPResourceIO getConfigRes(String cfgfilename, boolean needexist);
+	default BPResourceIO getConfigRes(String cfgfilename)
+	{
+		return getConfigRes(cfgfilename, true);
+	}
 
-	BPResourceIO getConfigRes(String cfgfilename);
+	BPResourceIO getConfigRes(String cfgfilename, boolean needexist);
 
 	BPResourceDir getConfigDir(String cfgfilename, boolean needexist);
 }

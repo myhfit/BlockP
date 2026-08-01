@@ -1,4 +1,4 @@
-package bp.data;
+package bp.command;
 
 public class BPCommand
 {

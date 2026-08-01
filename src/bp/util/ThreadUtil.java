@@ -162,7 +162,7 @@ public class ThreadUtil
 					outcollector = outcollectorref.get();
 				try
 				{
-					if (outcollectorref != null)
+					if (outcollector != null)
 					{
 						int c = in.read(buffer);
 						while (c != -1)

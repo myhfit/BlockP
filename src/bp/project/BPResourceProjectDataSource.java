@@ -50,10 +50,9 @@ public class BPResourceProjectDataSource extends BPResourceProjectFile
 		return facs.toArray(new BPProjectItemFactory[facs.size()]);
 	}
 
-	public List<BPResource> getProjectFunctionItems()
+	public BPResource[] getProjectFunctionItems()
 	{
-		List<BPResource> rc = new ArrayList<BPResource>();
-		return rc;
+		return new BPResource[0];
 	}
 
 	public final static boolean writeDSLink(BPResourceFile res, BPDataSource ds)

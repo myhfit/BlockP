@@ -1,10 +1,8 @@
-package bp.core;
+package bp.command;
 
 import java.util.List;
 
 import bp.BPCore;
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
 import bp.ext.BPExtensionLoader;
 import bp.ext.BPExtensionManager;
 import bp.module.BPModule;

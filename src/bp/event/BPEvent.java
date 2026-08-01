@@ -2,8 +2,8 @@ package bp.event;
 
 public abstract class BPEvent
 {
-	public String key;
-	public boolean stopNext = false;
-	public boolean stopDefault = false;
-	public boolean triggerLater = false;
+	public volatile String key;
+	public volatile boolean stopNext = false;
+	public volatile boolean stopDefault = false;
+	public volatile boolean triggerLater = false;
 }

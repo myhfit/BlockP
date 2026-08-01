@@ -2,8 +2,8 @@ package bp.remote;
 
 import java.util.function.Function;
 
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
+import bp.command.BPCommand;
+import bp.command.BPCommandResult;
 
 public interface BPConnector
 {

@@ -1,4 +1,4 @@
-package bp.core;
+package bp.command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ public abstract class BPCommandHandlerBase implements BPCommandHandler
 	{
 		List<String> names = new ArrayList<String>(m_cmdnames);
 		List<String> rc = new ArrayList<String>();
-		for (String name : names)
-			rc.add("[" + getName() + "]" + name);
+		for (int i = 0; i < names.size(); i++)
+			rc.add("[" + getName() + "]" + names.get(i));
 		return rc;
 	}
 
@@ -29,8 +29,7 @@ public abstract class BPCommandHandlerBase implements BPCommandHandler
 		List<String> cmdnames = m_cmdnames;
 		if (cmdnames == null)
 			return false;
-		String cn = cmdname.toLowerCase();
-		return cmdnames.contains(cn);
+		return cmdnames.contains(cmdname.toLowerCase());
 	}
 
 	protected final static String[] getPSStringArr(Object ps)

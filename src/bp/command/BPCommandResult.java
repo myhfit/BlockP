@@ -1,4 +1,4 @@
-package bp.data;
+package bp.command;
 
 import java.util.function.Supplier;
 

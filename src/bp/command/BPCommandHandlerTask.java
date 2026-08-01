@@ -1,11 +1,9 @@
-package bp.core;
+package bp.command;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bp.BPCore;
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
 import bp.task.BPTask;
 import bp.task.BPTaskProxy;
 import bp.util.ObjUtil;

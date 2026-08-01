@@ -1,16 +1,13 @@
-package bp.core;
+package bp.command;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import bp.data.BPCommand;
-import bp.data.BPCommandResult;
 
 public interface BPCommandHandler
 {
 	public final static String CN_EXIT = "exit";
 	public final static String CN_HELP = "help";
-	
+
 	BPCommandResult call(BPCommand cmd);
 
 	boolean canHandle(String cmdkey);

@@ -94,13 +94,9 @@ public class BPWorkspaceContextLocalBase extends BPFileContextLocalBase implemen
 		if (newsc != null)
 		{
 			if (oldsc != null)
-			{
 				sc = oldsc;
-			}
 			else
-			{
 				sc = new BPScriptBase();
-			}
 			sc.setMappedData(newsc);
 			newname = sc.getName();
 			newlang = sc.getLanguage();
@@ -117,9 +113,7 @@ public class BPWorkspaceContextLocalBase extends BPFileContextLocalBase implemen
 				String oldfilename = oldname + BPScriptManager.getExtByLanguage(oldlang);
 				BPResourceFileSystem oldfile = cfgdir.getChild(oldfilename, true);
 				if (oldfile != null && oldfile.exists())
-				{
 					oldfile.delete();
-				}
 				if (newfilename != null)
 					fres = (BPResourceFile) cfgdir.createChild(newfilename, true);
 			}
@@ -294,17 +288,6 @@ public class BPWorkspaceContextLocalBase extends BPFileContextLocalBase implemen
 			return (BPResourceDir) rootdir.getChild(S_BPDIR, true);
 		}
 		return rootdir;
-	}
-
-	public BPResourceIO getConfigRes(String cfgfilename)
-	{
-		BPResourceDir bpdir = getBPDir();
-		BPResource rc = bpdir.getChild(cfgfilename);
-		if (rc == null)
-			return null;
-		if (!rc.isIO())
-			return null;
-		return (BPResourceIO) rc;
 	}
 
 	public BPResourceIO getConfigRes(String cfgfilename, boolean needexist)

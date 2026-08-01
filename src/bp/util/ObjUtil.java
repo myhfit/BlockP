@@ -1,5 +1,6 @@
 package bp.util;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +16,6 @@ import java.util.function.Supplier;
 
 import bp.data.BPMData;
 import bp.data.BPSLData;
-import bp.data.BPYData;
 
 public class ObjUtil
 {
@@ -674,12 +674,12 @@ public class ObjUtil
 	public final static <T> List<T> makeList(Object... ps)
 	{
 		List<T> rc = new ArrayList<T>();
-		for (Object p : ps)
-			rc.add((T) p);
+		for (int i = 0; i < ps.length; i++)
+			rc.add((T) ps[i]);
 		return rc;
 	}
 
-	public final static <T> String joinDatas(Iterable<T> datas, String delimiter, Function<T, String> transfunc, boolean ignorenull)
+	public final static <T> String joinDatas(Iterable<T> datas, String delimiter, Function<? super T, String> transfunc, boolean ignorenull)
 	{
 		StringBuilder sb = new StringBuilder();
 		boolean flag = false;
@@ -733,6 +733,28 @@ public class ObjUtil
 		return rc;
 	}
 
+	@SuppressWarnings("unchecked")
+	public final static <T> T[] mergeArrays(List<T[]> arrs, Class<T> cls)
+	{
+		int c = 0;
+		for (T[] arr : arrs)
+			c += (arr != null ? arr.length : 0);
+		T[] rc = (T[]) Array.newInstance(cls, c);
+		if (c > 0)
+		{
+			c = 0;
+			for (T[] arr : arrs)
+			{
+				if (arr == null)
+					continue;
+				int c0 = arr.length;
+				System.arraycopy(arr, 0, rc, c, c0);
+				c += c0;
+			}
+		}
+		return rc;
+	}
+
 	@SafeVarargs
 	public final static <T> T[] pushArray(T[] arr1, T... datas)
 	{
@@ -741,22 +763,6 @@ public class ObjUtil
 		int l = arr1.length;
 		T[] rc = (T[]) Arrays.copyOf(arr1, l + datas.length);
 		System.arraycopy(datas, 0, rc, l, datas.length);
-		return rc;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public final static Object wrapUIData(Object data)
-	{
-		Object rc = null;
-		if (data != null)
-		{
-			if (data instanceof Map)
-				rc = new BPMData.BPMDataWMap((Map) data);
-			else if (data instanceof List)
-				rc = new BPYData.BPYDataArrayList((List) data);
-			else
-				rc = data;
-		}
 		return rc;
 	}
 

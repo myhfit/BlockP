@@ -314,11 +314,6 @@ public class BPProjectsContextLocalBase implements BPProjectsContext, BPWorkspac
 		return m_fc.getConfigRes(cfgfilename, needexist);
 	}
 
-	public BPResourceIO getConfigRes(String cfgfilename)
-	{
-		return m_fc.getConfigRes(cfgfilename);
-	}
-
 	public BPResourceDir getConfigDir(String cfgfilename, boolean needexist)
 	{
 		return m_fc.getConfigDir(cfgfilename, needexist);

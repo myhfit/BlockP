@@ -119,11 +119,6 @@ public class BPResourceDirLocal extends BPResourceFileSystemLocal implements BPR
 		return rc;
 	}
 
-	public BPResourceFileSystem getChild(String name)
-	{
-		return getChild(name, true);
-	}
-
 	public BPResourceFileSystem getChild(String name, boolean needexist)
 	{
 		File f = new File(m_file, name);

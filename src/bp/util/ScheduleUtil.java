@@ -30,16 +30,13 @@ public class ScheduleUtil
 
 	public final static void addScheduleAndSave(BPSchedule... sd)
 	{
-		for (BPSchedule s : sd)
-		{
-			addSchedule(s);
-		}
+		for (int i = 0; i < sd.length; i++)
+			addSchedule(sd[i]);
 		BPCore.saveSchedules();
 	}
 
 	public final static void addSchedulesAndSave(List<BPSchedule> sds)
 	{
-
 		BPCore.saveSchedules();
 	}
 
